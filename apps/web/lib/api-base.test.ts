@@ -23,6 +23,7 @@ describe("api base helpers", () => {
 
   it("defaults pob.codes browser clients to the api subdomain", () => {
     vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_API_BASE", "");
     vi.stubGlobal(
       "window",
       {
@@ -38,6 +39,7 @@ describe("api base helpers", () => {
 
   it("keeps local browser clients pointed at the local worker in production mode", () => {
     vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_API_BASE", "");
     vi.stubGlobal(
       "window",
       {
@@ -53,6 +55,7 @@ describe("api base helpers", () => {
 
   it("keeps non-pob.codes browser clients on the current origin when no env override is set", () => {
     vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_API_BASE", "");
     vi.stubGlobal(
       "window",
       {
