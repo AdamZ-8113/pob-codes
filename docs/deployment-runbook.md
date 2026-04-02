@@ -18,6 +18,7 @@ Use this document for:
 - `https://api.pob.codes`: API Worker deployed from `apps/worker`
 - Cloudflare KV `BUILD_CODES`: stores uploaded raw PoB codes and parsed payload cache
 - GitHub Actions workflow: `.github/workflows/deploy.yml`
+- Worker-side POST rate limiting: enabled by default in production
 
 ## Repository Inputs
 
@@ -85,6 +86,19 @@ $env:CF_KV_BUILD_CODES_PREVIEW_ID="..."
 - Deploy both services: `npm.cmd run deploy`
 - Deploy only the worker: `npm.cmd run deploy:worker`
 - Deploy only the web app: `npm.cmd run deploy:web`
+
+## Worker Runtime Defaults
+
+The production worker template currently sets:
+
+- `BASE_URL=https://pob.codes`
+- `PARSED_PAYLOAD_CACHE_ENABLED=true`
+- `PARSED_PAYLOAD_CACHE_VERSION=1`
+- `PARSED_PAYLOAD_TTL_SECONDS=2592000`
+- `JSON_RESPONSE_EDGE_CACHE_ENABLED=true`
+- `RATE_LIMIT_ENABLED=true`
+- `RATE_LIMIT_MAX_REQUESTS=30`
+- `RATE_LIMIT_WINDOW_SECONDS=60`
 
 ## Smoke Tests
 
@@ -169,4 +183,4 @@ This is why the workflow and `npm run verify` use:
 
 - `www.pob.codes` behavior is still undecided
 - There are no preview deployments for pull requests yet
-- Upload endpoints do not yet have explicit abuse controls such as rate limiting
+- The worker-side rate limit is a simple KV-backed backstop, not a full edge-grade abuse prevention system

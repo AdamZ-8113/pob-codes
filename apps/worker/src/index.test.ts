@@ -379,6 +379,50 @@ describe("worker routes", () => {
     expect(res.status).toBe(400);
   });
 
+  it("rate limits repeated POST requests from the same client ip", async () => {
+    const { env } = createEnv({
+      RATE_LIMIT_MAX_REQUESTS: "2",
+      RATE_LIMIT_WINDOW_SECONDS: "60",
+    });
+    const xml = '<PathOfBuilding><Build level="1" className="Marauder" mainSocketGroup="1" /></PathOfBuilding>';
+    const code = await encodeCode(xml);
+    const headers = {
+      "cf-connecting-ip": "198.51.100.10",
+    };
+
+    const firstRes = await worker.fetch(
+      new Request("https://example.test/pob", {
+        body: code,
+        headers,
+        method: "POST",
+      }),
+      env,
+    );
+    const secondRes = await worker.fetch(
+      new Request("https://example.test/pob", {
+        body: code,
+        headers,
+        method: "POST",
+      }),
+      env,
+    );
+    const thirdRes = await worker.fetch(
+      new Request("https://example.test/pob", {
+        body: code,
+        headers,
+        method: "POST",
+      }),
+      env,
+    );
+
+    expect(firstRes.status).toBe(201);
+    expect(secondRes.status).toBe(201);
+    expect(thirdRes.status).toBe(429);
+    expect((await thirdRes.json()) as { code?: string }).toMatchObject({
+      code: "RATE_LIMITED",
+    });
+  });
+
   it("imports a real PoB sample fixture", async () => {
     const { env } = createEnv();
     const sampleFile = readdirSync("../../data").find((entry) => entry.endsWith(".txt"));
@@ -438,7 +482,8 @@ describe("worker routes", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "https://pobb.in/pob/demo123",
       expect.objectContaining({
-        redirect: "follow",
+        redirect: "manual",
+        signal: expect.any(AbortSignal),
       }),
     );
   });
@@ -478,14 +523,16 @@ describe("worker routes", () => {
       1,
       "https://maxroll.gg/poe/build-guides/test-build",
       expect.objectContaining({
-        redirect: "follow",
+        redirect: "manual",
+        signal: expect.any(AbortSignal),
       }),
     );
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
       "https://maxroll.gg/poe/api/pob/share42",
       expect.objectContaining({
-        redirect: "follow",
+        redirect: "manual",
+        signal: expect.any(AbortSignal),
       }),
     );
   });
@@ -521,7 +568,8 @@ describe("worker routes", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "https://planners.maxroll.gg/plan42",
       expect.objectContaining({
-        redirect: "follow",
+        redirect: "manual",
+        signal: expect.any(AbortSignal),
       }),
     );
   });

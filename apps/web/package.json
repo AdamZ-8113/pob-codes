@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@pobcodes/shared-types": "0.1.0",
-    "next": "^15.5.10",
+    "next": "^15.5.14",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },

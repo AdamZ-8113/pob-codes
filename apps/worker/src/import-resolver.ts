@@ -4,6 +4,7 @@ type FetchImpl = typeof fetch;
 
 const KNOWN_IMPORT_HOSTS = [
   "maxroll.gg",
+  "planners.maxroll.gg",
   "pobb.in",
   "poe.ninja",
   "pastebin.com",
@@ -12,6 +13,9 @@ const KNOWN_IMPORT_HOSTS = [
   "poedb.tw",
 ];
 
+const DEFAULT_IMPORT_FETCH_TIMEOUT_MS = 8_000;
+const DEFAULT_IMPORT_MAX_RESPONSE_BYTES = 1_048_576;
+const DEFAULT_IMPORT_REDIRECT_LIMIT = 4;
 const SUPPORTED_LINK_PATTERN =
   /\b(?:https?:\/\/|pob:\/\/|www\.)[^\s"'<>]+|(?:\/poe\/pob\/[A-Za-z0-9_-]+|\/poe\/planner\/[A-Za-z0-9_-]+|\/pob\/[A-Za-z0-9_-]+|\/poe1\/pob\/[A-Za-z0-9_-]+)\b/g;
 
@@ -37,8 +41,8 @@ async function resolveBuildFromUrl(url: string, fetchImpl: FetchImpl, visited: S
   visited.add(url);
 
   const directDownloadUrl = getDirectDownloadUrl(url);
-  const response = await fetchImportSource(directDownloadUrl ?? url, fetchImpl);
-  const responseText = (await response.text()).trim();
+  const { finalUrl, response } = await fetchImportSource(directDownloadUrl ?? url, fetchImpl);
+  const responseText = (await readResponseText(response)).trim();
 
   if (!responseText) {
     throw new Error("Imported build was empty");
@@ -49,7 +53,7 @@ async function resolveBuildFromUrl(url: string, fetchImpl: FetchImpl, visited: S
     return embeddedCode;
   }
 
-  const embeddedLink = extractEmbeddedBuildLink(responseText, response.url || directDownloadUrl || url);
+  const embeddedLink = extractEmbeddedBuildLink(responseText, finalUrl);
   if (embeddedLink) {
     return resolveBuildFromUrl(embeddedLink, fetchImpl, visited);
   }
@@ -57,19 +61,112 @@ async function resolveBuildFromUrl(url: string, fetchImpl: FetchImpl, visited: S
   throw new Error("Could not extract a Path of Building code from that link");
 }
 
-async function fetchImportSource(url: string, fetchImpl: FetchImpl): Promise<Response> {
-  const response = await fetchImpl(url, {
-    headers: {
-      accept: "text/plain, text/html, application/json;q=0.9, */*;q=0.8",
-    },
-    redirect: "follow",
-  });
+async function fetchImportSource(url: string, fetchImpl: FetchImpl): Promise<{ finalUrl: string; response: Response }> {
+  let currentUrl = url;
 
-  if (!response.ok) {
-    throw new Error(`Build import failed (${response.status})`);
+  for (let redirects = 0; redirects <= DEFAULT_IMPORT_REDIRECT_LIMIT; redirects += 1) {
+    const response = await fetchWithTimeout(currentUrl, fetchImpl);
+
+    if (isRedirectResponse(response.status)) {
+      const location = response.headers.get("location")?.trim();
+      if (!location) {
+        throw new Error("Build import redirected without a location");
+      }
+
+      const normalizedRedirectUrl = normalizeImportUrl(location, currentUrl);
+      if (!normalizedRedirectUrl) {
+        throw new Error("Build import redirected to an unsupported host");
+      }
+
+      if (normalizedRedirectUrl === currentUrl) {
+        throw new Error("Build import redirected in a loop");
+      }
+
+      currentUrl = normalizedRedirectUrl;
+      continue;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Build import failed (${response.status})`);
+    }
+
+    return {
+      finalUrl: currentUrl,
+      response,
+    };
   }
 
-  return response;
+  throw new Error("Build import redirected too many times");
+}
+
+async function fetchWithTimeout(url: string, fetchImpl: FetchImpl): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), DEFAULT_IMPORT_FETCH_TIMEOUT_MS);
+
+  try {
+    return await fetchImpl(url, {
+      headers: {
+        accept: "text/plain, text/html, application/json;q=0.9, */*;q=0.8",
+      },
+      redirect: "manual",
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new Error("Build import timed out");
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+async function readResponseText(response: Response): Promise<string> {
+  const contentLength = Number(response.headers.get("content-length"));
+  if (Number.isFinite(contentLength) && contentLength > DEFAULT_IMPORT_MAX_RESPONSE_BYTES) {
+    throw new Error("Imported build exceeded maximum fetch size");
+  }
+
+  if (!response.body) {
+    const text = await response.text();
+    assertImportResponseSize(text);
+    return text;
+  }
+
+  const decoder = new TextDecoder();
+  const reader = response.body.getReader();
+  let body = "";
+  let totalBytes = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+
+    totalBytes += value.byteLength;
+    if (totalBytes > DEFAULT_IMPORT_MAX_RESPONSE_BYTES) {
+      await reader.cancel("Imported build exceeded maximum fetch size");
+      throw new Error("Imported build exceeded maximum fetch size");
+    }
+
+    body += decoder.decode(value, { stream: true });
+  }
+
+  body += decoder.decode();
+  return body;
+}
+
+function assertImportResponseSize(body: string): void {
+  const size = new TextEncoder().encode(body).byteLength;
+  if (size > DEFAULT_IMPORT_MAX_RESPONSE_BYTES) {
+    throw new Error("Imported build exceeded maximum fetch size");
+  }
+}
+
+function isRedirectResponse(status: number): boolean {
+  return [301, 302, 303, 307, 308].includes(status);
 }
 
 function extractEmbeddedBuildCode(source: string): string | undefined {

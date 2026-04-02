@@ -11,6 +11,9 @@ export interface Env {
   PARSED_PAYLOAD_CACHE_ENABLED?: string;
   PARSED_PAYLOAD_CACHE_VERSION?: string;
   PARSED_PAYLOAD_TTL_SECONDS?: string;
+  RATE_LIMIT_ENABLED?: string;
+  RATE_LIMIT_MAX_REQUESTS?: string;
+  RATE_LIMIT_WINDOW_SECONDS?: string;
 }
 
 const DEFAULT_MAX_UPLOAD_BYTES = 150 * 1024;
@@ -18,11 +21,15 @@ const DEFAULT_JSON_RESPONSE_EDGE_CACHE_ENABLED = true;
 const DEFAULT_PARSED_PAYLOAD_CACHE_ENABLED = true;
 const DEFAULT_PARSED_PAYLOAD_CACHE_VERSION = "1";
 const DEFAULT_PARSED_PAYLOAD_TTL_SECONDS = 30 * 24 * 60 * 60;
+const DEFAULT_RATE_LIMIT_ENABLED = true;
+const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 30;
+const DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 60;
 const ID_PATTERN = /^[A-Za-z0-9_-]{8,40}$/;
 const JSON_RESPONSE_CACHE_VERSION_PARAM = "__payloadCacheVersion";
 const JSON_SUCCESS_CACHE_CONTROL = "public, max-age=31536000, immutable";
 const RAW_CODE_PREFIX = "raw:";
 const PARSED_PAYLOAD_PREFIX = "payload:";
+const RATE_LIMIT_PREFIX = "rate:";
 const CORS_HEADERS: Record<string, string> = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET,POST,OPTIONS",
@@ -46,10 +53,20 @@ export default {
       }
 
       if (method === "POST" && url.pathname === "/pob") {
+        const rateLimitResponse = await enforceRateLimit(request, env);
+        if (rateLimitResponse) {
+          return rateLimitResponse;
+        }
+
         return handleUpload(request, env);
       }
 
       if (method === "POST" && url.pathname === "/pob/parse") {
+        const rateLimitResponse = await enforceRateLimit(request, env);
+        if (rateLimitResponse) {
+          return rateLimitResponse;
+        }
+
         return handleParse(request, env);
       }
 
@@ -388,6 +405,74 @@ function parseBooleanEnv(value: string | undefined, defaultValue: boolean): bool
   }
 
   return !["0", "false", "no", "off"].includes(normalizedValue);
+}
+
+async function enforceRateLimit(request: Request, env: Env): Promise<Response | null> {
+  if (!isRateLimitEnabled(env)) {
+    return null;
+  }
+
+  const clientIp = getClientIp(request);
+  if (!clientIp) {
+    return null;
+  }
+
+  const maxRequests = getRateLimitMaxRequests(env);
+  if (maxRequests <= 0) {
+    return null;
+  }
+
+  const windowSeconds = getRateLimitWindowSeconds(env);
+  const windowBucket = Math.floor(Date.now() / (windowSeconds * 1000));
+  const clientKey = await shortHash(clientIp, 20);
+  const key = `${RATE_LIMIT_PREFIX}${windowBucket}:${clientKey}`;
+  const currentCount = Number(await env.BUILD_CODES.get(key));
+
+  if (Number.isFinite(currentCount) && currentCount >= maxRequests) {
+    return jsonError("Too many requests", 429, "RATE_LIMITED");
+  }
+
+  await env.BUILD_CODES.put(key, String((Number.isFinite(currentCount) ? currentCount : 0) + 1), {
+    expirationTtl: windowSeconds * 2,
+  });
+
+  return null;
+}
+
+function isRateLimitEnabled(env: Env): boolean {
+  return parseBooleanEnv(env.RATE_LIMIT_ENABLED, DEFAULT_RATE_LIMIT_ENABLED);
+}
+
+function getRateLimitMaxRequests(env: Env): number {
+  const value = Number(env.RATE_LIMIT_MAX_REQUESTS ?? DEFAULT_RATE_LIMIT_MAX_REQUESTS);
+  if (!Number.isFinite(value) || value <= 0) {
+    return DEFAULT_RATE_LIMIT_MAX_REQUESTS;
+  }
+
+  return Math.floor(value);
+}
+
+function getRateLimitWindowSeconds(env: Env): number {
+  const value = Number(env.RATE_LIMIT_WINDOW_SECONDS ?? DEFAULT_RATE_LIMIT_WINDOW_SECONDS);
+  if (!Number.isFinite(value) || value <= 0) {
+    return DEFAULT_RATE_LIMIT_WINDOW_SECONDS;
+  }
+
+  return Math.floor(value);
+}
+
+function getClientIp(request: Request): string | null {
+  const cfConnectingIp = request.headers.get("cf-connecting-ip")?.trim();
+  if (cfConnectingIp) {
+    return cfConnectingIp;
+  }
+
+  const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  if (forwardedFor) {
+    return forwardedFor;
+  }
+
+  return null;
 }
 
 async function shortHash(input: string, length: number): Promise<string> {

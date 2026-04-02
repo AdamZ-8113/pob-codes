@@ -2,6 +2,9 @@
   "name": "pob-codes",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "picomatch": "4.0.4"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"

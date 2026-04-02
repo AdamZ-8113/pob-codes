@@ -259,6 +259,7 @@ These are the pieces still worth tightening after the initial deployment succeed
 2. Decide whether pull requests should get preview deployments later.
 3. Decide whether to keep the current `typecheck after build` requirement or remove that coupling.
 4. Add more operational hardening where useful, such as rate limiting or abuse controls on uploads.
+5. Consider moving from the current KV-backed rate limit backstop to Cloudflare-native rate limiting if abuse becomes a real operational concern.
 
 ## Acceptance Checklist
 
