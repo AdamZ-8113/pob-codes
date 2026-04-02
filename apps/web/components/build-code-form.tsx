@@ -112,9 +112,9 @@ export function BuildCodeForm() {
         onChange={(e) => setCode(e.target.value)}
         placeholder="Paste a Path of Building export string, pobb.in link, Maxroll PoB link, Pastebin, poe.ninja, or similar..."
       />
-      <div style={{ marginTop: 12, display: "flex", gap: 12, alignItems: "center" }}>
+      <div className="build-code-form-actions">
         {sampleFiles.length > 0 ? (
-          <>
+          <div className="build-code-form-samples">
             <select
               value={selectedSampleId}
               onChange={(e) => setSelectedSampleId(e.target.value)}
@@ -130,12 +130,12 @@ export function BuildCodeForm() {
             <button className="btn btn-secondary" type="button" disabled={loading || loadingFixture} onClick={onLoadFixture}>
               {loadingFixture ? "Loading Sample..." : "Load Sample"}
             </button>
-          </>
+          </div>
         ) : null}
-        <button className="btn" type="submit" disabled={loading || loadingFixture}>
+        <button className="btn build-code-form-submit" type="submit" disabled={loading || loadingFixture}>
           {loading ? "Uploading..." : "Open Build"}
         </button>
-        <span className="meta">PoE1 only. Read-only. Supports common PoB import URLs</span>
+        <span className="meta build-code-form-meta">PoE1 only. Read-only. Supports common PoB import URLs</span>
       </div>
       {error && (
         <div className="error-box" style={{ marginTop: 12 }}>

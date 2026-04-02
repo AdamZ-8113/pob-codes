@@ -18,6 +18,7 @@
     "sync:data": "node scripts/sync-data.mjs",
     "update:local-pob-mirror": "node scripts/update-local-pob-mirror.mjs",
     "update:pob-upstream": "node scripts/update-local-pob-mirror.mjs",
+    "benchmark:web": "node scripts/benchmark-web-viewer.mjs",
     "verify:assets": "node scripts/verify-assets.mjs",
     "verify:unique-art": "node scripts/verify-unique-art-coverage.mjs",
     "dev:restart": "restart-dev.cmd",

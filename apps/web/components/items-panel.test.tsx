@@ -158,6 +158,112 @@ describe("ItemsPanel", () => {
     expect(container.querySelector(".poe-tooltip")?.textContent).toContain("Quality: +20%");
   });
 
+  it("shows mirrored footer text and flips the icon for Kalandra's Touch even if cached payloads missed the flag", () => {
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      activeItemSetId: 1,
+      itemSets: [
+        {
+          active: true,
+          id: 1,
+          slots: [
+            {
+              active: true,
+              itemId: 3005,
+              name: "Ring 2",
+            },
+          ],
+          title: "Default",
+        },
+      ],
+      items: [
+        {
+          anointments: [],
+          base: "Ring",
+          corrupted: false,
+          crafted: [],
+          enchantments: [],
+          explicits: ["Reflects opposite Ring"],
+          fractured: false,
+          fracturedMods: [],
+          id: 3005,
+          implicits: [],
+          influences: [],
+          mirrored: false,
+          name: "Kalandra's Touch",
+          quality: undefined,
+          rarity: "Unique",
+          raw: "Rarity: UNIQUE\nKalandra's Touch\nRing\nImplicits: 0\nReflects opposite Ring",
+          scourgedMods: [],
+          crucibleMods: [],
+          split: false,
+          synthesizedMods: [],
+          synthesised: false,
+          ward: undefined,
+        },
+      ],
+    };
+
+    const { container } = render(<ItemsPanel payload={payload} />);
+    const icon = container.querySelector('.gear-slot img[alt="Kalandra\'s Touch"]');
+
+    expect(container.querySelector(".poe-tooltip")?.textContent).toContain("Mirrored");
+    expect(icon?.classList.contains("gear-item-icon--mirrored")).toBe(true);
+  });
+
+  it("falls back to raw split and mirrored tags for tooltip footer flags", () => {
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      activeItemSetId: 1,
+      itemSets: [
+        {
+          active: true,
+          id: 1,
+          slots: [
+            {
+              active: true,
+              itemId: 3006,
+              name: "Ring 1",
+            },
+          ],
+          title: "Default",
+        },
+      ],
+      items: [
+        {
+          anointments: [],
+          base: "Iron Ring",
+          corrupted: false,
+          crafted: [],
+          enchantments: [],
+          explicits: ["+17 to Strength"],
+          fractured: false,
+          fracturedMods: [],
+          id: 3006,
+          implicits: [],
+          influences: [],
+          mirrored: false,
+          name: "Doom Knot",
+          quality: undefined,
+          rarity: "Rare",
+          raw: "Rarity: RARE\nDoom Knot\nIron Ring\nImplicits: 0\n+17 to Strength\nSplit Item\nMirrored Item",
+          scourgedMods: [],
+          crucibleMods: [],
+          split: false,
+          synthesizedMods: [],
+          synthesised: false,
+          ward: undefined,
+        },
+      ],
+    };
+
+    const { container } = render(<ItemsPanel payload={payload} />);
+
+    expect(container.querySelector(".poe-tooltip")?.textContent).toContain("Split");
+    expect(container.querySelector(".poe-tooltip")?.textContent).toContain("Mirrored");
+    expect(container.querySelector(".gear-slot img")?.classList.contains("gear-item-icon--mirrored")).toBe(true);
+  });
+
   it("does not repeat the base line for magic items whose name already includes the base type", () => {
     const payload: BuildPayload = {
       ...buildViewerPayloadFixture,

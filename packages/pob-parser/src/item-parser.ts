@@ -24,7 +24,9 @@ const NON_MOD_LINES = new Set([
   "Corrupted",
   "Fractured Item",
   "Mirrored",
+  "Mirrored Item",
   "Split",
+  "Split Item",
   "Synthesised Item",
   "Unidentified",
 ]);
@@ -205,6 +207,8 @@ export function parseRawItem(raw: string, id: number): ItemPayload {
 
   const requirements = finalizeRequirements(requirementState);
   const sortedOrderedExplicitMods = sortOrderedExplicitMods(orderedExplicitMods);
+  const split = hasStandaloneItemFlagLine(lines, "Split");
+  const mirrored = hasStandaloneItemFlagLine(lines, "Mirrored") || isInherentlyMirroredItem(nameAndBase);
 
   return {
     id,
@@ -234,10 +238,10 @@ export function parseRawItem(raw: string, id: number): ItemPayload {
     orderedExplicitMods: sortedOrderedExplicitMods,
     influences,
     fractured,
-    split: lines.includes("Split"),
+    split,
     synthesised: lines.includes("Synthesised Item"),
     corrupted: lines.includes("Corrupted"),
-    mirrored: lines.includes("Mirrored"),
+    mirrored,
   };
 }
 
@@ -580,10 +584,22 @@ function isSkippableLine(line: string, nameAndBase: { name?: string; base?: stri
     line.startsWith("Rarity:") ||
     line === nameAndBase.name ||
     line === nameAndBase.base ||
-    NON_MOD_LINES.has(line) ||
+    NON_MOD_LINES.has(stripLineTags(line)) ||
     INFLUENCE_LINES.has(line) ||
     isPropertyLine(line)
   );
+}
+
+function hasStandaloneItemFlagLine(lines: string[], flag: "Mirrored" | "Split"): boolean {
+  return lines.some((line) => matchesStandaloneItemFlag(stripLineTags(line), flag));
+}
+
+function matchesStandaloneItemFlag(line: string, flag: "Mirrored" | "Split"): boolean {
+  return line === flag || line === `${flag} Item`;
+}
+
+function isInherentlyMirroredItem(nameAndBase: { name?: string; base?: string }): boolean {
+  return nameAndBase.name === "Kalandra's Touch" && nameAndBase.base === "Ring";
 }
 
 function isPropertyLine(line: string): boolean {

@@ -32,9 +32,11 @@ import {
   getPassiveTreeViewBounds,
   PASSIVE_TREE_MAX_ZOOM,
   pickPassiveTreeVariant,
+  type PassiveTreeLink,
   type PassiveTreeLayout,
   type PassiveTreeLayoutNode,
   type PassiveTreeManifest,
+  type PassiveTreeNodeKind,
   type PassiveTreeNodeDescription,
   type PassiveTreeResolvedSprite,
   type PassiveTreeSpriteManifest,
@@ -71,6 +73,26 @@ interface PassiveTreeHeaderSummaryEntry {
   label: string;
   value: number;
 }
+
+interface PassiveTreeNodeBatchPaths {
+  corePath: string;
+  kind: PassiveTreeNodeKind;
+  ringPath: string;
+}
+
+interface BatchedPassiveTreeNodes {
+  batches: PassiveTreeNodeBatchPaths[];
+  shadowPath: string;
+}
+
+const PASSIVE_TREE_NODE_BATCH_KINDS: PassiveTreeNodeKind[] = [
+  "passive",
+  "notable",
+  "keystone",
+  "mastery",
+  "jewel-socket",
+  "class-start",
+];
 
 function countTreeOverrides(overrides: BuildPayload["treeSpecs"][number]["overrides"], pattern: RegExp): number {
   return overrides.reduce((count, override) => (pattern.test(override.name) ? count + 1 : count), 0);
@@ -413,6 +435,9 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
     () => (displayLayout ? buildPassiveTreeLinks(displayLayout.nodes, visibleNodeIds) : []),
     [displayLayout, visibleNodeIds],
   );
+  const allLinkPath = useMemo(() => buildPassiveTreeLinkBatchPath(allLinks, nodeIndex), [allLinks, nodeIndex]);
+  const activeLinkPath = useMemo(() => buildPassiveTreeLinkBatchPath(activeLinks, nodeIndex), [activeLinks, nodeIndex]);
+  const inactiveNodeBatch = useMemo(() => buildPassiveTreeNodeBatch(inactiveNodes), [inactiveNodes]);
   const jewelRadiusOverlays = useMemo(
     () =>
       displayLayout && activeTree
@@ -811,48 +836,20 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
                     </g>
 
                     <g className="tree-layer tree-layer-links tree-layer-links-all">
-                      {allLinks.map((link) => {
-                        const source = nodeIndex.get(link.sourceId);
-                        const target = nodeIndex.get(link.targetId);
-                        if (!source || !target) {
-                          return null;
-                        }
-
-                        return (
-                          <path
-                            key={`tree-link:all:${link.sourceId}:${link.targetId}`}
-                            className="tree-link tree-link-all"
-                            d={getPassiveTreeLinkPath(source, target)}
-                          />
-                        );
-                      })}
+                      {allLinkPath && <path className="tree-link tree-link-all" d={allLinkPath} />}
                     </g>
 
                     <g className="tree-layer tree-layer-links">
-                      {activeLinks.map((link) => {
-                        const source = nodeIndex.get(link.sourceId);
-                        const target = nodeIndex.get(link.targetId);
-                        if (!source || !target) {
-                          return null;
-                        }
-
-                        return (
-                          <path
-                            key={`tree-link:active:${link.sourceId}:${link.targetId}`}
-                            className="tree-link tree-link-active"
-                            d={getPassiveTreeLinkPath(source, target)}
-                          />
-                        );
-                      })}
+                      {activeLinkPath && <path className="tree-link tree-link-active" d={activeLinkPath} />}
                     </g>
 
                     <g className="tree-layer tree-layer-nodes">
-                      {inactiveNodes.map((node) => (
-                        <TreeNode
-                          key={`tree-node:inactive:${node.id}`}
-                          node={node}
-                          allocated={false}
-                        />
+                      {inactiveNodeBatch.shadowPath && <path className="tree-node-shadow" d={inactiveNodeBatch.shadowPath} />}
+                      {inactiveNodeBatch.batches.map((batch) => (
+                        <g className={`tree-node tree-node-${batch.kind}`} key={`tree-node-batch:${batch.kind}`}>
+                          {batch.ringPath && <path className="tree-node-ring" d={batch.ringPath} />}
+                          {batch.corePath && <path className="tree-node-core" d={batch.corePath} />}
+                        </g>
                       ))}
                     </g>
 
@@ -1144,6 +1141,60 @@ const TreeNode = memo(function TreeNode({
   );
 });
 
+function buildPassiveTreeLinkBatchPath(
+  links: PassiveTreeLink[],
+  nodeIndex: ReadonlyMap<number, PassiveTreeLayoutNode>,
+): string {
+  return links
+    .map((link) => {
+      const source = nodeIndex.get(link.sourceId);
+      const target = nodeIndex.get(link.targetId);
+      return source && target ? getPassiveTreeLinkPath(source, target) : "";
+    })
+    .filter((path) => path.length > 0)
+    .join(" ");
+}
+
+function buildPassiveTreeNodeBatch(nodes: PassiveTreeLayoutNode[]): BatchedPassiveTreeNodes {
+  const shadowSegments: string[] = [];
+  const ringSegmentsByKind = new Map<PassiveTreeNodeKind, string[]>();
+  const coreSegmentsByKind = new Map<PassiveTreeNodeKind, string[]>();
+
+  for (const kind of PASSIVE_TREE_NODE_BATCH_KINDS) {
+    ringSegmentsByKind.set(kind, []);
+    coreSegmentsByKind.set(kind, []);
+  }
+
+  for (const node of nodes) {
+    const kind = getPassiveTreeNodeKind(node);
+    const radius = getPassiveTreeNodeRadius(node) * 1.4;
+    shadowSegments.push(buildPassiveTreeCirclePath(node.x, node.y, radius + 6));
+    ringSegmentsByKind.get(kind)?.push(buildPassiveTreeCirclePath(node.x, node.y, radius));
+    coreSegmentsByKind.get(kind)?.push(buildPassiveTreeCirclePath(node.x, node.y, Math.max(radius - 12, 12)));
+  }
+
+  return {
+    batches: PASSIVE_TREE_NODE_BATCH_KINDS.map((kind) => ({
+      corePath: coreSegmentsByKind.get(kind)?.join(" ") ?? "",
+      kind,
+      ringPath: ringSegmentsByKind.get(kind)?.join(" ") ?? "",
+    })).filter((batch) => batch.ringPath.length > 0 || batch.corePath.length > 0),
+    shadowPath: shadowSegments.join(" "),
+  };
+}
+
+function buildPassiveTreeCirclePath(cx: number, cy: number, radius: number): string {
+  const leftX = roundSvgPathCoordinate(cx - radius);
+  const diameter = roundSvgPathCoordinate(radius * 2);
+  const centerY = roundSvgPathCoordinate(cy);
+  const arcRadius = roundSvgPathCoordinate(radius);
+  return `M ${leftX} ${centerY} a ${arcRadius} ${arcRadius} 0 1 0 ${diameter} 0 a ${arcRadius} ${arcRadius} 0 1 0 -${diameter} 0`;
+}
+
+function roundSvgPathCoordinate(value: number): string {
+  return Number(value.toFixed(2)).toString();
+}
+
 function PassiveTreeSpriteTile({ label, sprite }: { label: string; sprite?: PassiveTreeResolvedSprite }) {
   if (sprite) {
     return (
@@ -1163,7 +1214,7 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function getPassiveTreeSpriteTileStyle(sprite: PassiveTreeResolvedSprite): CSSProperties {
-  const targetWidth = 76;
+  const targetWidth = 72;
   const scale = targetWidth / sprite.entry.w;
   return {
     backgroundImage: `url(${sprite.atlas.imagePath ?? ""})`,

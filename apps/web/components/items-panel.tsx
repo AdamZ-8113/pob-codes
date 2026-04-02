@@ -46,7 +46,9 @@ const itemNonModLines = new Set([
   "Corrupted",
   "Fractured Item",
   "Mirrored",
+  "Mirrored Item",
   "Split",
+  "Split Item",
   "Synthesised Item",
   "Unidentified",
 ]);
@@ -193,9 +195,10 @@ interface TooltipSection {
 interface ResolvedItemIconProps {
   alt: string;
   candidates: string[];
+  mirrored?: boolean;
 }
 
-function ResolvedItemIcon({ alt, candidates }: ResolvedItemIconProps) {
+function ResolvedItemIcon({ alt, candidates, mirrored = false }: ResolvedItemIconProps) {
   const candidatesKey = candidates.join("\n");
   const [failedCount, setFailedCount] = useState(0);
   const resolvedSrc = candidates[failedCount];
@@ -210,7 +213,7 @@ function ResolvedItemIcon({ alt, candidates }: ResolvedItemIconProps) {
 
   return (
     <img
-      className="gear-item-icon"
+      className={`gear-item-icon${mirrored ? " gear-item-icon--mirrored" : ""}`}
       src={resolvedSrc}
       alt={alt}
       loading="lazy"
@@ -551,7 +554,7 @@ function buildModifierSections(item: ItemPayload): TooltipSection[] {
 function buildFooterFlagLines(item: ItemPayload): TooltipLine[] {
   const footerLines: TooltipLine[] = [];
 
-  if (item.split) {
+  if (isDisplaySplitItem(item)) {
     footerLines.push({
       key: "footer:split",
       className: "poe-mod poe-mod-split",
@@ -559,7 +562,7 @@ function buildFooterFlagLines(item: ItemPayload): TooltipLine[] {
     });
   }
 
-  if (item.mirrored) {
+  if (isDisplayMirroredItem(item)) {
     footerLines.push({
       key: "footer:mirrored",
       className: "poe-mod poe-mod-mirrored",
@@ -576,6 +579,33 @@ function buildFooterFlagLines(item: ItemPayload): TooltipLine[] {
   }
 
   return footerLines;
+}
+
+function isDisplaySplitItem(item: ItemPayload): boolean {
+  return item.split || hasRawItemFlag(item.raw, "Split");
+}
+
+function isDisplayMirroredItem(item: ItemPayload): boolean {
+  return item.mirrored || hasRawItemFlag(item.raw, "Mirrored") || isInherentlyMirroredItem(item);
+}
+
+function hasRawItemFlag(raw: string | undefined, flag: "Mirrored" | "Split"): boolean {
+  if (!raw) {
+    return false;
+  }
+
+  return raw
+    .split(/\r?\n/)
+    .map((line) => stripRawLineTags(line))
+    .some((line) => matchesStandaloneItemFlag(line, flag));
+}
+
+function matchesStandaloneItemFlag(line: string, flag: "Mirrored" | "Split"): boolean {
+  return line === flag || line === `${flag} Item`;
+}
+
+function isInherentlyMirroredItem(item: ItemPayload): boolean {
+  return item.name === "Kalandra's Touch" && item.base === "Ring";
 }
 
 function buildPropertyLine(label: string, value: string): TooltipLine {
@@ -725,7 +755,7 @@ function isSkippableRawLine(line: string, name?: string, base?: string): boolean
     line.startsWith("Rarity:") ||
     line === name ||
     line === base ||
-    itemNonModLines.has(line) ||
+    itemNonModLines.has(stripRawLineTags(line)) ||
     itemInfluenceLines.has(line) ||
     itemPropertyPrefixes.some((prefix) => line.startsWith(prefix)) ||
     /^Quality(?:\s*\([^)]*\))?:\s/.test(line) ||
@@ -1051,7 +1081,12 @@ export function ItemsPanel({
         }
       >
         {item && showIcon ? (
-          <ResolvedItemIcon key={iconKey} alt={item.name || item.base || slotName} candidates={iconCandidates} />
+          <ResolvedItemIcon
+            key={iconKey}
+            alt={item.name || item.base || slotName}
+            candidates={iconCandidates}
+            mirrored={isDisplayMirroredItem(item)}
+          />
         ) : (
           <div className="gear-slot-placeholder" />
         )}

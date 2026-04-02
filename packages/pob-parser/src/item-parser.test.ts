@@ -398,4 +398,42 @@ describe("item-parser", () => {
       "Historic",
     ]);
   });
+
+  it("marks Kalandra's Touch as mirrored even when PoB omits the mirrored line", () => {
+    const item = parseRawItem(
+      `
+        Rarity: UNIQUE
+        Kalandra's Touch
+        Ring
+        Unique ID: 233dc9fcf25e2bb23602c055fc4517fb3abb4e082733b9ee762d15cba051e6de
+        Item Level: 83
+        Implicits: 0
+        Reflects opposite Ring
+      `,
+      13,
+    );
+
+    expect(item.mirrored).toBe(true);
+    expect(item.split).toBe(false);
+    expect(item.explicits).toEqual(["Reflects opposite Ring"]);
+  });
+
+  it("parses standalone split and mirrored flags without treating them as explicit mods", () => {
+    const item = parseRawItem(
+      `
+        Rarity: RARE
+        Doom Knot
+        Iron Ring
+        Implicits: 0
+        +17 to Strength
+        {variant:1}Split Item
+        Mirrored
+      `,
+      14,
+    );
+
+    expect(item.split).toBe(true);
+    expect(item.mirrored).toBe(true);
+    expect(item.explicits).toEqual(["+17 to Strength"]);
+  });
 });
