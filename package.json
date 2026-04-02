@@ -14,6 +14,7 @@
     "test": "npm run --workspaces test",
     "typecheck": "npm run --workspaces typecheck",
     "verify": "npm run build && npm run typecheck && npm run test",
+    "generate:patch-version-names": "node scripts/generate-patch-version-names.mjs",
     "sync:data": "node scripts/sync-data.mjs",
     "update:local-pob-mirror": "node scripts/update-local-pob-mirror.mjs",
     "update:pob-upstream": "node scripts/update-local-pob-mirror.mjs",

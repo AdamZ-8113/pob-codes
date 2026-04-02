@@ -1733,4 +1733,53 @@ describe("passive-tree helpers", () => {
     expect(transformedSprite?.atlas.imagePath).toBe("/assets/passive-tree/default/skills-4.jpg");
     expect(transformedSprite?.entry.w).toBe(48);
   });
+
+  it("falls back to legacy timeless keystone atlases with dds sprite keys", () => {
+    const timelessSpriteManifest: PassiveTreeSpriteManifest = {
+      atlases: {
+        legacyKeystoneActive: {
+          coords: {
+            "Art/2DArt/SkillIcons/passives/DivineFlesh.dds": {
+              h: 64,
+              w: 64,
+              x: 128,
+              y: 64,
+            },
+          },
+          imagePath: "/assets/passive-tree/default/keystone-additional-3.png",
+          size: {
+            height: 512,
+            width: 512,
+          },
+        },
+      },
+    };
+
+    const timelessKeystoneNode: PassiveTreeLayoutNode = {
+      flavourText: [],
+      groupId: 1,
+      groupCenterX: 0,
+      groupCenterY: 0,
+      id: 1001,
+      icon: "Art/2DArt/SkillIcons/passives/DivineFlesh.png",
+      isJewelSocket: false,
+      isKeystone: true,
+      isMastery: false,
+      isNotable: false,
+      masteryEffects: [],
+      name: "Divine Flesh",
+      orbit: 1,
+      orbitIndex: 0,
+      orbitRadius: 500,
+      out: [],
+      reminderText: [],
+      stats: [],
+      x: 500,
+      y: 0,
+    };
+
+    const timelessSprite = resolvePassiveTreeSprite(timelessKeystoneNode, true, false, timelessSpriteManifest);
+    expect(timelessSprite?.atlas.imagePath).toBe("/assets/passive-tree/default/keystone-additional-3.png");
+    expect(timelessSprite?.entry.w).toBe(64);
+  });
 });

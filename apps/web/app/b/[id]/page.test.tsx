@@ -67,6 +67,7 @@ describe("/b/[id] page", () => {
     expect(mockedFetchBuildPayload).toHaveBeenCalledWith("demo-build");
     expect(container.querySelector(".build-loadout-title")?.textContent).toContain("Arc / Hierophant (Templar)");
     expect(screen.getByText(/Level 95/)).toBeTruthy();
+    expect(container.querySelector(".build-loadout-version")?.textContent).toBe("3.28 Mirage");
     expect(screen.getByText("Stats")).toBeTruthy();
     expect(screen.getByText("Gear")).toBeTruthy();
     expect(screen.getByText("Gems")).toBeTruthy();

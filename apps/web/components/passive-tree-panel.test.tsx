@@ -696,6 +696,190 @@ describe("PassiveTreePanel", () => {
     expect(screen.getByText("Gain no inherent bonuses from Attributes")).toBeTruthy();
   });
 
+  it("shows Divine Flesh when Glorious Vanity transforms Elemental Equilibrium", async () => {
+    const layoutResponse = {
+      bounds: {
+        maxX: 600,
+        maxY: 300,
+        minX: -600,
+        minY: -300,
+      },
+      groups: [
+        {
+          id: 1,
+          x: 0,
+          y: 0,
+        },
+      ],
+      nodes: [
+        {
+          classStartIndex: 5,
+          flavourText: [],
+          groupCenterX: 0,
+          groupCenterY: 0,
+          groupId: 1,
+          id: 6,
+          isJewelSocket: false,
+          isKeystone: false,
+          isMastery: false,
+          isNotable: false,
+          masteryEffects: [],
+          name: "Templar Start",
+          orbit: 0,
+          orbitIndex: 0,
+          orbitRadius: 0,
+          out: [99],
+          reminderText: [],
+          startArt: "centertemplar",
+          stats: ["+10 to Strength"],
+          x: 0,
+          y: 0,
+        },
+        {
+          flavourText: [],
+          groupCenterX: 0,
+          groupCenterY: 0,
+          groupId: 1,
+          id: 99,
+          isJewelSocket: true,
+          isKeystone: false,
+          isMastery: false,
+          isNotable: false,
+          masteryEffects: [],
+          name: "Basic Jewel Socket",
+          orbit: 1,
+          orbitIndex: 0,
+          orbitRadius: 82,
+          out: [6, 200],
+          reminderText: [],
+          stats: [],
+          x: 0,
+          y: -120,
+        },
+        {
+          flavourText: [],
+          groupCenterX: 0,
+          groupCenterY: 0,
+          groupId: 1,
+          icon: "Art/2DArt/SkillIcons/passives/ElementalEquilibriumNode.png",
+          id: 200,
+          isJewelSocket: false,
+          isKeystone: true,
+          isMastery: false,
+          isNotable: false,
+          masteryEffects: [],
+          name: "Elemental Equilibrium",
+          orbit: 2,
+          orbitIndex: 0,
+          orbitRadius: 220,
+          out: [99],
+          reminderText: [],
+          stats: ["Enemies you Hit with Elemental Damage temporarily get +25% Resistance to those Elements and -50% Resistance to other Elements"],
+          x: 0,
+          y: -420,
+        },
+      ],
+      unpositionedNodeIds: [],
+    };
+
+    vi.mocked(fetch).mockImplementation(async (input) => {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : String(input);
+      const body = url.includes("sprite-manifest.json")
+        ? {
+            atlases: {
+              legacyKeystoneActive: {
+                coords: {
+                  "Art/2DArt/SkillIcons/passives/DivineFlesh.dds": {
+                    h: 64,
+                    w: 64,
+                    x: 128,
+                    y: 64,
+                  },
+                },
+                imagePath: "/assets/passive-tree/default/keystone-additional-3.png",
+                size: {
+                  height: 384,
+                  width: 384,
+                },
+              },
+            },
+          }
+        : layoutResponse;
+
+      return new Response(JSON.stringify(body), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        status: 200,
+      });
+    });
+
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      items: [
+        {
+          anointments: [],
+          base: "Timeless Jewel",
+          corrupted: false,
+          crafted: [],
+          enchantments: [],
+          explicits: ["Historic"],
+          fractured: false,
+          fracturedMods: [],
+          iconKey: "Glorious Vanity",
+          id: 9002,
+          implicits: [],
+          influences: [],
+          mirrored: false,
+          name: "Glorious Vanity",
+          rarity: "Unique",
+          raw: [
+            "Rarity: Unique",
+            "Glorious Vanity",
+            "Timeless Jewel",
+            "Radius: Large",
+            "Bathed in the blood of 8963 sacrificed in the name of Xibaqua",
+            "Passives in radius are Conquered by the Vaal",
+            "Historic",
+          ].join("\n"),
+          scourgedMods: [],
+          crucibleMods: [],
+          synthesizedMods: [],
+        },
+      ],
+      treeSpecs: [
+        {
+          active: true,
+          ascendancyId: 2,
+          classId: 5,
+          masteryEffects: [],
+          nodes: [6, 99, 200],
+          overrides: [],
+          sockets: [
+            {
+              itemId: 9002,
+              nodeId: 99,
+            },
+          ],
+          title: "Main Tree",
+          url: "https://example.com/trees/main",
+          version: "3.28",
+        },
+      ],
+    };
+
+    const { container } = render(<PassiveTreePanel payload={payload} treeIndex={0} />);
+
+    expect(await screen.findByText("Divine Flesh (Elemental Equilibrium)")).toBeTruthy();
+    expect(screen.getByText("50% of Elemental Damage taken as Chaos Damage")).toBeTruthy();
+    await waitFor(() => {
+      const icon = container.querySelector(".tree-summary-card-keystone .tree-summary-icon");
+      expect(icon).toBeTruthy();
+      expect(icon?.classList.contains("tree-summary-icon-placeholder")).toBe(false);
+      expect(icon?.getAttribute("style")).toContain("keystone-additional-3.png");
+    });
+  });
+
   it("lets page scrolling continue when the tree is already at its minimum zoom", async () => {
     const { container } = render(<PassiveTreePanel payload={buildViewerPayloadFixture} treeIndex={0} />);
 

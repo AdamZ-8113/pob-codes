@@ -1125,24 +1125,33 @@ export function resolvePassiveTreeSprite(
   if (node.isKeystone && node.icon) {
     return resolveAtlasEntries(manifest, [
       allocated ? "keystoneActive" : "keystoneInactive",
+      allocated ? "legacyKeystoneActive" : "legacyKeystoneInactive",
       allocated ? "notableActive" : "notableInactive",
+      allocated ? "legacyNotableActive" : "legacyNotableInactive",
       allocated ? "normalActive" : "normalInactive",
+      allocated ? "legacyNormalActive" : "legacyNormalInactive",
     ], node.icon);
   }
 
   if (node.isNotable && node.icon) {
     return resolveAtlasEntries(manifest, [
       allocated ? "notableActive" : "notableInactive",
+      allocated ? "legacyNotableActive" : "legacyNotableInactive",
       allocated ? "normalActive" : "normalInactive",
+      allocated ? "legacyNormalActive" : "legacyNormalInactive",
       allocated ? "keystoneActive" : "keystoneInactive",
+      allocated ? "legacyKeystoneActive" : "legacyKeystoneInactive",
     ], node.icon);
   }
 
   if (node.icon) {
     return resolveAtlasEntries(manifest, [
       allocated ? "normalActive" : "normalInactive",
+      allocated ? "legacyNormalActive" : "legacyNormalInactive",
       allocated ? "notableActive" : "notableInactive",
+      allocated ? "legacyNotableActive" : "legacyNotableInactive",
       allocated ? "keystoneActive" : "keystoneInactive",
+      allocated ? "legacyKeystoneActive" : "legacyKeystoneInactive",
     ], node.icon);
   }
 
@@ -1806,15 +1815,17 @@ function resolveAtlasEntry(
     return undefined;
   }
 
-  const entry = atlas.coords[iconKey];
-  if (!entry) {
-    return undefined;
+  for (const candidate of getPassiveTreeSpriteIconKeyCandidates(iconKey)) {
+    const entry = atlas.coords[candidate];
+    if (entry) {
+      return {
+        atlas,
+        entry,
+      };
+    }
   }
 
-  return {
-    atlas,
-    entry,
-  };
+  return undefined;
 }
 
 function resolveAtlasEntries(
@@ -1830,6 +1841,18 @@ function resolveAtlasEntries(
   }
 
   return undefined;
+}
+
+function getPassiveTreeSpriteIconKeyCandidates(iconKey: string) {
+  const candidates = [iconKey];
+
+  if (iconKey.endsWith(".png")) {
+    candidates.push(iconKey.slice(0, -4) + ".dds");
+  } else if (iconKey.endsWith(".dds")) {
+    candidates.push(iconKey.slice(0, -4) + ".png");
+  }
+
+  return candidates;
 }
 
 function getAscendancyRegionNodeIds(

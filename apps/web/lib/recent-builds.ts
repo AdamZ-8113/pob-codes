@@ -1,5 +1,11 @@
+import { formatPatchVersionLabel } from "./build-overview";
+
 export interface RecentBuildEntry {
+  dps?: string;
+  ehp?: string;
   id: string;
+  level?: number;
+  patchVersion?: string;
   title: string;
   viewedAt: string;
 }
@@ -49,7 +55,10 @@ export function readRecentBuilds() {
   return parseRecentBuilds(window.localStorage.getItem(RECENT_BUILDS_STORAGE_KEY));
 }
 
-export function recordRecentBuild(entry: Pick<RecentBuildEntry, "id" | "title">) {
+export function recordRecentBuild(
+  entry: Pick<RecentBuildEntry, "id" | "title"> &
+    Partial<Pick<RecentBuildEntry, "dps" | "ehp" | "level" | "patchVersion">>,
+) {
   if (typeof window === "undefined") {
     return [] as RecentBuildEntry[];
   }
@@ -78,7 +87,7 @@ function normalizeRecentBuildEntry(entry: unknown): RecentBuildEntry | undefined
     return undefined;
   }
 
-  const candidate = entry as Partial<Record<"id" | "title" | "viewedAt", unknown>>;
+  const candidate = entry as Partial<Record<"dps" | "ehp" | "id" | "level" | "patchVersion" | "title" | "viewedAt", unknown>>;
   const id = typeof candidate.id === "string" ? candidate.id.trim() : "";
   const title = typeof candidate.title === "string" ? candidate.title.trim() : "";
   const viewedAt = typeof candidate.viewedAt === "string" ? candidate.viewedAt.trim() : "";
@@ -86,8 +95,23 @@ function normalizeRecentBuildEntry(entry: unknown): RecentBuildEntry | undefined
     return undefined;
   }
 
+  const level =
+    typeof candidate.level === "number" && Number.isFinite(candidate.level) && candidate.level > 0
+      ? Math.trunc(candidate.level)
+      : typeof candidate.level === "string" && Number.isFinite(Number(candidate.level)) && Number(candidate.level) > 0
+        ? Math.trunc(Number(candidate.level))
+        : undefined;
+  const ehp = typeof candidate.ehp === "string" ? candidate.ehp.trim() : "";
+  const dps = typeof candidate.dps === "string" ? candidate.dps.trim() : "";
+  const patchVersion =
+    typeof candidate.patchVersion === "string" ? formatPatchVersionLabel(candidate.patchVersion.trim()) : undefined;
+
   return {
+    dps: dps || undefined,
+    ehp: ehp || undefined,
     id,
+    level,
+    patchVersion,
     title,
     viewedAt,
   };

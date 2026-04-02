@@ -135,7 +135,7 @@ export function BuildCodeForm() {
         <button className="btn" type="submit" disabled={loading || loadingFixture}>
           {loading ? "Uploading..." : "Open Build"}
         </button>
-        <span className="meta">PoE1 only, read-only rendering, supports common PoB import URLs</span>
+        <span className="meta">PoE1 only. Read-only. Supports common PoB import URLs</span>
       </div>
       {error && (
         <div className="error-box" style={{ marginTop: 12 }}>

@@ -160,7 +160,7 @@ async function main() {
 
     copyTreeData(clones.skilltreeExport.dir);
     copyTreeAssets(clones.skilltreeExport.dir);
-    writePassiveTreeSpriteManifest();
+    writePassiveTreeSpriteManifest(clones.pathOfBuilding.dir);
     copyPobUiAssets(clones.pathOfBuilding.dir);
     writePlaceholderAssets();
 
@@ -362,9 +362,9 @@ function buildTreeManifest() {
   };
 }
 
-function writePassiveTreeSpriteManifest() {
+function writePassiveTreeSpriteManifest(pathOfBuildingDir) {
   const defaultTree = JSON.parse(readFileSync(join(generatedSkilltreeDir, "default.json"), "utf8"));
-  const spriteManifest = buildPassiveTreeSpriteManifest(defaultTree);
+  const spriteManifest = buildPassiveTreeSpriteManifest(defaultTree, pathOfBuildingDir);
   writeCompactJson(join(passiveTreeAssetsDir, "sprite-manifest.json"), spriteManifest);
 }
 
@@ -476,7 +476,7 @@ function buildPassiveTreeLayout(data) {
   };
 }
 
-function buildPassiveTreeSpriteManifest(data) {
+function buildPassiveTreeSpriteManifest(data, pathOfBuildingDir) {
   const atlases = {};
 
   for (const spriteName of [
@@ -508,9 +508,175 @@ function buildPassiveTreeSpriteManifest(data) {
     };
   }
 
+  if (pathOfBuildingDir) {
+    Object.assign(atlases, buildLegacyTimelessSpriteAtlases(pathOfBuildingDir));
+  }
+
   return {
     atlases,
   };
+}
+
+function buildLegacyTimelessSpriteAtlases(pathOfBuildingDir) {
+  const legacyTreeDir = join(pathOfBuildingDir, "src", "TreeData", "legion");
+  const legacyTreePath = join(legacyTreeDir, "tree-legion.lua");
+  if (!existsSync(legacyTreePath)) {
+    return {};
+  }
+
+  const legacyTree = readFileSync(legacyTreePath, "utf8");
+  const atlasNames = [
+    "keystoneActive",
+    "keystoneInactive",
+    "notableActive",
+    "notableInactive",
+    "normalActive",
+    "normalInactive",
+  ];
+  const atlases = {};
+
+  for (const atlasName of atlasNames) {
+    const legacyAtlas = extractLegacyTimelessSpriteAtlas(legacyTree, atlasName, legacyTreeDir);
+    if (!legacyAtlas) {
+      continue;
+    }
+
+    const aliasName = `legacy${atlasName.charAt(0).toUpperCase()}${atlasName.slice(1)}`;
+    atlases[aliasName] = legacyAtlas;
+  }
+
+  return atlases;
+}
+
+function extractLegacyTimelessSpriteAtlas(luaSource, atlasName, assetDir) {
+  const atlasTable = extractNamedLuaTable(luaSource, atlasName);
+  if (!atlasTable) {
+    return undefined;
+  }
+
+  const filenameMatch = atlasTable.match(/\["filename"\]\s*=\s*"([^"]+)"/);
+  const coordsTable = extractNamedLuaTable(atlasTable, "coords");
+  if (!filenameMatch || !coordsTable) {
+    return undefined;
+  }
+
+  const sourceFileName = filenameMatch[1];
+  const sourceFilePath = join(assetDir, sourceFileName);
+  if (!existsSync(sourceFilePath)) {
+    return undefined;
+  }
+
+  const publicFilePath = join(passiveTreeAssetsDir, sourceFileName);
+  cpSync(sourceFilePath, publicFilePath);
+
+  return {
+    coords: parseLegacyTimelessSpriteCoords(coordsTable.slice(1, -1)),
+    imagePath: `/assets/passive-tree/default/${sourceFileName}`,
+    size: readImageDimensions(publicFilePath),
+  };
+}
+
+function parseLegacyTimelessSpriteCoords(coordsBlock) {
+  const coords = {};
+  const coordPattern =
+    /\["([^"]+)"\]\s*=\s*\{\s*\["x"\]\s*=\s*(\d+),\s*\["y"\]\s*=\s*(\d+),\s*\["w"\]\s*=\s*(\d+),\s*\["h"\]\s*=\s*(\d+)\s*\}/gm;
+
+  for (const match of coordsBlock.matchAll(coordPattern)) {
+    const [, iconKey, x, y, w, h] = match;
+    coords[iconKey] = {
+      h: Number(h),
+      w: Number(w),
+      x: Number(x),
+      y: Number(y),
+    };
+  }
+
+  return coords;
+}
+
+function readImageDimensions(filePath) {
+  const buffer = readFileSync(filePath);
+  const extension = extname(filePath).toLowerCase();
+
+  if (extension === ".png") {
+    return {
+      height: buffer.readUInt32BE(20),
+      width: buffer.readUInt32BE(16),
+    };
+  }
+
+  if (extension === ".jpg" || extension === ".jpeg") {
+    let offset = 2;
+    while (offset < buffer.length) {
+      if (buffer[offset] !== 0xff) {
+        offset += 1;
+        continue;
+      }
+
+      const marker = buffer[offset + 1];
+      if (marker === 0xd8 || marker === 0x01) {
+        offset += 2;
+        continue;
+      }
+      if (marker === 0xd9 || marker === 0xda) {
+        break;
+      }
+
+      const segmentLength = buffer.readUInt16BE(offset + 2);
+      if (
+        (marker >= 0xc0 && marker <= 0xc3) ||
+        (marker >= 0xc5 && marker <= 0xc7) ||
+        (marker >= 0xc9 && marker <= 0xcb) ||
+        (marker >= 0xcd && marker <= 0xcf)
+      ) {
+        return {
+          height: buffer.readUInt16BE(offset + 5),
+          width: buffer.readUInt16BE(offset + 7),
+        };
+      }
+
+      offset += 2 + segmentLength;
+    }
+  }
+
+  throw new Error(`Unsupported passive tree sprite asset format: ${filePath}`);
+}
+
+function extractNamedLuaTable(luaSource, keyName) {
+  const marker = `["${keyName}"]={`;
+  const markerIndex = luaSource.indexOf(marker);
+  if (markerIndex < 0) {
+    return undefined;
+  }
+
+  const tableStart = luaSource.indexOf("{", markerIndex + marker.length - 1);
+  if (tableStart < 0) {
+    return undefined;
+  }
+
+  return extractLuaBraceBlock(luaSource, tableStart);
+}
+
+function extractLuaBraceBlock(luaSource, startIndex) {
+  let depth = 0;
+  for (let index = startIndex; index < luaSource.length; index += 1) {
+    const character = luaSource[index];
+    if (character === "{") {
+      depth += 1;
+      continue;
+    }
+
+    if (character !== "}") {
+      continue;
+    }
+
+    depth -= 1;
+    if (depth === 0) {
+      return luaSource.slice(startIndex, index + 1);
+    }
+  }
+
+  return undefined;
 }
 
 async function buildItemManifest(pobDataDir) {

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import type { BuildPayload } from "@pobcodes/shared-types";
 
+import { buildLoadoutTitle } from "../lib/build-overview";
 import { buildViewerPayloadFixture } from "../test/fixtures/build-viewer-fixture";
-import { buildLoadoutTitle } from "./build-viewer";
 
 describe("buildLoadoutTitle", () => {
   it("formats the selected skill first followed by ascendancy and base class", () => {

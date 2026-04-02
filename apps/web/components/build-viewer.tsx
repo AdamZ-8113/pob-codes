@@ -4,18 +4,22 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import type { BuildPayload } from "@pobcodes/shared-types";
 
-import { formatDisplayValue } from "../lib/format-value";
-import { GEM_DETAILS } from "../lib/generated/gem-details";
 import {
   applyBuildLoadout,
   findMatchingBuildLoadout,
   getBuildLoadouts,
   getInitialBuildViewerSelection,
-  getSelectedSkillSet,
   type BuildViewerSelection,
 } from "../lib/build-viewer-selection";
 import { buildApiUrl } from "../lib/api-base";
 import { getSecondaryAscendancyName } from "../lib/ascendancy-names";
+import {
+  buildBuildSummaryEntries,
+  buildLoadoutTitle,
+  buildRecentBuildSnapshot,
+  resolveBuildPatchVersion,
+} from "../lib/build-overview";
+import { copyTextToClipboard } from "../lib/clipboard";
 import { recordRecentBuild } from "../lib/recent-builds";
 import { isWeaponSwapSlot } from "../lib/weapon-swap";
 import { CompareBuildModal } from "./compare-build-modal";
@@ -26,34 +30,6 @@ import { PassiveTreePanel } from "./passive-tree-panel";
 import { SkillsPanel } from "./skills-panel";
 import { StatsPanel } from "./stats-panel";
 
-const wholeNumberFormatter = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0,
-});
-
-type BuildSummaryTone =
-  | "life"
-  | "energy-shield"
-  | "mana"
-  | "ehp"
-  | "fire"
-  | "cold"
-  | "lightning"
-  | "chaos"
-  | "dps";
-
-interface BuildSummaryEntry {
-  annotation?: string;
-  key: string;
-  label: string;
-  tone: BuildSummaryTone;
-  value: string;
-}
-
-interface BuildSummaryModel {
-  metrics: BuildSummaryEntry[];
-  resistances: BuildSummaryEntry[];
-}
-
 export function BuildViewer({ payload }: { payload: BuildPayload }) {
   const [selection, setSelection] = useState<BuildViewerSelection>(() => getInitialBuildViewerSelection(payload));
   const [showWeaponSwap, setShowWeaponSwap] = useState(false);
@@ -63,18 +39,12 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
   const selectedLoadout = useMemo(() => findMatchingBuildLoadout(payload, selection), [payload, selection]);
   const activeTree = payload.treeSpecs[selection.treeIndex] ?? payload.treeSpecs[payload.activeTreeIndex];
   const bloodlineAscendancyName = getSecondaryAscendancyName(activeTree?.secondaryAscendancyId);
-  const recentBuildTitle = useMemo(() => {
-    const recentBuildTree = payload.treeSpecs[payload.activeTreeIndex];
-    return buildLoadoutTitle(
-      payload,
-      payload.activeSkillSetId,
-      getSecondaryAscendancyName(recentBuildTree?.secondaryAscendancyId),
-    );
-  }, [payload]);
+  const recentBuildSnapshot = useMemo(() => buildRecentBuildSnapshot(payload), [payload]);
   const loadoutTitle = useMemo(
     () => buildLoadoutTitle(payload, selection.skillSetId, bloodlineAscendancyName),
     [payload, selection.skillSetId, bloodlineAscendancyName],
   );
+  const loadoutPatchVersion = useMemo(() => resolveBuildPatchVersion(payload, selection.treeIndex), [payload, selection.treeIndex]);
   const summary = useMemo(() => buildBuildSummaryEntries(payload, selection.skillSetId), [payload, selection.skillSetId]);
   const summaryPrimaryMetrics = useMemo(
     () => summary.metrics.filter((entry) => entry.tone !== "dps"),
@@ -114,10 +84,14 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
     }
 
     recordRecentBuild({
+      dps: recentBuildSnapshot.dps,
+      ehp: recentBuildSnapshot.ehp,
       id: recentBuildId,
-      title: recentBuildTitle || recentBuildId,
+      level: recentBuildSnapshot.level,
+      patchVersion: recentBuildSnapshot.patchVersion,
+      title: recentBuildSnapshot.title || recentBuildId,
     });
-  }, [recentBuildId, recentBuildTitle]);
+  }, [recentBuildId, recentBuildSnapshot]);
 
   async function handleShareBuild() {
     const shareUrl = getBuildShareUrl(payload);
@@ -178,9 +152,12 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
       <div className="build-layout-main">
         <section className="panel build-loadout-panel">
           <div className="build-loadout-summary">
-            <div className="build-loadout-title">
-              {loadoutTitle}
-              {payload.build.level ? <span className="meta"> (Level {payload.build.level})</span> : null}
+            <div className="build-loadout-title-row">
+              <div className="build-loadout-title">
+                {loadoutTitle}
+                {payload.build.level ? <span className="meta"> (Level {payload.build.level})</span> : null}
+              </div>
+              {loadoutPatchVersion ? <div className="build-loadout-version">{loadoutPatchVersion}</div> : null}
             </div>
             {(summaryPrimaryMetrics.length > 0 || summaryDpsMetrics.length > 0) && (
               <div className="build-loadout-stats">
@@ -343,240 +320,6 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
   );
 }
 
-export function buildLoadoutTitle(
-  payload: BuildPayload,
-  skillSetId?: number,
-  secondaryAscendancyName?: string,
-): string {
-  const parts = [
-    getPrimarySkillTitle(payload, skillSetId),
-    formatClassTitle(payload.build.className, payload.build.ascendClassName),
-    secondaryAscendancyName?.trim(),
-  ].filter((value): value is string => Boolean(value));
-
-  return parts.join(" / ");
-}
-
-function buildBuildSummaryEntries(payload: BuildPayload, skillSetId?: number): BuildSummaryModel {
-  const stats = payload.stats.player;
-  const metrics: BuildSummaryEntry[] = [];
-  const resistances: BuildSummaryEntry[] = [];
-  const guardSkillAnnotation = getGuardSkillAnnotation(payload, skillSetId);
-
-  addBuildSummaryEntry(metrics, "Life", "Life", "life", stats.Life);
-  addBuildSummaryEntry(metrics, "EnergyShield", "ES", "energy-shield", stats.EnergyShield);
-  addBuildSummaryEntry(metrics, "Mana", "Mana", "mana", stats.Mana);
-  addBuildSummaryEntry(metrics, "TotalEHP", "eHP", "ehp", stats.TotalEHP, "", guardSkillAnnotation);
-  const dpsSummary = getBuildSummaryDps(stats);
-  if (dpsSummary) {
-    addBuildSummaryEntry(metrics, "summary-dps", dpsSummary.label, "dps", dpsSummary.value);
-  }
-
-  addBuildSummaryEntry(resistances, "FireResist", "Fire", "fire", stats.FireResist, "%");
-  addBuildSummaryEntry(resistances, "ColdResist", "Cold", "cold", stats.ColdResist, "%");
-  addBuildSummaryEntry(resistances, "LightningResist", "Light", "lightning", stats.LightningResist, "%");
-  addBuildSummaryEntry(resistances, "ChaosResist", "Chaos", "chaos", stats.ChaosResist, "%");
-
-  return {
-    metrics,
-    resistances,
-  };
-}
-
-function getPrimarySkillTitle(payload: BuildPayload, skillSetId?: number): string | undefined {
-  const skillSet = getSelectedSkillSet(payload, skillSetId);
-  if (!skillSet) {
-    return undefined;
-  }
-
-  const groupIndex = Math.max((payload.build?.mainSocketGroup ?? 1) - 1, 0);
-  const candidateGroups = dedupeGroups([
-    skillSet.groups[groupIndex],
-    ...skillSet.groups.filter((group) => group.enabled && group.gems.some((gem) => gem.enabled && gem.selected && !gem.support)),
-    ...skillSet.groups.filter((group) => group.enabled && group.gems.some((gem) => gem.enabled && !gem.support)),
-    ...skillSet.groups,
-  ]);
-
-  for (const group of candidateGroups) {
-    const indexedGem = group.gems[Math.max(group.mainActiveSkill - 1, 0)];
-    const selectedGem =
-      group.gems.find((gem) => gem.enabled && gem.selected && !gem.support) ??
-      (indexedGem?.enabled && !indexedGem.support ? indexedGem : undefined) ??
-      group.gems.find((gem) => gem.enabled && !gem.support);
-
-    const normalizedName = selectedGem?.nameSpec?.trim();
-    if (normalizedName) {
-      return normalizedName;
-    }
-  }
-
-  return undefined;
-}
-
-function dedupeGroups(groups: Array<BuildPayload["skillSets"][number]["groups"][number] | undefined>) {
-  const seen = new Set<string>();
-  const deduped: BuildPayload["skillSets"][number]["groups"][number][] = [];
-
-  for (const group of groups) {
-    if (!group || seen.has(group.id)) {
-      continue;
-    }
-
-    seen.add(group.id);
-    deduped.push(group);
-  }
-
-  return deduped;
-}
-
-function formatClassTitle(className?: string, ascendClassName?: string): string | undefined {
-  const normalizedClassName = className?.trim();
-  const normalizedAscendancyName = ascendClassName?.trim();
-
-  if (normalizedAscendancyName && normalizedClassName && normalizedAscendancyName !== normalizedClassName) {
-    return `${normalizedAscendancyName} (${normalizedClassName})`;
-  }
-
-  return normalizedAscendancyName || normalizedClassName;
-}
-
-function addBuildSummaryEntry(
-  entries: BuildSummaryEntry[],
-  key: string,
-  label: string,
-  tone: BuildSummaryTone,
-  rawValue: string | undefined,
-  suffix = "",
-  annotation?: string,
-) {
-  if (!rawValue) {
-    return;
-  }
-
-  entries.push({
-    key,
-    label,
-    tone,
-    annotation,
-    value: `${formatBuildSummaryValue(rawValue)}${suffix}`,
-  });
-}
-
-
-function getGuardSkillAnnotation(payload: BuildPayload, skillSetId?: number): string | undefined {
-  const skillSets = payload.skillSets ?? [];
-  const skillSet =
-    skillSets.find((set) => set.id === skillSetId) ??
-    skillSets.find((set) => set.active) ??
-    skillSets[0];
-  if (!skillSet) {
-    return undefined;
-  }
-
-  let hasGuardSkill = false;
-  let hasEnabledGuardSkill = false;
-
-  for (const group of skillSet.groups) {
-    for (const gem of group.gems) {
-      if (gem.support || !isGuardSkillGem(gem)) {
-        continue;
-      }
-
-      hasGuardSkill = true;
-      if (group.enabled && gem.enabled) {
-        hasEnabledGuardSkill = true;
-      }
-    }
-  }
-
-  if (!hasGuardSkill) {
-    return undefined;
-  }
-
-  return hasEnabledGuardSkill ? "Guard Skill ON" : "Guard Skill OFF";
-}
-
-function isGuardSkillGem(gem: BuildPayload["skillSets"][number]["groups"][number]["gems"][number]) {
-  if (gem.gemId) {
-    const details = GEM_DETAILS[gem.gemId];
-    if (details) {
-      return !details.support && details.skillTypes.includes("Guard");
-    }
-  }
-
-  return GUARD_SKILL_NAMES.has(normalizeGemName(gem.nameSpec));
-}
-
-function normalizeGemName(value: string) {
-  return value.trim().toLowerCase();
-}
-
-const GUARD_SKILL_NAMES = new Set(
-  Object.values(GEM_DETAILS)
-    .filter((details) => !details.support && details.skillTypes.includes("Guard"))
-    .map((details) => normalizeGemName(details.name)),
-);
-
-function getBuildSummaryDps(stats: Record<string, string>) {
-  const fullDps = getUsableSummaryStat(stats.FullDPS);
-  if (fullDps) {
-    return {
-      label: "Full DPS",
-      value: fullDps,
-    };
-  }
-
-  const combinedDps = getUsableSummaryStat(stats.CombinedDPS);
-  if (combinedDps) {
-    return {
-      label: "Combined DPS",
-      value: combinedDps,
-    };
-  }
-
-  const hitDps = getUsableSummaryStat(stats.TotalDPS);
-  if (hitDps) {
-    return {
-      label: "Hit DPS",
-      value: hitDps,
-    };
-  }
-
-  return undefined;
-}
-
-function getUsableSummaryStat(value: string | undefined) {
-  if (!value) {
-    return undefined;
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return undefined;
-  }
-
-  const numericValue = Number(trimmed.replace(/,/g, ""));
-  if (Number.isFinite(numericValue) && numericValue === 0) {
-    return undefined;
-  }
-
-  return trimmed;
-}
-
-function formatBuildSummaryValue(value: string | number | boolean): string {
-  if (typeof value === "boolean") {
-    return formatDisplayValue(value);
-  }
-
-  const raw = typeof value === "number" ? String(value) : String(value).trim();
-  const numeric = Number(raw.replace(/,/g, ""));
-  if (!Number.isFinite(numeric)) {
-    return formatDisplayValue(value);
-  }
-
-  return wholeNumberFormatter.format(numeric);
-}
-
 function getBuildShareUrl(payload: BuildPayload): string | undefined {
   if (typeof window === "undefined") {
     return undefined;
@@ -597,26 +340,4 @@ function getBuildRawUrl(payload: BuildPayload): string | undefined {
   }
 
   return buildApiUrl(`/${encodeURIComponent(id)}/raw`);
-}
-
-async function copyTextToClipboard(text: string): Promise<void> {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  textarea.style.pointerEvents = "none";
-  document.body.appendChild(textarea);
-  textarea.select();
-  const copied = document.execCommand("copy");
-  document.body.removeChild(textarea);
-
-  if (!copied) {
-    throw new Error("Clipboard copy failed");
-  }
 }

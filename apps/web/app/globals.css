@@ -167,8 +167,24 @@ main.build-page {
   margin-bottom: 12px;
 }
 
+.build-loadout-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .build-loadout-title {
   color: var(--text-accent);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.build-loadout-version {
+  flex: 0 0 auto;
+  color: var(--text-dim);
   font-size: 1.2rem;
   font-weight: 600;
   line-height: 1.35;
@@ -280,6 +296,87 @@ main.build-page {
   background: #182332;
   color: #d7e7ff;
   box-shadow: inset 0 0 0 1px rgba(106, 145, 206, 0.18);
+}
+
+.recent-builds-panel {
+  margin-top: 16px;
+}
+
+.recent-builds-list {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recent-build-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.recent-build-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.recent-build-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recent-build-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  line-height: 1.55;
+}
+
+.recent-build-link {
+  color: var(--text-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.recent-build-link:hover,
+.recent-build-link:focus-visible {
+  text-decoration: underline;
+}
+
+.recent-build-divider {
+  color: var(--text-dim);
+}
+
+.recent-build-detail {
+  color: var(--text-main);
+}
+
+.recent-build-viewed {
+  line-height: 1.45;
+}
+
+.recent-build-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.recent-build-share-button {
+  padding-inline: 12px;
+  white-space: nowrap;
+}
+
+.recent-build-share-feedback {
+  color: var(--text-dim);
+  font-size: 0.82rem;
 }
 
 .compare-modal-backdrop {
@@ -2332,6 +2429,15 @@ main.build-page {
 
   .build-loadout-control-strip > * {
     flex: 1 1 auto;
+  }
+
+  .recent-build-row {
+    flex-direction: column;
+  }
+
+  .recent-build-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .gear-flask-row {

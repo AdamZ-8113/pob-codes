@@ -11,6 +11,10 @@ const MODERN_LARGE_JEWEL_RADIUS = 1800;
 const LEGACY_LARGE_JEWEL_RADIUS = 1500;
 const CONQUERED_PASSIVES_LINE = /^Passives in radius are Conquered by /i;
 const COMMEMORATED_CONQUEROR_LINE = /^Commissioned \d+ coins to commemorate (.+)$/i;
+const TIMELESS_CONQUEROR_NAME_PATTERNS = Object.keys(TIMELESS_KEYSTONE_BY_CONQUEROR_NAME).map((name) => ({
+  name,
+  pattern: new RegExp(`\\b${escapeRegExp(name)}\\b`, "i"),
+}));
 
 export interface TimelessKeystoneTransformation {
   icon?: string;
@@ -93,7 +97,19 @@ function parseTimelessCommemoratedName(raw: string): string | undefined {
     }
   }
 
+  for (const line of lines) {
+    for (const entry of TIMELESS_CONQUEROR_NAME_PATTERNS) {
+      if (entry.pattern.test(line)) {
+        return entry.name;
+      }
+    }
+  }
+
   return undefined;
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function resolveTimelessJewelLargeRadius(version?: string) {

@@ -78,7 +78,19 @@ This step refreshes:
 - `apps/web/lib/generated/tree-manifest.ts`
 - `apps/web/lib/generated/asset-manifest.ts`
 
-### 3. Regenerate PoB-source-derived metadata
+### 3. Refresh official patch version names
+
+This pulls the latest PoE1 major-version names from GGG's official developer changelog and regenerates the UI mapping used for labels like `3.28 Mirage`.
+
+```powershell
+npm.cmd run generate:patch-version-names
+```
+
+This step refreshes:
+
+- `apps/web/lib/generated/patch-version-names.ts`
+
+### 4. Regenerate PoB-source-derived metadata
 
 These scripts read from `local-pob-mirror/` and are not covered by `sync:data`.
 
@@ -104,7 +116,7 @@ This step refreshes:
 - `apps/web/lib/generated/gem-details.ts`
 - `apps/web/lib/generated/stat-descriptions.ts`
 
-### 4. Optional: refresh Foulborn art
+### 5. Optional: refresh Foulborn art
 
 Only do this if the league added or changed Foulborn-specific assets.
 
@@ -207,6 +219,7 @@ Supported import sources are documented in:
 |---|---|---|
 | `npm.cmd run update:local-pob-mirror` | refresh local PoB source checkout | `local-pob-mirror/*` |
 | `npm.cmd run sync:data` | refresh upstream tree, item, gem, and UI assets plus generated manifests | `data/generated/*`, `apps/web/public/assets/*`, `apps/web/lib/generated/tree-manifest.ts`, `apps/web/lib/generated/asset-manifest.ts` |
+| `npm.cmd run generate:patch-version-names` | refresh official league and patch display names from GGG developer docs | `apps/web/lib/generated/patch-version-names.ts` |
 
 ### PoB-source metadata generators
 
@@ -229,6 +242,16 @@ Supported import sources are documented in:
 | `npm.cmd run verify:unique-art` | validate unique art coverage against upstream | `tmp/unique-art-coverage-report.json` |
 | `node scripts/download-foulborn-art.mjs` | download low-resolution Foulborn assets | `apps/web/public/assets/items/art/Foulborn/LowResolution/*` |
 | `.\.venv-foulborn\Scripts\python.exe scripts\build-foulborn-upscaled-art.py` | build upscaled Foulborn assets | `apps/web/public/assets/items/art/Foulborn/Upscaled/*`, `data/generated/foulborn-upscale-inventory.json` |
+
+## Optional Automation
+
+This repo also includes a scheduled GitHub workflow:
+
+- `.github/workflows/update-patch-version-names.yml`
+
+It reruns `npm run generate:patch-version-names` every Monday and opens a PR if GGG has published a new PoE1 major patch name in the official changelog.
+
+Before relying on it, make sure the GitHub repo allows Actions to create pull requests.
 
 ## Partial Refresh Rules
 
@@ -257,6 +280,7 @@ node scripts/generate-passive-tree-cluster-data.mjs
 node scripts/generate-passive-tree-timeless-keystones.mjs
 node scripts/generate-gem-details.mjs
 node scripts/generate-stat-descriptions.mjs
+npm.cmd run generate:patch-version-names
 ```
 
 If you use this partial route, still finish with:
