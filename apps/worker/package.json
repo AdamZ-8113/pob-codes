@@ -1,0 +1,21 @@
+{
+  "name": "@pobcodes/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "dev": "wrangler dev src/index.ts"
+  },
+  "dependencies": {
+    "@pobcodes/pob-codec": "0.1.0",
+    "@pobcodes/pob-parser": "0.1.0",
+    "@pobcodes/shared-types": "0.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260211.0",
+    "wrangler": "^4.11.1"
+  }
+}

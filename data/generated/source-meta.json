@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-04-01T04:17:43.352Z",
+  "sources": {
+    "pathOfBuilding": {
+      "commit": "454eff8c85d24356d9b051d596983745ed367476",
+      "url": "https://github.com/PathOfBuildingCommunity/PathOfBuilding"
+    },
+    "pobData": {
+      "commit": "77c5ff00b09e3c54d71113ce07173e2a61e9e3b5",
+      "url": "https://github.com/repoe-fork/pob-data"
+    },
+    "repoe": {
+      "commit": "f30f9955b64916846e1d8f55616601a039e0072e",
+      "url": "https://github.com/repoe-fork/repoe"
+    },
+    "skilltreeExport": {
+      "commit": "648e492b17d49d7213c63f4c1e0aa561617d5ad1",
+      "url": "https://github.com/grindinggear/skilltree-export"
+    }
+  }
+}

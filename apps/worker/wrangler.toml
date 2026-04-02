@@ -1,0 +1,8 @@
+name = "pob-codes-worker"
+main = "src/index.ts"
+compatibility_date = "2026-03-06"
+
+[[kv_namespaces]]
+binding = "BUILD_CODES"
+id = "local"
+preview_id = "local"

@@ -1,0 +1,5453 @@
+[
+  {
+    "name": "Foulborn Abyssus",
+    "baseName": "Abyssus",
+    "relativePath": "Armours/Helmets/Abyssus.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/Abyssus.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/Abyssus.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/Abyssus.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/Abyssus.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Aegis Aurora",
+    "baseName": "Aegis Aurora",
+    "relativePath": "Armours/Shields/ShieldStrIntUnique7unique.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/ShieldStrIntUnique7unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/ShieldStrIntUnique7unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/ShieldStrIntUnique7unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/ShieldStrIntUnique7unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Al Dhih",
+    "baseName": "Al Dhih",
+    "relativePath": "Weapons/OneHandWeapons/Claws/Aldhih.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Claws/Aldhih.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Claws/Aldhih.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Claws/Aldhih.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Claws/Aldhih.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Alberon's Warpath",
+    "baseName": "Alberon's Warpath",
+    "relativePath": "Armours/Boots/Alberonswarpath.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/Alberonswarpath.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/Alberonswarpath.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/Alberonswarpath.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/Alberonswarpath.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Alpha's Howl",
+    "baseName": "Alpha's Howl",
+    "relativePath": "Armours/Helmets/Wolfhead.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/Wolfhead.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/Wolfhead.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/Wolfhead.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/Wolfhead.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ambu's Charge",
+    "baseName": "Ambu's Charge",
+    "relativePath": "Armours/BodyArmours/StrInt3AUnique2.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/StrInt3AUnique2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/StrInt3AUnique2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/StrInt3AUnique2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/StrInt3AUnique2.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Anathema",
+    "baseName": "Anathema",
+    "relativePath": "Rings/UniqueCurseRing.png",
+    "basePublicPath": "/assets/items/art/Rings/UniqueCurseRing.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/UniqueCurseRing.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/UniqueCurseRing.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/UniqueCurseRing.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ancestral Vision",
+    "baseName": "Ancestral Vision",
+    "relativePath": "Jewels/PristineConditioning.png",
+    "basePublicPath": "/assets/items/art/Jewels/PristineConditioning.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/PristineConditioning.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/PristineConditioning.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/PristineConditioning.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Apep's Rage",
+    "baseName": "Apep's Rage",
+    "relativePath": "Weapons/OneHandWeapons/Wands/ApepsRage.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/ApepsRage.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/ApepsRage.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/ApepsRage.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/ApepsRage.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Asenath's Gentle Touch",
+    "baseName": "Asenath's Gentle Touch",
+    "relativePath": "Armours/Gloves/AsenathsGentleTouch.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/AsenathsGentleTouch.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/AsenathsGentleTouch.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/AsenathsGentleTouch.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/AsenathsGentleTouch.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Asenath's Mark",
+    "baseName": "Asenath's Mark",
+    "relativePath": "Armours/Helmets/HyrrisMark.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/HyrrisMark.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/HyrrisMark.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/HyrrisMark.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/HyrrisMark.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ashcaller",
+    "baseName": "Ashcaller",
+    "relativePath": "Weapons/OneHandWeapons/Wands/Ashwaker.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/Ashwaker.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/Ashwaker.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/Ashwaker.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/Ashwaker.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ashrend",
+    "baseName": "Ashrend",
+    "relativePath": "Armours/BodyArmours/Ashrend.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Ashrend.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Ashrend.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Ashrend.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Ashrend.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Astral Projector",
+    "baseName": "Astral Projector",
+    "relativePath": "Rings/AstralProjector.png",
+    "basePublicPath": "/assets/items/art/Rings/AstralProjector.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/AstralProjector.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/AstralProjector.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/AstralProjector.png",
+    "status": "generated",
+    "baseSize": [
+      82,
+      82
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      82,
+      82
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Astramentis",
+    "baseName": "Astramentis",
+    "relativePath": "Amulets/Amulet36.png",
+    "basePublicPath": "/assets/items/art/Amulets/Amulet36.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/Amulet36.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/Amulet36.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/Amulet36.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Aurseize",
+    "baseName": "Aurseize",
+    "relativePath": "Armours/Gloves/Aurseize.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/Aurseize.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/Aurseize.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/Aurseize.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/Aurseize.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Auxium",
+    "baseName": "Auxium",
+    "relativePath": "Belts/Auxium.png",
+    "basePublicPath": "/assets/items/art/Belts/Auxium.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/Auxium.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/Auxium.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/Auxium.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Badge of the Brotherhood",
+    "baseName": "Badge of the Brotherhood",
+    "relativePath": "Amulets/AssassinUnique.png",
+    "basePublicPath": "/assets/items/art/Amulets/AssassinUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/AssassinUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/AssassinUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/AssassinUnique.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Belly of the Beast",
+    "baseName": "Belly of the Beast",
+    "relativePath": "Armours/BodyArmours/bellyofthebeast.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/bellyofthebeast.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/bellyofthebeast.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/bellyofthebeast.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/bellyofthebeast.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Belt of the Deceiver",
+    "baseName": "Belt of the Deceiver",
+    "relativePath": "Belts/BeltOfTheDeciever.png",
+    "basePublicPath": "/assets/items/art/Belts/BeltOfTheDeciever.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/BeltOfTheDeciever.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/BeltOfTheDeciever.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/BeltOfTheDeciever.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Berek's Grip",
+    "baseName": "Berek's Grip",
+    "relativePath": "Rings/BereksGrip.png",
+    "basePublicPath": "/assets/items/art/Rings/BereksGrip.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/BereksGrip.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/BereksGrip.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/BereksGrip.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Berek's Pass",
+    "baseName": "Berek's Pass",
+    "relativePath": "Rings/BereksPass.png",
+    "basePublicPath": "/assets/items/art/Rings/BereksPass.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/BereksPass.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/BereksPass.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/BereksPass.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Berek's Respite",
+    "baseName": "Berek's Respite",
+    "relativePath": "Rings/BereksRespite.png",
+    "basePublicPath": "/assets/items/art/Rings/BereksRespite.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/BereksRespite.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/BereksRespite.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/BereksRespite.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Bramblejack",
+    "baseName": "Bramblejack",
+    "relativePath": "Armours/BodyArmours/Bramblejack.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Bramblejack.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Bramblejack.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Bramblejack.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Bramblejack.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Bronn's Lithe",
+    "baseName": "Bronn's Lithe",
+    "relativePath": "Armours/BodyArmours/Bronnslithe.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Bronnslithe.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Bronnslithe.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Bronnslithe.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Bronnslithe.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Call of the Brotherhood",
+    "baseName": "Call of the Brotherhood",
+    "relativePath": "Rings/Brotherhood.png",
+    "basePublicPath": "/assets/items/art/Rings/Brotherhood.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/Brotherhood.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/Brotherhood.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/Brotherhood.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Carcass Jack",
+    "baseName": "Carcass Jack",
+    "relativePath": "Armours/BodyArmours/CarcassJack.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/CarcassJack.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/CarcassJack.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/CarcassJack.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/CarcassJack.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Chalice of Horrors",
+    "baseName": "Chalice of Horrors",
+    "relativePath": "Armours/Shields/Chaliceofhorrors.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/Chaliceofhorrors.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/Chaliceofhorrors.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/Chaliceofhorrors.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/Chaliceofhorrors.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Cherrubim's Maleficence",
+    "baseName": "Cherrubim's Maleficence",
+    "relativePath": "Armours/BodyArmours/CherrubimsCrave.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/CherrubimsCrave.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/CherrubimsCrave.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/CherrubimsCrave.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/CherrubimsCrave.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Chin Sol",
+    "baseName": "Chin Sol",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/Bow5unique.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/Bow5unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/Bow5unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/Bow5unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/Bow5unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Choir of the Storm",
+    "baseName": "Choir of the Storm",
+    "relativePath": "Amulets/VoiceOfTheStormUpgrade.png",
+    "basePublicPath": "/assets/items/art/Amulets/VoiceOfTheStormUpgrade.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/VoiceOfTheStormUpgrade.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/VoiceOfTheStormUpgrade.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/VoiceOfTheStormUpgrade.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Cloak of Defiance",
+    "baseName": "Cloak of Defiance",
+    "relativePath": "Armours/BodyArmours/CloakOfDefiance.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/CloakOfDefiance.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/CloakOfDefiance.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/CloakOfDefiance.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/CloakOfDefiance.png",
+    "status": "generated",
+    "baseSize": [
+      151,
+      217
+    ],
+    "foulbornSize": [
+      94,
+      135
+    ],
+    "upscaledSize": [
+      151,
+      217
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Cloak of Flame",
+    "baseName": "Cloak of Flame",
+    "relativePath": "Armours/BodyArmours/BodyInt1Aunique.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/BodyInt1Aunique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/BodyInt1Aunique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/BodyInt1Aunique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/BodyInt1Aunique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Cospri's Malice",
+    "baseName": "Cospri's Malice",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandSwords/CosprisMalice.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandSwords/CosprisMalice.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandSwords/CosprisMalice.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandSwords/CosprisMalice.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandSwords/CosprisMalice.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      312
+    ],
+    "foulbornSize": [
+      47,
+      188
+    ],
+    "upscaledSize": [
+      78,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Cospri's Will",
+    "baseName": "Cospri's Will",
+    "relativePath": "Armours/BodyArmours/CosprisWill.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/CosprisWill.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/CosprisWill.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/CosprisWill.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/CosprisWill.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Crown of the Pale King",
+    "baseName": "Crown of the Pale King",
+    "relativePath": "Armours/Helmets/CrownofthePaleKing.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/CrownofthePaleKing.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/CrownofthePaleKing.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/CrownofthePaleKing.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/CrownofthePaleKing.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Cybil's Paw",
+    "baseName": "Cybil's Paw",
+    "relativePath": "Weapons/OneHandWeapons/Claws/CybilsClaw.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Claws/CybilsClaw.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Claws/CybilsClaw.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Claws/CybilsClaw.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Claws/CybilsClaw.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Darkray Vectors",
+    "baseName": "Darkray Vectors",
+    "relativePath": "Armours/Boots/DarkrayVectors.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/DarkrayVectors.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/DarkrayVectors.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/DarkrayVectors.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/DarkrayVectors.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Darkscorn",
+    "baseName": "Darkscorn",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/Darkscorn.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/Darkscorn.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/Darkscorn.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/Darkscorn.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/Darkscorn.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Death Rush",
+    "baseName": "Death Rush",
+    "relativePath": "Rings/AmethystRingUnique.png",
+    "basePublicPath": "/assets/items/art/Rings/AmethystRingUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/AmethystRingUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/AmethystRingUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/AmethystRingUnique.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Death's Hand",
+    "baseName": "Death's Hand",
+    "relativePath": "Weapons/OneHandWeapons/Scepters/EndOfEra.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Scepters/EndOfEra.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Scepters/EndOfEra.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Scepters/EndOfEra.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Scepters/EndOfEra.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Death's Harp",
+    "baseName": "Death's Harp",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/Deathsharp.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/Deathsharp.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/Deathsharp.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/Deathsharp.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/Deathsharp.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Death's Oath",
+    "baseName": "Death's Oath",
+    "relativePath": "Armours/BodyArmours/Deathsoath.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Deathsoath.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Deathsoath.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Deathsoath.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Deathsoath.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Defiance of Destiny",
+    "baseName": "Defiance of Destiny",
+    "relativePath": "Amulets/HinekoraAmulet.png",
+    "basePublicPath": "/assets/items/art/Amulets/HinekoraAmulet.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/HinekoraAmulet.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/HinekoraAmulet.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/HinekoraAmulet.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Deidbell",
+    "baseName": "Deidbell",
+    "relativePath": "Armours/Helmets/Deidbell.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/Deidbell.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/Deidbell.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/Deidbell.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/Deidbell.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Devoto's Devotion",
+    "baseName": "Devoto's Devotion",
+    "relativePath": "Armours/Helmets/HelmetStrDex2unique.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/HelmetStrDex2unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/HelmetStrDex2unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/HelmetStrDex2unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/HelmetStrDex2unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Dialla's Malefaction",
+    "baseName": "Dialla's Malefaction",
+    "relativePath": "Armours/BodyArmours/DiallasMalefaction.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/DiallasMalefaction.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/DiallasMalefaction.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/DiallasMalefaction.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/DiallasMalefaction.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Doedre's Scorn",
+    "baseName": "Doedre's Scorn",
+    "relativePath": "Armours/Helmets/DoedresScorn.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/DoedresScorn.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/DoedresScorn.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/DoedresScorn.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/DoedresScorn.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Doomfletch",
+    "baseName": "Doomfletch",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/DoomFletch.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/DoomFletch.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/DoomFletch.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/DoomFletch.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/DoomFletch.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Doomsower",
+    "baseName": "Doomsower",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandSwords/DoomSower.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandSwords/DoomSower.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandSwords/DoomSower.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandSwords/DoomSower.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandSwords/DoomSower.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Doon Cuebiyari",
+    "baseName": "Doon Cuebiyari",
+    "relativePath": "Weapons/OneHandWeapons/OneHandMaces/DoonCuebiyari.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandMaces/DoonCuebiyari.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandMaces/DoonCuebiyari.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandMaces/DoonCuebiyari.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandMaces/DoonCuebiyari.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Doryani's Fist",
+    "baseName": "Doryani's Fist",
+    "relativePath": "Armours/Gloves/DoryanisFist.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/DoryanisFist.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/DoryanisFist.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/DoryanisFist.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/DoryanisFist.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Dream Fragments",
+    "baseName": "Dream Fragments",
+    "relativePath": "Rings/Ring6Unique.png",
+    "basePublicPath": "/assets/items/art/Rings/Ring6Unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/Ring6Unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/Ring6Unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/Ring6Unique.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Dreamfeather",
+    "baseName": "Dreamfeather",
+    "relativePath": "Weapons/OneHandWeapons/OneHandSwords/Dreamfeather.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandSwords/Dreamfeather.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandSwords/Dreamfeather.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandSwords/Dreamfeather.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandSwords/Dreamfeather.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Drillneck",
+    "baseName": "Drillneck",
+    "relativePath": "Quivers/Drillneck.png",
+    "basePublicPath": "/assets/items/art/Quivers/Drillneck.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Quivers/Drillneck.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Quivers/Drillneck.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Quivers/Drillneck.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Dyadian Dawn",
+    "baseName": "Dyadian Dawn",
+    "relativePath": "Belts/MotherDyadus.png",
+    "basePublicPath": "/assets/items/art/Belts/MotherDyadus.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/MotherDyadus.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/MotherDyadus.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/MotherDyadus.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Edge of Madness",
+    "baseName": "Edge of Madness",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandSwords/EdgeOfMadness.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandSwords/EdgeOfMadness.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandSwords/EdgeOfMadness.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandSwords/EdgeOfMadness.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandSwords/EdgeOfMadness.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Emperor's Vigilance",
+    "baseName": "Emperor's Vigilance",
+    "relativePath": "Armours/Shields/HighPriestShield.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/HighPriestShield.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/HighPriestShield.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/HighPriestShield.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/HighPriestShield.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Esh's Mirror",
+    "baseName": "Esh's Mirror",
+    "relativePath": "Armours/Shields/EshsMirror.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/EshsMirror.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/EshsMirror.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/EshsMirror.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/EshsMirror.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Esh's Visage",
+    "baseName": "Esh's Visage",
+    "relativePath": "Armours/Shields/EshsMirrorUpgraded.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/EshsMirrorUpgraded.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/EshsMirrorUpgraded.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/EshsMirrorUpgraded.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/EshsMirrorUpgraded.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Eye of Chayula",
+    "baseName": "Eye of Chayula",
+    "relativePath": "Amulets/Amulet7Unique.png",
+    "basePublicPath": "/assets/items/art/Amulets/Amulet7Unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/Amulet7Unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/Amulet7Unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/Amulet7Unique.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Facebreaker",
+    "baseName": "Facebreaker",
+    "relativePath": "Armours/Gloves/GlovesDexIntUnique1.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/GlovesDexIntUnique1.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/GlovesDexIntUnique1.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/GlovesDexIntUnique1.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/GlovesDexIntUnique1.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Firesong",
+    "baseName": "Firesong",
+    "relativePath": "Jewels/RedJewel7.png",
+    "basePublicPath": "/assets/items/art/Jewels/RedJewel7.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/RedJewel7.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/RedJewel7.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/RedJewel7.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Flesh and Spirit",
+    "baseName": "Flesh and Spirit",
+    "relativePath": "Armours/Gloves/FleshAndSpirit.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/FleshAndSpirit.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/FleshAndSpirit.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/FleshAndSpirit.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/FleshAndSpirit.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Fleshcrafter",
+    "baseName": "Fleshcrafter",
+    "relativePath": "Armours/BodyArmours/EssenceGifter.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/EssenceGifter.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/EssenceGifter.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/EssenceGifter.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/EssenceGifter.png",
+    "status": "generated",
+    "baseSize": [
+      159,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      138
+    ],
+    "upscaledSize": [
+      159,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Frostbreath",
+    "baseName": "Frostbreath",
+    "relativePath": "Weapons/OneHandWeapons/OneHandMaces/FrostBreath.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandMaces/FrostBreath.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandMaces/FrostBreath.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandMaces/FrostBreath.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandMaces/FrostBreath.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Gang's Momentum",
+    "baseName": "Gang's Momentum",
+    "relativePath": "Armours/Boots/GangsBoots.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/GangsBoots.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/GangsBoots.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/GangsBoots.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/GangsBoots.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ghostwrithe",
+    "baseName": "Ghostwrithe",
+    "relativePath": "Armours/BodyArmours/Ghostweave.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Ghostweave.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Ghostweave.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Ghostweave.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Ghostweave.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Gifts from Above",
+    "baseName": "Gifts from Above",
+    "relativePath": "Rings/DiamondRingUnique.png",
+    "basePublicPath": "/assets/items/art/Rings/DiamondRingUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/DiamondRingUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/DiamondRingUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/DiamondRingUnique.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Goldrim",
+    "baseName": "Goldrim",
+    "relativePath": "Armours/Helmets/HelmetDexUnique2.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/HelmetDexUnique2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/HelmetDexUnique2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/HelmetDexUnique2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/HelmetDexUnique2.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Goldwyrm",
+    "baseName": "Goldwyrm",
+    "relativePath": "Armours/Boots/BootsDexUnique2.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/BootsDexUnique2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/BootsDexUnique2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/BootsDexUnique2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/BootsDexUnique2.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Great Old One's Ward",
+    "baseName": "Great Old One's Ward",
+    "relativePath": "Armours/Shields/GreatOldOnesWard.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/GreatOldOnesWard.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/GreatOldOnesWard.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/GreatOldOnesWard.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/GreatOldOnesWard.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Greed's Embrace",
+    "baseName": "Greed's Embrace",
+    "relativePath": "Armours/BodyArmours/GreedsEmbrace.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/GreedsEmbrace.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/GreedsEmbrace.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/GreedsEmbrace.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/GreedsEmbrace.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Gruthkul's Pelt",
+    "baseName": "Gruthkul's Pelt",
+    "relativePath": "Armours/BodyArmours/WilefangsPelt.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/WilefangsPelt.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/WilefangsPelt.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/WilefangsPelt.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/WilefangsPelt.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Hand of Thought and Motion",
+    "baseName": "Hand of Thought and Motion",
+    "relativePath": "Weapons/OneHandWeapons/Claws/ThoughtMotion1.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Claws/ThoughtMotion1.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Claws/ThoughtMotion1.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Claws/ThoughtMotion1.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Claws/ThoughtMotion1.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Hand of Wisdom and Action",
+    "baseName": "Hand of Wisdom and Action",
+    "relativePath": "Weapons/OneHandWeapons/Claws/ThoughtMotion2.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Claws/ThoughtMotion2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Claws/ThoughtMotion2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Claws/ThoughtMotion2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Claws/ThoughtMotion2.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Headhunter",
+    "baseName": "Headhunter",
+    "relativePath": "Belts/Headhunter.png",
+    "basePublicPath": "/assets/items/art/Belts/Headhunter.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/Headhunter.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/Headhunter.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/Headhunter.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Heartbound Loop",
+    "baseName": "Heartbound Loop",
+    "relativePath": "Rings/HeartboundRing.png",
+    "basePublicPath": "/assets/items/art/Rings/HeartboundRing.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/HeartboundRing.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/HeartboundRing.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/HeartboundRing.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Heatshiver",
+    "baseName": "Heatshiver",
+    "relativePath": "Armours/Helmets/Heatshiver.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/Heatshiver.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/Heatshiver.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/Heatshiver.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/Heatshiver.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Hinekora's Sight",
+    "baseName": "Hinekora's Sight",
+    "relativePath": "Amulets/HinekorasSight.png",
+    "basePublicPath": "/assets/items/art/Amulets/HinekorasSight.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/HinekorasSight.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/HinekorasSight.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/HinekorasSight.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Hyrri's Ire",
+    "baseName": "Hyrri's Ire",
+    "relativePath": "Armours/BodyArmours/BodyDex3CUnique.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/BodyDex3CUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/BodyDex3CUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/BodyDex3CUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/BodyDex3CUnique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Incandescent Heart",
+    "baseName": "Incandescent Heart",
+    "relativePath": "Armours/BodyArmours/Illuminatis.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Illuminatis.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Illuminatis.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Illuminatis.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Illuminatis.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Infernal Mantle",
+    "baseName": "Infernal Mantle",
+    "relativePath": "Armours/BodyArmours/Infernalmantle.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Infernalmantle.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Infernalmantle.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Infernalmantle.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Infernalmantle.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Inpulsa's Broken Heart",
+    "baseName": "Inpulsa's Broken Heart",
+    "relativePath": "Armours/BodyArmours/OnShocked.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/OnShocked.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/OnShocked.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/OnShocked.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/OnShocked.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Inspired Learning",
+    "baseName": "Inspired Learning",
+    "relativePath": "Jewels/unique7.png",
+    "basePublicPath": "/assets/items/art/Jewels/unique7.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/unique7.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/unique7.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/unique7.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Intuitive Leap",
+    "baseName": "Intuitive Leap",
+    "relativePath": "Jewels/unique6.png",
+    "basePublicPath": "/assets/items/art/Jewels/unique6.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/unique6.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/unique6.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/unique6.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Jorrhast's Blacksteel",
+    "baseName": "Jorrhast's Blacksteel",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandMaces/JorrhastsBlacksteel.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandMaces/JorrhastsBlacksteel.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandMaces/JorrhastsBlacksteel.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandMaces/JorrhastsBlacksteel.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandMaces/JorrhastsBlacksteel.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kalisa's Grace",
+    "baseName": "Kalisa's Grace",
+    "relativePath": "Armours/Gloves/KalisasGrace.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/KalisasGrace.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/KalisasGrace.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/KalisasGrace.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/KalisasGrace.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kaom's Primacy",
+    "baseName": "Kaom's Primacy",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxe11Unique.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxe11Unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxe11Unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxe11Unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandAxes/TwoHandAxe11Unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kaom's Roots",
+    "baseName": "Kaom's Roots",
+    "relativePath": "Armours/Boots/KaomsRoots.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/KaomsRoots.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/KaomsRoots.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/KaomsRoots.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/KaomsRoots.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kaom's Spirit",
+    "baseName": "Kaom's Spirit",
+    "relativePath": "Armours/Gloves/KaomsSpirit.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/KaomsSpirit.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/KaomsSpirit.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/KaomsSpirit.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/KaomsSpirit.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kikazaru",
+    "baseName": "Kikazaru",
+    "relativePath": "Rings/Kikazaru.png",
+    "basePublicPath": "/assets/items/art/Rings/Kikazaru.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/Kikazaru.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/Kikazaru.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/Kikazaru.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kiloava's Bluster",
+    "baseName": "Kiloava's Bluster",
+    "relativePath": "Armours/Shields/KiloavaShield.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/KiloavaShield.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/KiloavaShield.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/KiloavaShield.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/KiloavaShield.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      63,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kintsugi",
+    "baseName": "Kintsugi",
+    "relativePath": "Armours/BodyArmours/Kintsugi.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Kintsugi.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Kintsugi.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Kintsugi.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Kintsugi.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kitava's Thirst",
+    "baseName": "Kitava's Thirst",
+    "relativePath": "Armours/Helmets/KitavasThirst.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/KitavasThirst.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/KitavasThirst.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/KitavasThirst.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/KitavasThirst.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kongming's Stratagem",
+    "baseName": "Kongming's Stratagem",
+    "relativePath": "Armours/Shields/KongmingsStratagem.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/KongmingsStratagem.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/KongmingsStratagem.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/KongmingsStratagem.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/KongmingsStratagem.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Kongor's Undying Rage",
+    "baseName": "Kongor's Undying Rage",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandMaces/KongorsUndyingRage.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandMaces/KongorsUndyingRage.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandMaces/KongorsUndyingRage.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandMaces/KongorsUndyingRage.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandMaces/KongorsUndyingRage.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Le Heup of All",
+    "baseName": "Le Heup of All",
+    "relativePath": "Rings/Leheupofall.png",
+    "basePublicPath": "/assets/items/art/Rings/Leheupofall.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/Leheupofall.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/Leheupofall.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/Leheupofall.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Lightning Coil",
+    "baseName": "Lightning Coil",
+    "relativePath": "Armours/BodyArmours/LightningCoil.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/LightningCoil.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/LightningCoil.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/LightningCoil.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/LightningCoil.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Lioneye's Fall",
+    "baseName": "Lioneye's Fall",
+    "relativePath": "Jewels/LioneyesFall.png",
+    "basePublicPath": "/assets/items/art/Jewels/LioneyesFall.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/LioneyesFall.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/LioneyesFall.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/LioneyesFall.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Lioneye's Remorse",
+    "baseName": "Lioneye's Remorse",
+    "relativePath": "Armours/Shields/ShieldStrUnique6.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/ShieldStrUnique6.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/ShieldStrUnique6.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/ShieldStrUnique6.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/ShieldStrUnique6.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Lioneye's Vision",
+    "baseName": "Lioneye's Vision",
+    "relativePath": "Armours/BodyArmours/LioneyesArmour.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/LioneyesArmour.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/LioneyesArmour.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/LioneyesArmour.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/LioneyesArmour.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Lori's Lantern",
+    "baseName": "Lori's Lantern",
+    "relativePath": "Rings/LorisLantern.png",
+    "basePublicPath": "/assets/items/art/Rings/LorisLantern.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/LorisLantern.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/LorisLantern.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/LorisLantern.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Maata's Teaching",
+    "baseName": "Maata's Teaching",
+    "relativePath": "Weapons/OneHandWeapons/Scepters/MaataSceptre.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Scepters/MaataSceptre.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Scepters/MaataSceptre.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Scepters/MaataSceptre.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Scepters/MaataSceptre.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Mageblood",
+    "baseName": "Mageblood",
+    "relativePath": "Belts/InjectorBelt.png",
+    "basePublicPath": "/assets/items/art/Belts/InjectorBelt.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/InjectorBelt.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/InjectorBelt.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/InjectorBelt.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Malachai's Loop",
+    "baseName": "Malachai's Loop",
+    "relativePath": "Armours/Shields/MalachaiLoop.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/MalachaiLoop.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/MalachaiLoop.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/MalachaiLoop.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/MalachaiLoop.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Maligaro's Restraint",
+    "baseName": "Maligaro's Restraint",
+    "relativePath": "Belts/MaligarosRestraint.png",
+    "basePublicPath": "/assets/items/art/Belts/MaligarosRestraint.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/MaligarosRestraint.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/MaligarosRestraint.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/MaligarosRestraint.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Maligaro's Virtuosity",
+    "baseName": "Maligaro's Virtuosity",
+    "relativePath": "Armours/Gloves/MaligarosVirtousity.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/MaligarosVirtousity.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/MaligarosVirtousity.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/MaligarosVirtousity.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/MaligarosVirtousity.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Maloney's Mechanism",
+    "baseName": "Maloney's Mechanism",
+    "relativePath": "Quivers/TriggerQuiverBase.png",
+    "basePublicPath": "/assets/items/art/Quivers/TriggerQuiverBase.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Quivers/TriggerQuiverBase.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Quivers/TriggerQuiverBase.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Quivers/TriggerQuiverBase.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Matua Tupuna",
+    "baseName": "Matua Tupuna",
+    "relativePath": "Armours/Shields/Matuatupuna.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/Matuatupuna.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/Matuatupuna.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/Matuatupuna.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/Matuatupuna.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Meginord's Girdle",
+    "baseName": "Meginord's Girdle",
+    "relativePath": "Belts/Belt7Unique.png",
+    "basePublicPath": "/assets/items/art/Belts/Belt7Unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/Belt7Unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/Belt7Unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/Belt7Unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Meginord's Vise",
+    "baseName": "Meginord's Vise",
+    "relativePath": "Armours/Gloves/GlovesStr5.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/GlovesStr5.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/GlovesStr5.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/GlovesStr5.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/GlovesStr5.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Midnight Bargain",
+    "baseName": "Midnight Bargain",
+    "relativePath": "Weapons/OneHandWeapons/Wands/WandUnique3.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/WandUnique3.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/WandUnique3.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/WandUnique3.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/WandUnique3.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Might of the Meek",
+    "baseName": "Might of the Meek",
+    "relativePath": "Jewels/PotencyOfTheUnremarkable.png",
+    "basePublicPath": "/assets/items/art/Jewels/PotencyOfTheUnremarkable.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/PotencyOfTheUnremarkable.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/PotencyOfTheUnremarkable.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/PotencyOfTheUnremarkable.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Mind of the Council",
+    "baseName": "Mind of the Council",
+    "relativePath": "Armours/Helmets/ThunderingWhispers.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/ThunderingWhispers.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/ThunderingWhispers.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/ThunderingWhispers.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/ThunderingWhispers.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ming's Heart",
+    "baseName": "Ming's Heart",
+    "relativePath": "Rings/MingsHeart.png",
+    "basePublicPath": "/assets/items/art/Rings/MingsHeart.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/MingsHeart.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/MingsHeart.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/MingsHeart.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Mj\u00c3\u0192\u00c2\u00b6lner",
+    "baseName": "Mj\u00c3\u0192\u00c2\u00b6lner",
+    "relativePath": "Weapons/OneHandWeapons/OneHandMaces/Mjolner.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandMaces/Mjolner.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandMaces/Mjolner.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandMaces/Mjolner.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandMaces/Mjolner.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Mokou's Embrace",
+    "baseName": "Mokou's Embrace",
+    "relativePath": "Rings/MokousEmbrace.png",
+    "basePublicPath": "/assets/items/art/Rings/MokousEmbrace.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/MokousEmbrace.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/MokousEmbrace.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/MokousEmbrace.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Moonbender's Wing",
+    "baseName": "Moonbender's Wing",
+    "relativePath": "Weapons/OneHandWeapons/OneHandAxes/MoonbendersWing.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandAxes/MoonbendersWing.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandAxes/MoonbendersWing.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandAxes/MoonbendersWing.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandAxes/MoonbendersWing.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ngamahu's Flame",
+    "baseName": "Ngamahu's Flame",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandMaces/RiriTeNgamahu.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandMaces/RiriTeNgamahu.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandMaces/RiriTeNgamahu.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandMaces/RiriTeNgamahu.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandMaces/RiriTeNgamahu.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Null and Void",
+    "baseName": "Null and Void",
+    "relativePath": "Armours/Gloves/NullAndVoid.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/NullAndVoid.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/NullAndVoid.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/NullAndVoid.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/NullAndVoid.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Null's Inclination",
+    "baseName": "Null's Inclination",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/NullBow.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/NullBow.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/NullBow.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/NullBow.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/NullBow.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Piscator's Vigil",
+    "baseName": "Piscator's Vigil",
+    "relativePath": "Weapons/OneHandWeapons/Wands/PiscatorsVigil.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/PiscatorsVigil.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/PiscatorsVigil.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/PiscatorsVigil.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/PiscatorsVigil.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Presence of Chayula",
+    "baseName": "Presence of Chayula",
+    "relativePath": "Amulets/PresenceOfChayula.png",
+    "basePublicPath": "/assets/items/art/Amulets/PresenceOfChayula.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/PresenceOfChayula.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/PresenceOfChayula.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/PresenceOfChayula.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Prism Guardian",
+    "baseName": "Prism Guardian",
+    "relativePath": "Armours/Shields/TheCorundum.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/TheCorundum.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/TheCorundum.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/TheCorundum.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/TheCorundum.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Pyre",
+    "baseName": "Pyre",
+    "relativePath": "Rings/Cherufe.png",
+    "basePublicPath": "/assets/items/art/Rings/Cherufe.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/Cherufe.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/Cherufe.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/Cherufe.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Queen of the Forest",
+    "baseName": "Queen of the Forest",
+    "relativePath": "Armours/BodyArmours/QueenoftheForest.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/QueenoftheForest.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/QueenoftheForest.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/QueenoftheForest.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/QueenoftheForest.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Quill Rain",
+    "baseName": "Quill Rain",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/Bow2unique.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/Bow2unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/Bow2unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/Bow2unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/Bow2unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rathpith Globe",
+    "baseName": "Rathpith Globe",
+    "relativePath": "Armours/Shields/ShieldInt6unique.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/ShieldInt6unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/ShieldInt6unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/ShieldInt6unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/ShieldInt6unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Razor of the Seventh Sun",
+    "baseName": "Razor of the Seventh Sun",
+    "relativePath": "Weapons/OneHandWeapons/OneHandSwords/RazorOfTheSeventhSun.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandSwords/RazorOfTheSeventhSun.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandSwords/RazorOfTheSeventhSun.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandSwords/RazorOfTheSeventhSun.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandSwords/RazorOfTheSeventhSun.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rearguard",
+    "baseName": "Rearguard",
+    "relativePath": "Quivers/Rearguard.png",
+    "basePublicPath": "/assets/items/art/Quivers/Rearguard.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Quivers/Rearguard.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Quivers/Rearguard.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Quivers/Rearguard.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rebuke of the Vaal",
+    "baseName": "Rebuke of the Vaal",
+    "relativePath": "Weapons/OneHandWeapons/OneHandSwords/OneHandSword7Unique.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandSwords/OneHandSword7Unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandSwords/OneHandSword7Unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandSwords/OneHandSword7Unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandSwords/OneHandSword7Unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Reefbane",
+    "baseName": "Reefbane",
+    "relativePath": "Weapons/TwoHandWeapons/FishingRods/Reefbane.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/FishingRods/Reefbane.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/FishingRods/Reefbane.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/FishingRods/Reefbane.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/FishingRods/Reefbane.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      312
+    ],
+    "foulbornSize": [
+      47,
+      188
+    ],
+    "upscaledSize": [
+      78,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Repentance",
+    "baseName": "Repentance",
+    "relativePath": "Armours/Gloves/Repentance.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/Repentance.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/Repentance.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/Repentance.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/Repentance.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Reverberation Rod",
+    "baseName": "Reverberation Rod",
+    "relativePath": "Weapons/OneHandWeapons/Wands/ReverberationRod.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/ReverberationRod.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/ReverberationRod.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/ReverberationRod.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/ReverberationRod.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rigwald's Command",
+    "baseName": "Rigwald's Command",
+    "relativePath": "Weapons/OneHandWeapons/OneHandSwords/RigwarlSword.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandSwords/RigwarlSword.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandSwords/RigwarlSword.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandSwords/RigwarlSword.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandSwords/RigwarlSword.png",
+    "status": "generated",
+    "baseSize": [
+      117,
+      234
+    ],
+    "foulbornSize": [
+      71,
+      142
+    ],
+    "upscaledSize": [
+      117,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rigwald's Quills",
+    "baseName": "Rigwald's Quills",
+    "relativePath": "Quivers/RigwaldsQuills.png",
+    "basePublicPath": "/assets/items/art/Quivers/RigwaldsQuills.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Quivers/RigwaldsQuills.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Quivers/RigwaldsQuills.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Quivers/RigwaldsQuills.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rigwald's Savagery",
+    "baseName": "Rigwald's Savagery",
+    "relativePath": "Weapons/OneHandWeapons/OneHandAxes/RigwarlAxe.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandAxes/RigwarlAxe.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandAxes/RigwarlAxe.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandAxes/RigwarlAxe.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandAxes/RigwarlAxe.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rime Gaze",
+    "baseName": "Rime Gaze",
+    "relativePath": "Armours/Helmets/HelmetDexIntUnique1.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/HelmetDexIntUnique1.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/HelmetDexIntUnique1.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/HelmetDexIntUnique1.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/HelmetDexIntUnique1.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rise of the Phoenix",
+    "baseName": "Rise of the Phoenix",
+    "relativePath": "Armours/Shields/Riseofthephoenix.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/Riseofthephoenix.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/Riseofthephoenix.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/Riseofthephoenix.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/Riseofthephoenix.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Rive",
+    "baseName": "Rive",
+    "relativePath": "Weapons/OneHandWeapons/Claws/BleedClaw.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Claws/BleedClaw.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Claws/BleedClaw.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Claws/BleedClaw.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Claws/BleedClaw.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Romira's Banquet",
+    "baseName": "Romira's Banquet",
+    "relativePath": "Rings/RomirasBanquet.png",
+    "basePublicPath": "/assets/items/art/Rings/RomirasBanquet.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/RomirasBanquet.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/RomirasBanquet.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/RomirasBanquet.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Sadima's Touch",
+    "baseName": "Sadima's Touch",
+    "relativePath": "Armours/Gloves/SadimasTouch.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/SadimasTouch.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/SadimasTouch.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/SadimasTouch.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/SadimasTouch.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Saffell's Frame",
+    "baseName": "Saffell's Frame",
+    "relativePath": "Armours/Shields/ShieldStrIntUnique6.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/ShieldStrIntUnique6.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/ShieldStrIntUnique6.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/ShieldStrIntUnique6.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/ShieldStrIntUnique6.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Scold's Bridle",
+    "baseName": "Scold's Bridle",
+    "relativePath": "Armours/Helmets/ScoldsBridle.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/ScoldsBridle.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/ScoldsBridle.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/ScoldsBridle.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/ScoldsBridle.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Seven-League Step",
+    "baseName": "Seven-League Step",
+    "relativePath": "Armours/Boots/BootsDexUnique3.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/BootsDexUnique3.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/BootsDexUnique3.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/BootsDexUnique3.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/BootsDexUnique3.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Severed in Sleep",
+    "baseName": "Severed in Sleep",
+    "relativePath": "Weapons/OneHandWeapons/OneHandSwords/EternalSleep1.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandSwords/EternalSleep1.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandSwords/EternalSleep1.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandSwords/EternalSleep1.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandSwords/EternalSleep1.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Shackles of the Wretched",
+    "baseName": "Shackles of the Wretched",
+    "relativePath": "Armours/Gloves/RecallingtheWretched.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/RecallingtheWretched.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/RecallingtheWretched.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/RecallingtheWretched.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/RecallingtheWretched.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Shadows and Dust",
+    "baseName": "Shadows and Dust",
+    "relativePath": "Armours/Gloves/ShadowsAndDust.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/ShadowsAndDust.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/ShadowsAndDust.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/ShadowsAndDust.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/ShadowsAndDust.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Shavronne's Revelation",
+    "baseName": "Shavronne's Revelation",
+    "relativePath": "Rings/MoonstoneRingUnique.png",
+    "basePublicPath": "/assets/items/art/Rings/MoonstoneRingUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/MoonstoneRingUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/MoonstoneRingUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/MoonstoneRingUnique.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Shavronne's Wrappings",
+    "baseName": "Shavronne's Wrappings",
+    "relativePath": "Armours/BodyArmours/BodyInt1CUnique.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/BodyInt1CUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/BodyInt1CUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/BodyInt1CUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/BodyInt1CUnique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Singularity",
+    "baseName": "Singularity",
+    "relativePath": "Weapons/OneHandWeapons/Scepters/Gloomeye.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Scepters/Gloomeye.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Scepters/Gloomeye.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Scepters/Gloomeye.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Scepters/Gloomeye.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Sire of Shards",
+    "baseName": "Sire of Shards",
+    "relativePath": "Weapons/TwoHandWeapons/Staves/Radience.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Staves/Radience.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Staves/Radience.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Staves/Radience.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Staves/Radience.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Skin of the Loyal",
+    "baseName": "Skin of the Loyal",
+    "relativePath": "Armours/BodyArmours/MyriadGrasp.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/MyriadGrasp.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/MyriadGrasp.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/MyriadGrasp.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/MyriadGrasp.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Skyforth",
+    "baseName": "Skyforth",
+    "relativePath": "Armours/Boots/Skyforth.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/Skyforth.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/Skyforth.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/Skyforth.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/Skyforth.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Snakebite",
+    "baseName": "Snakebite",
+    "relativePath": "Armours/Gloves/frenzygloves.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/frenzygloves.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/frenzygloves.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/frenzygloves.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/frenzygloves.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Solaris Lorica",
+    "baseName": "Solaris Lorica",
+    "relativePath": "Armours/BodyArmours/tornfleshofgods.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/tornfleshofgods.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/tornfleshofgods.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/tornfleshofgods.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/tornfleshofgods.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Soul Mantle",
+    "baseName": "Soul Mantle",
+    "relativePath": "Armours/BodyArmours/SoulMantle.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/SoulMantle.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/SoulMantle.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/SoulMantle.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/SoulMantle.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Soul Strike",
+    "baseName": "Soul Strike",
+    "relativePath": "Quivers/Soulstrike.png",
+    "basePublicPath": "/assets/items/art/Quivers/Soulstrike.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Quivers/Soulstrike.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Quivers/Soulstrike.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Quivers/Soulstrike.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Soul Tether",
+    "baseName": "Soul Tether",
+    "relativePath": "Belts/SoulTether.png",
+    "basePublicPath": "/assets/items/art/Belts/SoulTether.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/SoulTether.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/SoulTether.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/SoulTether.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Soulthirst",
+    "baseName": "Soulthirst",
+    "relativePath": "Belts/Soulthirst.png",
+    "basePublicPath": "/assets/items/art/Belts/Soulthirst.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/Soulthirst.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/Soulthirst.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/Soulthirst.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Starkonja's Head",
+    "baseName": "Starkonja's Head",
+    "relativePath": "Armours/Helmets/Furryheadofstarkonja.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/Furryheadofstarkonja.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/Furryheadofstarkonja.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/Furryheadofstarkonja.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/Furryheadofstarkonja.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Stormshroud",
+    "baseName": "Stormshroud",
+    "relativePath": "Jewels/GreenJewel2.png",
+    "basePublicPath": "/assets/items/art/Jewels/GreenJewel2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/GreenJewel2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/GreenJewel2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/GreenJewel2.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Sunblast",
+    "baseName": "Sunblast",
+    "relativePath": "Belts/Belt8.png",
+    "basePublicPath": "/assets/items/art/Belts/Belt8.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/Belt8.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/Belt8.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/Belt8.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Anticipation",
+    "baseName": "The Anticipation",
+    "relativePath": "Armours/Shields/Longing1.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/Longing1.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/Longing1.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/Longing1.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/Longing1.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Aylardex",
+    "baseName": "The Aylardex",
+    "relativePath": "Amulets/Xedralyas.png",
+    "basePublicPath": "/assets/items/art/Amulets/Xedralyas.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/Xedralyas.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/Xedralyas.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/Xedralyas.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Baron",
+    "baseName": "The Baron",
+    "relativePath": "Armours/Helmets/TheBaron.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/TheBaron.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/TheBaron.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/TheBaron.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/TheBaron.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Blue Dream",
+    "baseName": "The Blue Dream",
+    "relativePath": "Jewels/TheBlueDream.png",
+    "basePublicPath": "/assets/items/art/Jewels/TheBlueDream.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/TheBlueDream.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/TheBlueDream.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/TheBlueDream.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Blue Nightmare",
+    "baseName": "The Blue Nightmare",
+    "relativePath": "Jewels/TheBlueDreamUpgrade.png",
+    "basePublicPath": "/assets/items/art/Jewels/TheBlueDreamUpgrade.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/TheBlueDreamUpgrade.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/TheBlueDreamUpgrade.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/TheBlueDreamUpgrade.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Brass Dome",
+    "baseName": "The Brass Dome",
+    "relativePath": "Armours/BodyArmours/DomeOfBrass.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/DomeOfBrass.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/DomeOfBrass.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/DomeOfBrass.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/DomeOfBrass.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Bringer of Rain",
+    "baseName": "The Bringer of Rain",
+    "relativePath": "Armours/Helmets/TheBringerofRain.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/TheBringerofRain.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/TheBringerofRain.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/TheBringerofRain.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/TheBringerofRain.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Coming Calamity",
+    "baseName": "The Coming Calamity",
+    "relativePath": "Armours/BodyArmours/SpiritHarness.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/SpiritHarness.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/SpiritHarness.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/SpiritHarness.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/SpiritHarness.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Consuming Dark",
+    "baseName": "The Consuming Dark",
+    "relativePath": "Weapons/OneHandWeapons/Daggers/ConsumingtheDark.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Daggers/ConsumingtheDark.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Daggers/ConsumingtheDark.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Daggers/ConsumingtheDark.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Daggers/ConsumingtheDark.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Covenant",
+    "baseName": "The Covenant",
+    "relativePath": "Armours/BodyArmours/Embrace.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Embrace.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Embrace.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Embrace.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Embrace.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Dancing Dervish",
+    "baseName": "The Dancing Dervish",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandSwords/Rhysblade.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandSwords/Rhysblade.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandSwords/Rhysblade.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandSwords/Rhysblade.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandSwords/Rhysblade.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Embalmer",
+    "baseName": "The Embalmer",
+    "relativePath": "Armours/Gloves/Allelopathy.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/Allelopathy.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/Allelopathy.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/Allelopathy.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/Allelopathy.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Formless Flame",
+    "baseName": "The Formless Flame",
+    "relativePath": "Armours/Helmets/FormlessInFlames.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/FormlessInFlames.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/FormlessInFlames.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/FormlessInFlames.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/FormlessInFlames.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Formless Inferno",
+    "baseName": "The Formless Inferno",
+    "relativePath": "Armours/Helmets/FormlessInFlamesUPGRADE.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/FormlessInFlamesUPGRADE.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/FormlessInFlamesUPGRADE.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/FormlessInFlamesUPGRADE.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/FormlessInFlamesUPGRADE.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Fourth Vow",
+    "baseName": "The Fourth Vow",
+    "relativePath": "Armours/BodyArmours/ClericsSanctuary.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/ClericsSanctuary.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/ClericsSanctuary.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/ClericsSanctuary.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/ClericsSanctuary.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Green Dream",
+    "baseName": "The Green Dream",
+    "relativePath": "Jewels/TheGreenDream.png",
+    "basePublicPath": "/assets/items/art/Jewels/TheGreenDream.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/TheGreenDream.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/TheGreenDream.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/TheGreenDream.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Green Nightmare",
+    "baseName": "The Green Nightmare",
+    "relativePath": "Jewels/TheGreenDreamUpgrade.png",
+    "basePublicPath": "/assets/items/art/Jewels/TheGreenDreamUpgrade.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/TheGreenDreamUpgrade.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/TheGreenDreamUpgrade.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/TheGreenDreamUpgrade.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Gull",
+    "baseName": "The Gull",
+    "relativePath": "Armours/Helmets/TheGull.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/TheGull.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/TheGull.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/TheGull.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/TheGull.png",
+    "status": "generated",
+    "baseSize": [
+      150,
+      150
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      150,
+      150
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Halcyon",
+    "baseName": "The Halcyon",
+    "relativePath": "Amulets/GlacierCacoon.png",
+    "basePublicPath": "/assets/items/art/Amulets/GlacierCacoon.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/GlacierCacoon.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/GlacierCacoon.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/GlacierCacoon.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Harvest",
+    "baseName": "The Harvest",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandAxes/TheExtractor.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandAxes/TheExtractor.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandAxes/TheExtractor.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandAxes/TheExtractor.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandAxes/TheExtractor.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Infinite Pursuit",
+    "baseName": "The Infinite Pursuit",
+    "relativePath": "Armours/Boots/TwoTonedBootsALT3.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/TwoTonedBootsALT3.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/TwoTonedBootsALT3.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/TwoTonedBootsALT3.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/TwoTonedBootsALT3.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Iron Fortress",
+    "baseName": "The Iron Fortress",
+    "relativePath": "Armours/BodyArmours/IronHeart Final.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/IronHeart Final.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/IronHeart Final.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/IronHeart Final.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/IronHeart Final.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Magnate",
+    "baseName": "The Magnate",
+    "relativePath": "Belts/BuckledBeltUnique.png",
+    "basePublicPath": "/assets/items/art/Belts/BuckledBeltUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/BuckledBeltUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/BuckledBeltUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/BuckledBeltUnique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Oppressor",
+    "baseName": "The Oppressor",
+    "relativePath": "Armours/Shields/TheSuppressor.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/TheSuppressor.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/TheSuppressor.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/TheSuppressor.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/TheSuppressor.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Pandemonius",
+    "baseName": "The Pandemonius",
+    "relativePath": "Amulets/GlacierCacoonUpgrade.png",
+    "basePublicPath": "/assets/items/art/Amulets/GlacierCacoonUpgrade.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/GlacierCacoonUpgrade.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/GlacierCacoonUpgrade.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/GlacierCacoonUpgrade.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Perfect Form",
+    "baseName": "The Perfect Form",
+    "relativePath": "Armours/BodyArmours/ThePerfectForm.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/ThePerfectForm.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/ThePerfectForm.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/ThePerfectForm.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/ThePerfectForm.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Poet's Pen",
+    "baseName": "The Poet's Pen",
+    "relativePath": "Weapons/OneHandWeapons/Wands/PoetsPen.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/PoetsPen.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/PoetsPen.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/PoetsPen.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/PoetsPen.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Red Dream",
+    "baseName": "The Red Dream",
+    "relativePath": "Jewels/TheRedDream.png",
+    "basePublicPath": "/assets/items/art/Jewels/TheRedDream.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/TheRedDream.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/TheRedDream.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/TheRedDream.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Red Nightmare",
+    "baseName": "The Red Nightmare",
+    "relativePath": "Jewels/TheRedDreamUpgrade.png",
+    "basePublicPath": "/assets/items/art/Jewels/TheRedDreamUpgrade.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/TheRedDreamUpgrade.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/TheRedDreamUpgrade.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/TheRedDreamUpgrade.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Red Trail",
+    "baseName": "The Red Trail",
+    "relativePath": "Armours/Boots/TheInfinitePursuit.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/TheInfinitePursuit.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/TheInfinitePursuit.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/TheInfinitePursuit.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/TheInfinitePursuit.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Searing Touch",
+    "baseName": "The Searing Touch",
+    "relativePath": "Weapons/TwoHandWeapons/Staves/Staff4unique.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Staves/Staff4unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Staves/Staff4unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Staves/Staff4unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Staves/Staff4unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Snowblind Grace",
+    "baseName": "The Snowblind Grace",
+    "relativePath": "Armours/BodyArmours/TheSnowblindGrace.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/TheSnowblindGrace.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/TheSnowblindGrace.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/TheSnowblindGrace.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/TheSnowblindGrace.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Squire",
+    "baseName": "The Squire",
+    "relativePath": "Armours/Shields/CaspirosResonance.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/CaspirosResonance.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/CaspirosResonance.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/CaspirosResonance.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/CaspirosResonance.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Surrender",
+    "baseName": "The Surrender",
+    "relativePath": "Armours/Shields/Longing2.png",
+    "basePublicPath": "/assets/items/art/Armours/Shields/Longing2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Shields/Longing2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Shields/Longing2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Shields/Longing2.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Three Dragons",
+    "baseName": "The Three Dragons",
+    "relativePath": "Armours/Helmets/ThreeDragons.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/ThreeDragons.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/ThreeDragons.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/ThreeDragons.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/ThreeDragons.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn The Whispering Ice",
+    "baseName": "The Whispering Ice",
+    "relativePath": "Weapons/TwoHandWeapons/Staves/Staff8unique.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Staves/Staff8unique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Staves/Staff8unique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Staves/Staff8unique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Staves/Staff8unique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Thief's Torment",
+    "baseName": "Thief's Torment",
+    "relativePath": "Rings/ThiefsTorment.png",
+    "basePublicPath": "/assets/items/art/Rings/ThiefsTorment.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/ThiefsTorment.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/ThiefsTorment.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/ThiefsTorment.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Thunderfist",
+    "baseName": "Thunderfist",
+    "relativePath": "Armours/Gloves/thunderclaw.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/thunderclaw.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/thunderclaw.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/thunderclaw.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/thunderclaw.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Timeclasp",
+    "baseName": "Timeclasp",
+    "relativePath": "Rings/Timeclasp.png",
+    "basePublicPath": "/assets/items/art/Rings/Timeclasp.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/Timeclasp.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/Timeclasp.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/Timeclasp.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Tinkerskin",
+    "baseName": "Tinkerskin",
+    "relativePath": "Armours/BodyArmours/TrapperArmour.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/TrapperArmour.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/TrapperArmour.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/TrapperArmour.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/TrapperArmour.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Tremor Rod",
+    "baseName": "Tremor Rod",
+    "relativePath": "Weapons/TwoHandWeapons/Staves/MineStaff.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Staves/MineStaff.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Staves/MineStaff.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Staves/MineStaff.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Staves/MineStaff.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Tulborn",
+    "baseName": "Tulborn",
+    "relativePath": "Weapons/OneHandWeapons/Wands/Tulborn.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/Tulborn.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/Tulborn.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/Tulborn.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/Tulborn.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Tulfall",
+    "baseName": "Tulfall",
+    "relativePath": "Weapons/OneHandWeapons/Wands/TulbornUpgraded.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/TulbornUpgraded.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/TulbornUpgraded.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/TulbornUpgraded.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/TulbornUpgraded.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Umbilicus Immortalis",
+    "baseName": "Umbilicus Immortalis",
+    "relativePath": "Belts/UmbilicusImmortalis.png",
+    "basePublicPath": "/assets/items/art/Belts/UmbilicusImmortalis.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Belts/UmbilicusImmortalis.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Belts/UmbilicusImmortalis.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Belts/UmbilicusImmortalis.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      78
+    ],
+    "foulbornSize": [
+      94,
+      47
+    ],
+    "upscaledSize": [
+      156,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn United in Dream",
+    "baseName": "United in Dream",
+    "relativePath": "Weapons/OneHandWeapons/OneHandSwords/EternalSleep2.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/OneHandSwords/EternalSleep2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/OneHandSwords/EternalSleep2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/OneHandSwords/EternalSleep2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/OneHandSwords/EternalSleep2.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      234
+    ],
+    "foulbornSize": [
+      47,
+      141
+    ],
+    "upscaledSize": [
+      78,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Unnatural Instinct",
+    "baseName": "Unnatural Instinct",
+    "relativePath": "Jewels/UnnaturalInstinct.png",
+    "basePublicPath": "/assets/items/art/Jewels/UnnaturalInstinct.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/UnnaturalInstinct.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/UnnaturalInstinct.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/UnnaturalInstinct.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Utula's Hunger",
+    "baseName": "Utula's Hunger",
+    "relativePath": "Armours/BodyArmours/UtalaBodyArmour.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/UtalaBodyArmour.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/UtalaBodyArmour.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/UtalaBodyArmour.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/UtalaBodyArmour.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Uul-Netol's Embrace",
+    "baseName": "Uul-Netol's Embrace",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKissUpgraded.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKissUpgraded.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKissUpgraded.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKissUpgraded.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKissUpgraded.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Uul-Netol's Kiss",
+    "baseName": "Uul-Netol's Kiss",
+    "relativePath": "Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKiss.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKiss.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKiss.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKiss.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/TwoHandAxes/UulNetolsKiss.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Vaal Caress",
+    "baseName": "Vaal Caress",
+    "relativePath": "Armours/Gloves/VaalCaress.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/VaalCaress.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/VaalCaress.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/VaalCaress.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/VaalCaress.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Veil of the Night",
+    "baseName": "Veil of the Night",
+    "relativePath": "Armours/Helmets/VeilOfTheNight.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/VeilOfTheNight.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/VeilOfTheNight.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/VeilOfTheNight.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/VeilOfTheNight.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ventor's Gamble",
+    "baseName": "Ventor's Gamble",
+    "relativePath": "Rings/DieOfDestiny.png",
+    "basePublicPath": "/assets/items/art/Rings/DieOfDestiny.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/DieOfDestiny.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/DieOfDestiny.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/DieOfDestiny.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Veruso's Battering Rams",
+    "baseName": "Veruso's Battering Rams",
+    "relativePath": "Armours/Gloves/VerusosBatteringRams.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/VerusosBatteringRams.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/VerusosBatteringRams.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/VerusosBatteringRams.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/VerusosBatteringRams.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Victario's Flight",
+    "baseName": "Victario's Flight",
+    "relativePath": "Armours/Boots/BootsDexIntUnique2.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/BootsDexIntUnique2.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/BootsDexIntUnique2.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/BootsDexIntUnique2.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/BootsDexIntUnique2.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Victario's Influence",
+    "baseName": "Victario's Influence",
+    "relativePath": "Armours/BodyArmours/VictariosJacket.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/VictariosJacket.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/VictariosJacket.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/VictariosJacket.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/VictariosJacket.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Vis Mortis",
+    "baseName": "Vis Mortis",
+    "relativePath": "Armours/BodyArmours/VisMortis.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/VisMortis.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/VisMortis.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/VisMortis.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/VisMortis.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Voice of the Storm",
+    "baseName": "Voice of the Storm",
+    "relativePath": "Amulets/VoiceOfTheStorm.png",
+    "basePublicPath": "/assets/items/art/Amulets/VoiceOfTheStorm.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/VoiceOfTheStorm.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/VoiceOfTheStorm.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/VoiceOfTheStorm.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Void Battery",
+    "baseName": "Void Battery",
+    "relativePath": "Weapons/OneHandWeapons/Wands/VoidBattery.png",
+    "basePublicPath": "/assets/items/art/Weapons/OneHandWeapons/Wands/VoidBattery.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/OneHandWeapons/Wands/VoidBattery.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/OneHandWeapons/Wands/VoidBattery.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/OneHandWeapons/Wands/VoidBattery.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      256
+    ],
+    "foulbornSize": [
+      43,
+      142
+    ],
+    "upscaledSize": [
+      78,
+      256
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Voidbringer",
+    "baseName": "Voidbringer",
+    "relativePath": "Armours/Gloves/Hellbringer.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/Hellbringer.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/Hellbringer.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/Hellbringer.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/Hellbringer.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Voll's Devotion",
+    "baseName": "Voll's Devotion",
+    "relativePath": "Amulets/AgateAmuletUnique.png",
+    "basePublicPath": "/assets/items/art/Amulets/AgateAmuletUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/AgateAmuletUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/AgateAmuletUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/AgateAmuletUnique.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Voll's Protector",
+    "baseName": "Voll's Protector",
+    "relativePath": "Armours/BodyArmours/StrInt3AUnique.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/StrInt3AUnique.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/StrInt3AUnique.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/StrInt3AUnique.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/StrInt3AUnique.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Voll's Vision",
+    "baseName": "Voll's Vision",
+    "relativePath": "Armours/Helmets/VollsVision.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/VollsVision.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/VollsVision.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/VollsVision.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/VollsVision.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Warped Timepiece",
+    "baseName": "Warped Timepiece",
+    "relativePath": "Amulets/WarpedTimepiece.png",
+    "basePublicPath": "/assets/items/art/Amulets/WarpedTimepiece.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/WarpedTimepiece.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/WarpedTimepiece.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/WarpedTimepiece.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Warrior's Legacy",
+    "baseName": "Warrior's Legacy",
+    "relativePath": "Rings/WarriorsLegacy.png",
+    "basePublicPath": "/assets/items/art/Rings/WarriorsLegacy.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Rings/WarriorsLegacy.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Rings/WarriorsLegacy.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Rings/WarriorsLegacy.png",
+    "status": "generated",
+    "baseSize": [
+      82,
+      82
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      82,
+      82
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Windscream",
+    "baseName": "Windscream",
+    "relativePath": "Armours/Boots/Windscream.png",
+    "basePublicPath": "/assets/items/art/Armours/Boots/Windscream.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Boots/Windscream.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Boots/Windscream.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Boots/Windscream.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Witchbane",
+    "baseName": "Witchbane",
+    "relativePath": "Jewels/unique13.png",
+    "basePublicPath": "/assets/items/art/Jewels/unique13.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Jewels/unique13.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Jewels/unique13.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Jewels/unique13.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Wyrmsign",
+    "baseName": "Wyrmsign",
+    "relativePath": "Armours/Gloves/WyrmsignGloves.png",
+    "basePublicPath": "/assets/items/art/Armours/Gloves/WyrmsignGloves.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Gloves/WyrmsignGloves.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Gloves/WyrmsignGloves.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Gloves/WyrmsignGloves.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Xoph's Blood",
+    "baseName": "Xoph's Blood",
+    "relativePath": "Amulets/YphethakksHeartUpgrade.png",
+    "basePublicPath": "/assets/items/art/Amulets/YphethakksHeartUpgrade.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/YphethakksHeartUpgrade.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/YphethakksHeartUpgrade.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/YphethakksHeartUpgrade.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Xoph's Heart",
+    "baseName": "Xoph's Heart",
+    "relativePath": "Amulets/YphethakksHeart.png",
+    "basePublicPath": "/assets/items/art/Amulets/YphethakksHeart.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Amulets/YphethakksHeart.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Amulets/YphethakksHeart.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Amulets/YphethakksHeart.png",
+    "status": "generated",
+    "baseSize": [
+      78,
+      78
+    ],
+    "foulbornSize": [
+      47,
+      47
+    ],
+    "upscaledSize": [
+      78,
+      78
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Xoph's Inception",
+    "baseName": "Xoph's Inception",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/BloodPerigree.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/BloodPerigree.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/BloodPerigree.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/BloodPerigree.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/BloodPerigree.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Xoph's Nurture",
+    "baseName": "Xoph's Nurture",
+    "relativePath": "Weapons/TwoHandWeapons/Bows/BloodPerigreeBREACH.png",
+    "basePublicPath": "/assets/items/art/Weapons/TwoHandWeapons/Bows/BloodPerigreeBREACH.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Weapons/TwoHandWeapons/Bows/BloodPerigreeBREACH.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Weapons/TwoHandWeapons/Bows/BloodPerigreeBREACH.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Weapons/TwoHandWeapons/Bows/BloodPerigreeBREACH.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      312
+    ],
+    "foulbornSize": [
+      94,
+      188
+    ],
+    "upscaledSize": [
+      156,
+      312
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Ylfeban's Trickery",
+    "baseName": "Ylfeban's Trickery",
+    "relativePath": "Armours/Helmets/Ylfeban.png",
+    "basePublicPath": "/assets/items/art/Armours/Helmets/Ylfeban.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/Helmets/Ylfeban.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/Helmets/Ylfeban.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/Helmets/Ylfeban.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      156
+    ],
+    "foulbornSize": [
+      94,
+      94
+    ],
+    "upscaledSize": [
+      156,
+      156
+    ],
+    "upscaledExists": true
+  },
+  {
+    "name": "Foulborn Zahndethus' Cassock",
+    "baseName": "Zahndethus' Cassock",
+    "relativePath": "Armours/BodyArmours/Zahndethuscassock.png",
+    "basePublicPath": "/assets/items/art/Armours/BodyArmours/Zahndethuscassock.png",
+    "foulbornPublicPath": "/assets/items/art/Foulborn/LowResolution/Armours/BodyArmours/Zahndethuscassock.png",
+    "upscaledPublicPath": "/assets/items/art/Foulborn/Upscaled/Armours/BodyArmours/Zahndethuscassock.png",
+    "comparisonPath": "tmp/upscaled_foulborn_comparison/Armours/BodyArmours/Zahndethuscassock.png",
+    "status": "generated",
+    "baseSize": [
+      156,
+      234
+    ],
+    "foulbornSize": [
+      94,
+      141
+    ],
+    "upscaledSize": [
+      156,
+      234
+    ],
+    "upscaledExists": true
+  }
+]
