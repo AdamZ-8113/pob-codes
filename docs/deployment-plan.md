@@ -1,5 +1,7 @@
 # Deployment Plan
 
+This plan has now been implemented at a working baseline. For the day-to-day deployment workflow, secrets, variables, smoke tests, and recovery steps, use [docs/deployment-runbook.md](docs/deployment-runbook.md).
+
 ## Purpose
 
 This document is the implementation plan for deploying the site to `pob.codes` on Cloudflare and setting up a repeatable local-to-production workflow.
@@ -12,7 +14,7 @@ The initial repo scaffold now exists:
 - `scripts/render-worker-prod-config.mjs`
 - `.github/workflows/deploy.yml`
 
-The remaining work is mainly account wiring, KV namespace provisioning, and the first production deploy.
+The remaining work is now mostly incremental hardening and maintenance rather than first-time setup.
 
 ## Recommended Target Architecture
 
@@ -251,13 +253,12 @@ Define the normal day-to-day release process after the initial setup is complete
 
 ## Remaining Setup Work
 
-These are the pieces still not complete after the scaffold landed.
+These are the pieces still worth tightening after the initial deployment succeeded.
 
-1. Provision the real KV namespace IDs for production and preview.
-2. Add those KV IDs as GitHub repository variables.
-3. Run the first successful manual or CI deploy.
-4. Confirm the custom domains attach cleanly in Cloudflare.
-5. Do a production smoke test after the first release.
+1. Decide how `www.pob.codes` should behave.
+2. Decide whether pull requests should get preview deployments later.
+3. Decide whether to keep the current `typecheck after build` requirement or remove that coupling.
+4. Add more operational hardening where useful, such as rate limiting or abuse controls on uploads.
 
 ## Acceptance Checklist
 

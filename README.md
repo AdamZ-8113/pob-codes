@@ -26,7 +26,8 @@ Monorepo implementation for a read-only Path of Building viewer for Path of Exil
 
 ## Runbooks
 - league and major patch refresh: [docs/league-update-runbook.md](docs/league-update-runbook.md)
-- deployment setup and automation: [docs/deployment-plan.md](docs/deployment-plan.md)
+- deployment plan and architecture notes: [docs/deployment-plan.md](docs/deployment-plan.md)
+- deployment and release runbook: [docs/deployment-runbook.md](docs/deployment-runbook.md)
 
 ## Plan Artifacts
 See /codex-implementation for implementation handoff docs.
