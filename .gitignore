@@ -1,8 +1,11 @@
 node_modules/
 .next/
+**/.open-next/
 dist/
 coverage/
 .wrangler/
+**/.dev.vars
+**/.dev.vars.*
 .env
 .env.local
 local-pob-mirror/
@@ -16,3 +19,4 @@ tmp/
 .DS_Store
 Thumbs.db
 *.log
+!apps/web/.dev.vars.example

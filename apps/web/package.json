@@ -6,20 +6,24 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "start": "next start",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@pobcodes/shared-types": "0.1.0",
-    "next": "15.5.2",
+    "next": "^15.5.10",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.18.0",
     "@testing-library/react": "^16.3.2",
     "@types/react": "19.1.13",
     "@types/react-dom": "19.1.9",
-    "jsdom": "^28.1.0"
+    "jsdom": "^28.1.0",
+    "wrangler": "^4.79.0"
   }
 }

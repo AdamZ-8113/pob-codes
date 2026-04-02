@@ -7,7 +7,9 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "dev": "wrangler dev src/index.ts"
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --config .wrangler/deploy.toml"
   },
   "dependencies": {
     "@pobcodes/pob-codec": "0.1.0",
@@ -16,6 +18,6 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260211.0",
-    "wrangler": "^4.11.1"
+    "wrangler": "^4.79.0"
   }
 }

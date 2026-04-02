@@ -4,7 +4,15 @@
 
 This document is the implementation plan for deploying the site to `pob.codes` on Cloudflare and setting up a repeatable local-to-production workflow.
 
-It is intentionally written as a deferred execution checklist. We can come back to it later and implement it phase by phase.
+The initial repo scaffold now exists:
+
+- `apps/web/wrangler.jsonc`
+- `apps/web/open-next.config.ts`
+- `apps/worker/wrangler.prod.toml.template`
+- `scripts/render-worker-prod-config.mjs`
+- `.github/workflows/deploy.yml`
+
+The remaining work is mainly account wiring, KV namespace provisioning, and the first production deploy.
 
 ## Recommended Target Architecture
 
@@ -23,6 +31,7 @@ It is intentionally written as a deferred execution checklist. We can come back 
 ## Current Repo Facts
 
 - Root workspace scripts already exist for `build`, `test`, `typecheck`, `dev:web`, and `dev:worker`.
+- Root helper scripts now also exist for `verify`, `preview:web`, `deploy:web`, `deploy:worker`, and `deploy`.
 - The web app lives in `apps/web`.
 - The API Worker lives in `apps/worker`.
 - The Worker expects a KV binding named `BUILD_CODES`.
@@ -58,6 +67,9 @@ Make sure the external accounts and permissions are ready before touching repo c
 - GitHub repo
 - Cloudflare account ID
 - Cloudflare API token stored securely
+- GitHub repository variables for:
+  - `CF_KV_BUILD_CODES_ID`
+  - `CF_KV_BUILD_CODES_PREVIEW_ID`
 
 ## Phase 1: Local Workflow Baseline
 
@@ -89,20 +101,13 @@ Make `apps/web` deployable to Cloudflare Workers.
 
 ### Tasks
 
-1. Add Cloudflare/OpenNext support to `apps/web`.
-2. Add the Cloudflare-compatible config files required for a Next.js Workers deployment.
-3. Add `apps/web` deploy scripts for preview and production.
-4. Add environment handling for production API calls:
+1. Keep the committed Cloudflare/OpenNext config in `apps/web` as the source of truth.
+2. Use the committed `apps/web/wrangler.jsonc` for the `pob.codes` Worker deployment.
+3. Use the committed `apps/web` deploy scripts for preview and production.
+4. Keep environment handling for production API calls set to:
    - `POB_CODES_API_BASE=https://api.pob.codes`
    - `NEXT_PUBLIC_API_BASE=https://api.pob.codes`
 5. Preserve the current local dev behavior where the web app uses `http://localhost:8787` by default.
-
-### Expected Repo Changes Later
-
-- Add OpenNext/Cloudflare package dependencies to `apps/web`
-- Add a Wrangler config for `apps/web`
-- Add an OpenNext config for `apps/web`
-- Add scripts such as `preview` and `deploy` in `apps/web/package.json`
 
 ### Output
 
@@ -116,16 +121,20 @@ Prepare `apps/worker` for a real production deploy under `api.pob.codes`.
 
 ### Tasks
 
-1. Replace the placeholder KV IDs in `apps/worker/wrangler.toml`.
-2. Create or bind a real KV namespace for `BUILD_CODES`.
-3. Set Worker production vars:
+1. Keep `apps/worker/wrangler.toml` for local development.
+2. Use `apps/worker/wrangler.prod.toml.template` plus `scripts/render-worker-prod-config.mjs` to create the production deploy config.
+3. Create or bind a real KV namespace for `BUILD_CODES`.
+4. Store the real KV namespace IDs in GitHub repository variables:
+   - `CF_KV_BUILD_CODES_ID`
+   - `CF_KV_BUILD_CODES_PREVIEW_ID`
+5. Set Worker production vars:
    - `BASE_URL=https://pob.codes`
    - `PARSED_PAYLOAD_CACHE_ENABLED=true`
    - `PARSED_PAYLOAD_CACHE_VERSION=1`
    - `PARSED_PAYLOAD_TTL_SECONDS=2592000`
    - `JSON_RESPONSE_EDGE_CACHE_ENABLED=true`
-4. Optionally set `MAX_UPLOAD_SIZE` later if production limits need tuning.
-5. Confirm the Worker responds correctly for:
+6. Optionally set `MAX_UPLOAD_SIZE` later if production limits need tuning.
+7. Confirm the Worker responds correctly for:
    - `POST /pob`
    - `POST /pob/parse`
    - `GET /:id/raw`
@@ -196,9 +205,9 @@ Use GitHub Actions from the repo root instead of relying on separate Cloudflare 
 
 ### Tasks
 
-1. Add a GitHub Actions workflow at `.github/workflows/deploy.yml`.
-2. Trigger it on pushes to `main`.
-3. In the workflow:
+1. Keep `.github/workflows/deploy.yml` as the production pipeline.
+2. Let it validate pull requests and deploy only from `main`.
+3. The workflow should:
    - check out the repo
    - install dependencies with `npm ci`
    - run `npm run build`
@@ -209,7 +218,9 @@ Use GitHub Actions from the repo root instead of relying on separate Cloudflare 
 4. Store CI secrets in GitHub:
    - `CLOUDFLARE_ACCOUNT_ID`
    - `CLOUDFLARE_API_TOKEN`
-5. Add a PR validation workflow later if desired, using the same verification steps without production deploy.
+5. Store CI repository variables in GitHub:
+   - `CF_KV_BUILD_CODES_ID`
+   - `CF_KV_BUILD_CODES_PREVIEW_ID`
 
 ### Output
 
@@ -238,15 +249,15 @@ Define the normal day-to-day release process after the initial setup is complete
 
 - Predictable and low-effort production updates
 
-## Deferred Repo Changes To Implement Later
+## Remaining Setup Work
 
-These are not done yet. They are the likely code/config changes to make when we return to this plan.
+These are the pieces still not complete after the scaffold landed.
 
-1. Add Cloudflare/OpenNext config to `apps/web`.
-2. Replace placeholder KV namespace IDs in `apps/worker/wrangler.toml`.
-3. Add root-level helper scripts for deploy and CI verification if useful.
-4. Add GitHub Actions workflow files.
-5. Add a short deployment runbook section to `README.md` after the process is working.
+1. Provision the real KV namespace IDs for production and preview.
+2. Add those KV IDs as GitHub repository variables.
+3. Run the first successful manual or CI deploy.
+4. Confirm the custom domains attach cleanly in Cloudflare.
+5. Do a production smoke test after the first release.
 
 ## Acceptance Checklist
 
@@ -266,6 +277,7 @@ The deployment work is complete when all of the following are true:
 1. Should `www.pob.codes` redirect to the apex domain or serve the app directly?
 2. Do we want preview deployments for pull requests, or only production deploys on `main`?
 3. Do we want to keep the current `typecheck after build` requirement, or fix the web workspace so typechecking works on a clean checkout without a prior build?
+4. Should the KV IDs live only in GitHub variables, or do we also want a documented local manual-deploy path using the same `CF_KV_BUILD_CODES_*` env vars?
 
 ## Suggested Execution Order When We Return
 

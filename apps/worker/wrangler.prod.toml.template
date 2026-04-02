@@ -1,0 +1,20 @@
+name = "pob-codes-worker"
+main = "src/index.ts"
+compatibility_date = "2026-04-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "BUILD_CODES"
+id = "__CF_KV_BUILD_CODES_ID__"
+preview_id = "__CF_KV_BUILD_CODES_PREVIEW_ID__"
+
+[[routes]]
+pattern = "api.pob.codes"
+custom_domain = true
+
+[vars]
+BASE_URL = "https://pob.codes"
+PARSED_PAYLOAD_CACHE_ENABLED = "true"
+PARSED_PAYLOAD_CACHE_VERSION = "1"
+PARSED_PAYLOAD_TTL_SECONDS = "2592000"
+JSON_RESPONSE_EDGE_CACHE_ENABLED = "true"

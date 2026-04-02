@@ -10,6 +10,7 @@
     "build": "npm run --workspaces build",
     "test": "npm run --workspaces test",
     "typecheck": "npm run --workspaces typecheck",
+    "verify": "npm run build && npm run typecheck && npm run test",
     "sync:data": "node scripts/sync-data.mjs",
     "update:local-pob-mirror": "node scripts/update-local-pob-mirror.mjs",
     "update:pob-upstream": "node scripts/update-local-pob-mirror.mjs",
@@ -17,7 +18,12 @@
     "verify:unique-art": "node scripts/verify-unique-art-coverage.mjs",
     "dev:restart": "restart-dev.cmd",
     "dev:web": "npm --workspace @pobcodes/web run dev",
-    "dev:worker": "npm --workspace @pobcodes/worker run dev"
+    "dev:worker": "npm --workspace @pobcodes/worker run dev",
+    "preview:web": "npm --workspace @pobcodes/web run preview",
+    "render:worker-config": "node scripts/render-worker-prod-config.mjs",
+    "deploy:web": "npm --workspace @pobcodes/web run deploy",
+    "deploy:worker": "npm run render:worker-config && npm --workspace @pobcodes/worker run deploy:prod",
+    "deploy": "npm run deploy:worker && npm run deploy:web"
   },
   "devDependencies": {
     "@types/node": "^24.5.2",
