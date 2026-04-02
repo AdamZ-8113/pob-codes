@@ -1560,19 +1560,15 @@ function parseClusterJewel(item: ItemPayload): ParsedClusterJewel | undefined {
 
   const sizeName = `${capitalize(sizeMatch[1].toLowerCase())} Cluster Jewel` as ParsedClusterJewel["sizeName"];
   const lines = collectClusterItemLines(item);
-  const nodeCountLine = lines.find((line) => /^Adds \d+ Passive Skills$/i.test(line));
-  const nodeCount = Number(nodeCountLine?.match(/^Adds (\d+) Passive Skills$/i)?.[1]);
-  if (!Number.isFinite(nodeCount)) {
-    return undefined;
-  }
-
-  const socketLine = lines.find((line) => /^\d+ Added Passive Skill(?:s)? (?:are|is)(?: a)? Jewel Socket(?:s)?$/i.test(line));
-  const socketCount = Number(
-    socketLine?.match(/^(\d+) Added Passive Skill(?:s)? (?:are|is)(?: a)? Jewel Socket(?:s)?$/i)?.[1] ?? 0,
-  );
   const notableNames = lines
     .map((line) => line.match(/^1 Added Passive Skill is (.+)$/)?.[1]?.trim())
     .filter((line): line is string => Boolean(line && line.toLowerCase() !== "a jewel socket"));
+  const socketCount = extractClusterSocketCount(lines);
+  const nodeCount = extractClusterNodeCount(lines, socketCount, notableNames.length);
+  if (nodeCount === undefined) {
+    return undefined;
+  }
+
   const smallPassiveLines = lines
     .filter((line) => line.startsWith(CLUSTER_SMALL_PASSIVE_GRANT_PREFIX))
     .map((line) => line.slice(CLUSTER_SMALL_PASSIVE_GRANT_PREFIX.length).trim());
@@ -1608,6 +1604,36 @@ function collectClusterItemLines(item: ItemPayload) {
   ];
 
   return [...new Set(lines.map((line) => line.trim()).filter((line) => line.length > 0))];
+}
+
+function extractClusterSocketCount(lines: string[]) {
+  const explicitSocketLine = lines.find((line) => /^Adds \d+ Jewel Socket Passive Skills?$/i.test(line));
+  const explicitSocketCount = Number(explicitSocketLine?.match(/^Adds (\d+) Jewel Socket Passive Skills?$/i)?.[1]);
+  if (Number.isFinite(explicitSocketCount)) {
+    return explicitSocketCount;
+  }
+
+  const implicitSocketLine = lines.find((line) => /^\d+ Added Passive Skill(?:s)? (?:are|is)(?: a)? Jewel Socket(?:s)?$/i.test(line));
+  const implicitSocketCount = Number(
+    implicitSocketLine?.match(/^(\d+) Added Passive Skill(?:s)? (?:are|is)(?: a)? Jewel Socket(?:s)?$/i)?.[1] ?? 0,
+  );
+  return Number.isFinite(implicitSocketCount) ? implicitSocketCount : 0;
+}
+
+function extractClusterNodeCount(lines: string[], socketCount: number, notableCount: number) {
+  const totalNodeLine = lines.find((line) => /^Adds \d+ Passive Skills$/i.test(line));
+  const totalNodeCount = Number(totalNodeLine?.match(/^Adds (\d+) Passive Skills$/i)?.[1]);
+  if (Number.isFinite(totalNodeCount)) {
+    return totalNodeCount;
+  }
+
+  const smallPassiveLine = lines.find((line) => /^Adds \d+ Small Passive Skills?(?: which grant.+)?$/i.test(line));
+  const smallPassiveCount = Number(smallPassiveLine?.match(/^Adds (\d+) Small Passive Skills?(?: which grant.+)?$/i)?.[1]);
+  if (Number.isFinite(smallPassiveCount)) {
+    return smallPassiveCount + socketCount + notableCount;
+  }
+
+  return undefined;
 }
 
 function formatClusterSmallPassiveLine(line: string) {

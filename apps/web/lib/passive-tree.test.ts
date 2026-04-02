@@ -1638,6 +1638,43 @@ describe("passive-tree helpers", () => {
     );
   });
 
+  it("renders nested medium and small cluster jewels inside Voices", () => {
+    const sampleCode = readFileSync(new URL("../../../data/voices nested clusters 328.txt", import.meta.url), "utf8").trim();
+    const clusterLayout = JSON.parse(
+      readFileSync(
+        new URL("../../../apps/web/public/assets/passive-tree/default/layout-default.json", import.meta.url),
+        "utf8",
+      ),
+    ) as PassiveTreeLayout;
+    const payload = parseBuildCodeToPayload(sampleCode);
+    const activeTree = payload.treeSpecs[payload.activeTreeIndex];
+    const itemsById = new Map(payload.items.map((item) => [item.id, item]));
+
+    const augmentedLayout = augmentPassiveTreeLayoutWithClusters(clusterLayout, activeTree, itemsById, "default");
+    const augmentedNodeIds = new Set(augmentedLayout.nodes.map((node) => node.id));
+    const visibleNodeIds = getVisiblePassiveTreeNodeIds(augmentedLayout.nodes, activeTree, itemsById);
+    const dynamicActiveNodeIds = activeTree.nodes.filter((nodeId) => nodeId >= 65536);
+    const activeDynamicNodes = augmentedLayout.nodes.filter((node) => dynamicActiveNodeIds.includes(node.id));
+    const allDynamicNodes = augmentedLayout.nodes.filter((node) => node.id >= 65536);
+
+    expect(dynamicActiveNodeIds.filter((nodeId) => !augmentedNodeIds.has(nodeId))).toEqual([]);
+    expect(dynamicActiveNodeIds.filter((nodeId) => !visibleNodeIds.has(nodeId))).toEqual([]);
+    expect(activeDynamicNodes.some((node) => node.name === "Peak Vigour")).toBe(true);
+    expect(activeDynamicNodes.some((node) => node.name === "Spiked Concoction")).toBe(true);
+    expect(activeDynamicNodes.some((node) => node.name === "Fasting")).toBe(true);
+    expect(activeDynamicNodes.some((node) => node.name === "Expert Sabotage")).toBe(true);
+    expect(activeDynamicNodes.some((node) => node.name === "Guerilla Tactics")).toBe(true);
+    expect(allDynamicNodes.some((node) => node.name === "Enduring Composure")).toBe(true);
+    expect(
+      activeDynamicNodes.some(
+        (node) => node.name === "Small Passive" && node.stats.includes("6% increased Flask Effect Duration"),
+      ),
+    ).toBe(true);
+    expect(
+      allDynamicNodes.some((node) => node.name === "Small Passive" && node.stats.includes("15% increased Armour")),
+    ).toBe(true);
+  });
+
   it("resolves atlas-backed sprites for regular and mastery nodes", () => {
     const notableSprite = resolvePassiveTreeSprite(layout.nodes[1], true, false, spriteManifest);
     expect(notableSprite?.atlas.imagePath).toBe("/assets/passive-tree/default/skills-4.jpg");
