@@ -16,6 +16,7 @@ import {
 } from "../lib/build-viewer-selection";
 import { buildApiUrl } from "../lib/api-base";
 import { getSecondaryAscendancyName } from "../lib/ascendancy-names";
+import { recordRecentBuild } from "../lib/recent-builds";
 import { isWeaponSwapSlot } from "../lib/weapon-swap";
 import { CompareBuildModal } from "./compare-build-modal";
 import { ConfigsPanel } from "./configs-panel";
@@ -57,10 +58,19 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
   const [selection, setSelection] = useState<BuildViewerSelection>(() => getInitialBuildViewerSelection(payload));
   const [showWeaponSwap, setShowWeaponSwap] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState<{ message: string; nonce: number } | null>(null);
+  const recentBuildId = payload.meta.id?.trim();
   const loadouts = useMemo(() => getBuildLoadouts(payload), [payload]);
   const selectedLoadout = useMemo(() => findMatchingBuildLoadout(payload, selection), [payload, selection]);
   const activeTree = payload.treeSpecs[selection.treeIndex] ?? payload.treeSpecs[payload.activeTreeIndex];
   const bloodlineAscendancyName = getSecondaryAscendancyName(activeTree?.secondaryAscendancyId);
+  const recentBuildTitle = useMemo(() => {
+    const recentBuildTree = payload.treeSpecs[payload.activeTreeIndex];
+    return buildLoadoutTitle(
+      payload,
+      payload.activeSkillSetId,
+      getSecondaryAscendancyName(recentBuildTree?.secondaryAscendancyId),
+    );
+  }, [payload]);
   const loadoutTitle = useMemo(
     () => buildLoadoutTitle(payload, selection.skillSetId, bloodlineAscendancyName),
     [payload, selection.skillSetId, bloodlineAscendancyName],
@@ -97,6 +107,17 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
 
     return () => window.clearTimeout(timeoutId);
   }, [copyFeedback]);
+
+  useEffect(() => {
+    if (!recentBuildId) {
+      return;
+    }
+
+    recordRecentBuild({
+      id: recentBuildId,
+      title: recentBuildTitle || recentBuildId,
+    });
+  }, [recentBuildId, recentBuildTitle]);
 
   async function handleShareBuild() {
     const shareUrl = getBuildShareUrl(payload);

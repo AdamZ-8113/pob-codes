@@ -106,7 +106,6 @@ export function BuildCodeForm() {
 
   return (
     <form onSubmit={onSubmit} className="panel">
-      <h2>Paste PoB Code or Build URL</h2>
       <textarea
         className="code-area"
         value={code}
