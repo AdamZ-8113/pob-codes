@@ -1,22 +1,54 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { buildApiUrl } from "../lib/api-base";
+import { isLocalHostname } from "../lib/local-host";
 import type { SamplePobFile } from "../lib/sample-pob-files";
 
-interface BuildCodeFormProps {
-  sampleFiles?: SamplePobFile[];
-}
-
-export function BuildCodeForm({ sampleFiles = [] }: BuildCodeFormProps) {
+export function BuildCodeForm() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingFixture, setLoadingFixture] = useState(false);
-  const [selectedSampleId, setSelectedSampleId] = useState(sampleFiles[0]?.id ?? "");
+  const [sampleFiles, setSampleFiles] = useState<SamplePobFile[]>([]);
+  const [selectedSampleId, setSelectedSampleId] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isLocalHostname(window.location.hostname)) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const res = await fetch("/api/pob-samples", { cache: "no-store" });
+        if (!res.ok) {
+          return;
+        }
+
+        const body = (await res.json()) as { samples?: SamplePobFile[] } | null;
+        if (cancelled) {
+          return;
+        }
+
+        const nextSampleFiles = Array.isArray(body?.samples) ? body.samples : [];
+        setSampleFiles(nextSampleFiles);
+        setSelectedSampleId((current) => current || nextSampleFiles[0]?.id || "");
+      } catch {
+        if (!cancelled) {
+          setSampleFiles([]);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function onLoadFixture() {
     if (!selectedSampleId) {

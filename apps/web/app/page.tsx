@@ -1,9 +1,6 @@
 import { BuildCodeForm } from "../components/build-code-form";
-import { listSamplePobFiles } from "../lib/sample-pob-files";
 
 export default function HomePage() {
-  const sampleFiles = listSamplePobFiles();
-
   return (
     <main>
       <div style={{ marginBottom: 18 }}>
@@ -12,7 +9,7 @@ export default function HomePage() {
           Full read-only Path of Building visualization with short URLs.
         </p>
       </div>
-      <BuildCodeForm sampleFiles={sampleFiles} />
+      <BuildCodeForm />
     </main>
   );
 }

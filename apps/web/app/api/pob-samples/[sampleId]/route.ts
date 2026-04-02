@@ -1,4 +1,4 @@
-import { readSamplePobFile } from "../../../../lib/sample-pob-files";
+import { isLocalRequest } from "../../../../lib/local-host";
 
 interface RouteContext {
   params: Promise<{
@@ -6,7 +6,12 @@ interface RouteContext {
   }>;
 }
 
-export async function GET(_: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
+  if (!isLocalRequest(request)) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  const { readSamplePobFile } = await import("../../../../lib/sample-pob-files");
   const { sampleId } = await context.params;
   const sample = readSamplePobFile(sampleId);
 
