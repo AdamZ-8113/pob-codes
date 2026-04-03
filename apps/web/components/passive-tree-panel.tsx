@@ -480,6 +480,15 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
       ),
     [activeTree],
   );
+  const tattooNodeIds = useMemo(
+    () =>
+      new Set(
+        activeTree?.overrides
+          .filter((override) => /\bTattoo\b/i.test(override.name))
+          .map((override) => override.nodeId) ?? [],
+      ),
+    [activeTree],
+  );
   const hoveredDescription = hoveredNode && activeTree ? describePassiveTreeNode(hoveredNode, activeTree) : undefined;
   const timelessKeystoneTransformations = useMemo(
     () => (activeTree ? resolveTimelessKeystoneTransformations(activeTree, layoutNodeIndex, itemsById) : new Map()),
@@ -1045,6 +1054,7 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
                           allocated
                           onHoverChange={setHoveredNode}
                           runegraft={runegraftNodeIds.has(node.id)}
+                          tattoo={tattooNodeIds.has(node.id)}
                         />
                       ))}
                     </g>
@@ -1279,11 +1289,13 @@ const TreeNode = memo(function TreeNode({
   node,
   onHoverChange,
   runegraft,
+  tattoo,
 }: {
   allocated: boolean;
   node: PassiveTreeLayoutNode;
   onHoverChange?: Dispatch<SetStateAction<HoveredTreeNodeState | null>>;
   runegraft?: boolean;
+  tattoo?: boolean;
 }) {
   const kind = getPassiveTreeNodeKind(node);
   const radius = getPassiveTreeNodeRadius(node) * 1.4;
@@ -1313,7 +1325,7 @@ const TreeNode = memo(function TreeNode({
 
   return (
     <g
-      className={`tree-node tree-node-${kind}${allocated ? " tree-node-allocated" : ""}${runegraft ? " tree-node-runegraft" : ""}${isInteractive ? " tree-node-interactive" : ""}`}
+      className={`tree-node tree-node-${kind}${allocated ? " tree-node-allocated" : ""}${runegraft ? " tree-node-runegraft" : ""}${tattoo ? " tree-node-tattoo" : ""}${isInteractive ? " tree-node-interactive" : ""}`}
       transform={`translate(${node.x} ${node.y})`}
       onBlur={clearHover}
       onFocus={setHoverFromFocus}

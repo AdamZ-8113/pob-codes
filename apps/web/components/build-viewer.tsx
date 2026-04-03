@@ -7,6 +7,7 @@ import type { BuildPayload } from "@pobcodes/shared-types";
 import {
   applyBuildLoadout,
   findMatchingBuildLoadout,
+  getSelectedConfigSet,
   getBuildLoadouts,
   getInitialBuildViewerSelection,
   type BuildViewerSelection,
@@ -15,10 +16,12 @@ import { buildApiUrl } from "../lib/api-base";
 import { getSecondaryAscendancyName } from "../lib/ascendancy-names";
 import {
   buildBuildSummaryEntries,
+  type BuildSummaryEntry,
   buildLoadoutTitle,
   buildRecentBuildSnapshot,
   resolveBuildPatchVersion,
 } from "../lib/build-overview";
+import { POB_CONFIG_OPTIONS } from "../lib/generated/pob-config-options";
 import { copyTextToClipboard } from "../lib/clipboard";
 import { recordRecentBuild } from "../lib/recent-builds";
 import { isWeaponSwapSlot } from "../lib/weapon-swap";
@@ -30,6 +33,39 @@ import { PassiveTreePanel } from "./passive-tree-panel";
 import { SkillsPanel } from "./skills-panel";
 import { StatsPanel } from "./stats-panel";
 
+const ENEMY_BOSS_OPTION = POB_CONFIG_OPTIONS.find((option) => option.key === "enemyIsBoss");
+const ENEMY_BOSS_LABELS: Record<string, string> = {
+  Boss: "Standard Boss",
+  None: "No Boss",
+  Pinnacle: "Pinnacle Boss",
+  Uber: "Uber Boss",
+};
+
+function findSummaryMetric(entries: BuildSummaryEntry[], tone: BuildSummaryEntry["tone"]) {
+  return entries.find((entry) => entry.tone === tone);
+}
+
+function resolveEnemyBossLabel(configInputs: Record<string, unknown> | undefined): string | undefined {
+  if (!ENEMY_BOSS_OPTION?.choices?.length) {
+    return undefined;
+  }
+
+  const selectedValue = configInputs?.enemyIsBoss ?? ENEMY_BOSS_OPTION.defaultValue;
+  return selectedValue !== undefined ? (ENEMY_BOSS_LABELS[String(selectedValue)] ?? String(selectedValue)) : undefined;
+}
+
+function formatGuardAnnotation(annotation: string | undefined): string | undefined {
+  if (annotation === "Guard Skill ON") {
+    return "w/Guard";
+  }
+
+  if (annotation === "Guard Skill OFF") {
+    return "w/o Guard";
+  }
+
+  return annotation;
+}
+
 export function BuildViewer({ payload }: { payload: BuildPayload }) {
   const [selection, setSelection] = useState<BuildViewerSelection>(() => getInitialBuildViewerSelection(payload));
   const [showWeaponSwap, setShowWeaponSwap] = useState(false);
@@ -38,6 +74,7 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
   const recentBuildId = payload.meta.id?.trim();
   const loadouts = useMemo(() => getBuildLoadouts(payload), [payload]);
   const selectedLoadout = useMemo(() => findMatchingBuildLoadout(payload, selection), [payload, selection]);
+  const activeConfigSet = useMemo(() => getSelectedConfigSet(payload, selection.configSetId), [payload, selection.configSetId]);
   const activeTree = payload.treeSpecs[selection.treeIndex] ?? payload.treeSpecs[payload.activeTreeIndex];
   const bloodlineAscendancyName = getSecondaryAscendancyName(activeTree?.secondaryAscendancyId);
   const recentBuildSnapshot = useMemo(() => buildRecentBuildSnapshot(payload), [payload]);
@@ -47,14 +84,16 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
   );
   const loadoutPatchVersion = useMemo(() => resolveBuildPatchVersion(payload, selection.treeIndex), [payload, selection.treeIndex]);
   const summary = useMemo(() => buildBuildSummaryEntries(payload, selection.skillSetId), [payload, selection.skillSetId]);
-  const summaryPrimaryMetrics = useMemo(
-    () => summary.metrics.filter((entry) => entry.tone !== "dps"),
-    [summary.metrics],
+  const summaryLifeMetric = useMemo(() => findSummaryMetric(summary.metrics, "life"), [summary.metrics]);
+  const summaryEnergyShieldMetric = useMemo(() => findSummaryMetric(summary.metrics, "energy-shield"), [summary.metrics]);
+  const summaryManaMetric = useMemo(() => findSummaryMetric(summary.metrics, "mana"), [summary.metrics]);
+  const summaryEhpMetric = useMemo(() => findSummaryMetric(summary.metrics, "ehp"), [summary.metrics]);
+  const summaryDpsMetric = useMemo(() => findSummaryMetric(summary.metrics, "dps"), [summary.metrics]);
+  const enemyBossLabel = useMemo(
+    () => resolveEnemyBossLabel(activeConfigSet?.inputs ?? payload.config),
+    [activeConfigSet?.inputs, payload.config],
   );
-  const summaryDpsMetrics = useMemo(
-    () => summary.metrics.filter((entry) => entry.tone === "dps"),
-    [summary.metrics],
-  );
+  const guardAnnotation = useMemo(() => formatGuardAnnotation(summaryEhpMetric?.annotation), [summaryEhpMetric?.annotation]);
   const hasWeaponSwapContent = useMemo(
     () =>
       payload.itemSets.some((set) => set.slots.some((slot) => isWeaponSwapSlot(slot.name))) ||
@@ -191,52 +230,55 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
               <div className="build-loadout-title">
                 {loadoutTitle}
                 {payload.build.level ? <span className="meta"> (Level {payload.build.level})</span> : null}
+                {enemyBossLabel ? <span className="meta"> ({enemyBossLabel})</span> : null}
               </div>
               {loadoutPatchVersion ? <div className="build-loadout-version">{loadoutPatchVersion}</div> : null}
             </div>
-            {(summaryPrimaryMetrics.length > 0 || summaryDpsMetrics.length > 0) && (
+            {(summaryLifeMetric ||
+              summaryEnergyShieldMetric ||
+              summaryManaMetric ||
+              summaryEhpMetric ||
+              summaryDpsMetric ||
+              summary.resistances.length > 0 ||
+              enemyBossLabel) && (
               <div className="build-loadout-stats">
-                {summaryPrimaryMetrics.length > 0 && (
+                {(summaryLifeMetric || summaryEnergyShieldMetric || summaryManaMetric || summaryEhpMetric) && (
                   <div className="build-loadout-stats-line">
-                    {summaryPrimaryMetrics.map((entry) => (
-                      <span
-                        className={`build-loadout-stat build-loadout-stat--${entry.tone}`}
-                        key={`build-summary:${entry.key}`}
-                      >
-                        <span className="build-loadout-stat-label">{entry.label}:</span>
-                        <span className="build-loadout-stat-value">{entry.value}</span>
-                        {entry.annotation && <span className="build-loadout-stat-annotation">({entry.annotation})</span>}
+                    {summaryLifeMetric && (
+                      <span className={`build-loadout-stat build-loadout-stat--${summaryLifeMetric.tone}`}>
+                        <span className="build-loadout-stat-label">{summaryLifeMetric.label}:</span>
+                        <span className="build-loadout-stat-value">{summaryLifeMetric.value}</span>
                       </span>
-                    ))}
-                    {summaryDpsMetrics.length === 0 && summary.resistances.length > 0 && (
-                      <span className="build-loadout-stat build-loadout-stat--resistances">
-                        <span className="build-loadout-stat-label">Resistances:</span>
-                        <span className="build-loadout-resistances">
-                          {summary.resistances.map((entry, index) => (
-                            <React.Fragment key={`build-resistance:${entry.key}`}>
-                              {index > 0 && <span className="build-loadout-resistance-separator">/</span>}
-                              <span className={`build-loadout-resistance build-loadout-stat--${entry.tone}`}>
-                                {entry.value}
-                              </span>
-                            </React.Fragment>
-                          ))}
-                        </span>
+                    )}
+                    {summaryEnergyShieldMetric && (
+                      <span className={`build-loadout-stat build-loadout-stat--${summaryEnergyShieldMetric.tone}`}>
+                        <span className="build-loadout-stat-label">{summaryEnergyShieldMetric.label}:</span>
+                        <span className="build-loadout-stat-value">{summaryEnergyShieldMetric.value}</span>
+                      </span>
+                    )}
+                    {summaryManaMetric && (
+                      <span className={`build-loadout-stat build-loadout-stat--${summaryManaMetric.tone}`}>
+                        <span className="build-loadout-stat-label">{summaryManaMetric.label}:</span>
+                        <span className="build-loadout-stat-value">{summaryManaMetric.value}</span>
+                      </span>
+                    )}
+                    {summaryEhpMetric && (
+                      <span className={`build-loadout-stat build-loadout-stat--${summaryEhpMetric.tone}`}>
+                        <span className="build-loadout-stat-label">{summaryEhpMetric.label}:</span>
+                        <span className="build-loadout-stat-value">{summaryEhpMetric.value}</span>
+                        {guardAnnotation && <span className="build-loadout-stat-annotation">({guardAnnotation})</span>}
                       </span>
                     )}
                   </div>
                 )}
-                {summaryDpsMetrics.length > 0 && (
+                {(summaryDpsMetric || summary.resistances.length > 0) && (
                   <div className="build-loadout-stats-line">
-                    {summaryDpsMetrics.map((entry) => (
-                      <span
-                        className={`build-loadout-stat build-loadout-stat--${entry.tone}`}
-                        key={`build-summary:${entry.key}`}
-                      >
-                        <span className="build-loadout-stat-label">{entry.label}:</span>
-                        <span className="build-loadout-stat-value">{entry.value}</span>
-                        {entry.annotation && <span className="build-loadout-stat-annotation">({entry.annotation})</span>}
+                    {summaryDpsMetric && (
+                      <span className={`build-loadout-stat build-loadout-stat--${summaryDpsMetric.tone}`}>
+                        <span className="build-loadout-stat-label">{summaryDpsMetric.label}:</span>
+                        <span className="build-loadout-stat-value">{summaryDpsMetric.value}</span>
                       </span>
-                    ))}
+                    )}
                     {summary.resistances.length > 0 && (
                       <span className="build-loadout-stat build-loadout-stat--resistances">
                         <span className="build-loadout-stat-label">Resistances:</span>

@@ -992,6 +992,100 @@ describe("PassiveTreePanel", () => {
     });
   });
 
+  it("marks tattooed passives with a dedicated node class", async () => {
+    vi.mocked(fetch).mockImplementation(async () => {
+      return new Response(
+        JSON.stringify({
+          bounds: {
+            maxX: 600,
+            maxY: 300,
+            minX: -600,
+            minY: -300,
+          },
+          groups: [
+            {
+              id: 1,
+              x: 0,
+              y: 0,
+            },
+          ],
+          nodes: [
+            {
+              classStartIndex: 5,
+              flavourText: [],
+              groupCenterX: 0,
+              groupCenterY: 0,
+              groupId: 1,
+              id: 6,
+              isJewelSocket: false,
+              isKeystone: false,
+              isMastery: false,
+              isNotable: false,
+              masteryEffects: [],
+              name: "Templar Start",
+              orbit: 0,
+              orbitIndex: 0,
+              orbitRadius: 0,
+              out: [11],
+              reminderText: [],
+              startArt: "centertemplar",
+              stats: ["+10 to Strength"],
+              x: 0,
+              y: 0,
+            },
+            {
+              flavourText: [],
+              groupCenterX: 0,
+              groupCenterY: 0,
+              groupId: 1,
+              id: 11,
+              isJewelSocket: false,
+              isKeystone: false,
+              isMastery: false,
+              isNotable: false,
+              masteryEffects: [],
+              name: "Strength Passive",
+              orbit: 1,
+              orbitIndex: 0,
+              orbitRadius: 82,
+              out: [],
+              reminderText: [],
+              stats: ["+10 to Strength"],
+              x: 0,
+              y: -82,
+            },
+          ],
+          unpositionedNodeIds: [],
+        }),
+      );
+    });
+
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      items: [],
+      treeSpecs: [
+        {
+          active: true,
+          ascendancyId: 2,
+          classId: 5,
+          masteryEffects: [],
+          nodes: [6, 11],
+          overrides: [{ effect: "+4 to Dexterity", name: "Tattoo of the Ramako Scout", nodeId: 11 }],
+          sockets: [],
+          title: "Main Tree",
+          url: "https://example.com/trees/main",
+          version: "3.28",
+        },
+      ],
+    };
+
+    const { container } = render(<PassiveTreePanel payload={payload} treeIndex={0} />);
+
+    await waitFor(() => {
+      expect(container.querySelector(".tree-node-tattoo.tree-node-passive.tree-node-allocated")).toBeTruthy();
+    });
+  });
+
   it("shows transformed timeless keystones with the original keystone in parentheses", async () => {
     vi.mocked(fetch).mockImplementation(async () => {
       return new Response(
