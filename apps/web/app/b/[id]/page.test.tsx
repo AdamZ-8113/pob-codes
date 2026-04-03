@@ -349,10 +349,10 @@ describe("/b/[id] page", () => {
 
     expect(getSummaryLine()).toContain("eHP:");
     expect(getSummaryLine()).toContain("640,068");
-    expect(getSummaryLine()).toContain("(Guard Skill ON)");
+    expect(getSummaryLine()).toContain("(w/Guard)");
 
     fireEvent.change(screen.getByLabelText("Skill Set"), { target: { value: "2" } });
-    expect(getSummaryLine()).toContain("(Guard Skill OFF)");
+    expect(getSummaryLine()).toContain("(w/o Guard)");
   });
 
   it("copies the current short build URL from Share this PoB", async () => {
