@@ -583,6 +583,63 @@ describe("SkillsPanel", () => {
     expect(container.querySelector(".poe-gem-icon-sprite-base")).toBeNull();
   });
 
+  it("renders unslotted item-granted skills that only expose a skill id", () => {
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      activeSkillSetId: 1,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  level: 1,
+                  nameSpec: "",
+                  quality: 0,
+                  selected: true,
+                  skillId: "SummonSpectralTiger",
+                  support: false,
+                },
+              ],
+              id: "spectral-tiger",
+              mainActiveSkill: 1,
+              selected: true,
+            },
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  level: 1,
+                  nameSpec: "",
+                  quality: 0,
+                  selected: true,
+                  skillId: "SummonElementalRelic",
+                  support: false,
+                },
+              ],
+              id: "elemental-relic",
+              mainActiveSkill: 1,
+              selected: true,
+            },
+          ],
+          id: 1,
+          title: "Mapping",
+        },
+      ],
+    };
+
+    const { container } = render(<SkillsPanel payload={payload} />);
+
+    expect(
+      Array.from(container.querySelectorAll(".gem-name")).map((element) => element.textContent?.trim() ?? ""),
+    ).toEqual(["Summon Spectral Tiger", "Summon Elemental Relic"]);
+    expect(container.querySelectorAll(".skill-group-card")).toHaveLength(2);
+  });
+
   it("renders gem tooltip stat lines with duplicate stat keys without React key warnings", () => {
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 

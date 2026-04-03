@@ -69,6 +69,11 @@ interface ComparedConfigRow {
   value?: string;
 }
 
+interface ComparedCountedTreeValue {
+  count: number;
+  label: string;
+}
+
 interface BuildCompareSelectionContext {
   configSet?: ConfigSetPayload;
   itemSet?: ItemSetPayload;
@@ -449,9 +454,15 @@ function buildPassiveTreeFinding(
   const targetKeystones = collectKeystoneNames(targetContext.tree);
   const currentMasteries = collectMasterySelections(currentContext.tree);
   const targetMasteries = collectMasterySelections(targetContext.tree);
+  const currentRunegrafts = collectTreeOverrideCounts(currentContext.tree, /\bRunegraft\b/i);
+  const targetRunegrafts = collectTreeOverrideCounts(targetContext.tree, /\bRunegraft\b/i);
+  const currentTattoos = collectTreeOverrideCounts(currentContext.tree, /\bTattoo\b/i);
+  const targetTattoos = collectTreeOverrideCounts(targetContext.tree, /\bTattoo\b/i);
   const rows = [
     ...buildTreeCompareRows("Keystone", currentKeystones, targetKeystones, "keystone"),
     ...buildTreeCompareRows("Mastery", currentMasteries, targetMasteries, "mastery"),
+    ...buildCountedTreeCompareRows("Runegraft", currentRunegrafts, targetRunegrafts, "runegraft"),
+    ...buildCountedTreeCompareRows("Tattoo", currentTattoos, targetTattoos, "tattoo"),
   ];
 
   if (rows.length === 0) {
@@ -717,6 +728,42 @@ function buildTreeCompareRows(
   return rows;
 }
 
+function buildCountedTreeCompareRows(
+  label: string,
+  currentValues: ReadonlyMap<string, ComparedCountedTreeValue>,
+  targetValues: ReadonlyMap<string, ComparedCountedTreeValue>,
+  keyPrefix: string,
+) {
+  const orderedKeys = [...targetValues.keys(), ...[...currentValues.keys()].filter((value) => !targetValues.has(value))];
+  const rows: BuildCompareRow[] = [];
+
+  for (const value of orderedKeys) {
+    const currentCount = currentValues.get(value)?.count ?? 0;
+    const targetCount = targetValues.get(value)?.count ?? 0;
+    if (currentCount === targetCount) {
+      continue;
+    }
+
+    const displayLabel = targetValues.get(value)?.label ?? currentValues.get(value)?.label ?? value;
+    rows.push({
+      currentValue: formatTreeAllocationCount(currentCount),
+      key: `${keyPrefix}:${value}`,
+      name: `${label}: ${displayLabel}`,
+      targetValue: formatTreeAllocationCount(targetCount),
+    });
+  }
+
+  return rows;
+}
+
+function formatTreeAllocationCount(count: number) {
+  if (count <= 0) {
+    return "Missing";
+  }
+
+  return count === 1 ? "Allocated" : `Allocated x${count}`;
+}
+
 function buildMissingGemRows(
   currentGems: ReadonlyMap<string, ComparedGem>,
   targetGems: ReadonlyMap<string, ComparedGem>,
@@ -897,11 +944,19 @@ function doesTypeExpressionMatch(checkTypes: readonly string[], skillTypes: Read
 function resolveComparedGemName(gem: GemPayload) {
   const nameSpec = gem.nameSpec.trim();
   if (nameSpec) {
-    return gem.support ? nameSpec.replace(/\s+Support$/, "") : nameSpec;
+    return canonicalizeComparedGemName(gem.support ? nameSpec.replace(/\s+Support$/, "") : nameSpec);
   }
 
   const details = resolveGemDetails(gem);
-  return details?.name;
+  if (details?.name) {
+    return canonicalizeComparedGemName(gem.support ? details.name.replace(/\s+Support$/, "") : details.name);
+  }
+
+  if (gem.skillId) {
+    return canonicalizeComparedGemName(humanizeComparedSkillId(gem.skillId));
+  }
+
+  return undefined;
 }
 
 function resolveGemDetails(gem: GemPayload) {
@@ -926,6 +981,43 @@ function normalizeGemCompareName(name: string) {
     .trim()
     .toLowerCase()
     .replace(/\s+support$/, "");
+}
+
+function humanizeComparedSkillId(value: string) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function canonicalizeComparedGemName(value: string) {
+  const normalized = value.trim().replace(/\s+/g, " ");
+  if (!normalized) {
+    return normalized;
+  }
+
+  const knownDetails = GEM_DETAILS_BY_NAME.get(normalizeGemCompareName(normalized));
+  if (knownDetails?.name) {
+    return knownDetails.support ? knownDetails.name.replace(/\s+Support$/, "") : knownDetails.name;
+  }
+
+  const stopWords = new Set(["a", "an", "and", "as", "at", "by", "for", "from", "in", "of", "on", "or", "the", "to", "with"]);
+  return normalized
+    .split(" ")
+    .map((segment, index) => {
+      if (!segment) {
+        return segment;
+      }
+
+      const lower = segment.toLowerCase();
+      if (index > 0 && stopWords.has(lower)) {
+        return lower;
+      }
+
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    })
+    .join(" ");
 }
 
 function buildSupportLinkName(skillName: string, supportName: string) {
@@ -983,6 +1075,33 @@ function collectMasterySelections(tree: BuildCompareTreeContext) {
   }
 
   return selections;
+}
+
+function collectTreeOverrideCounts(tree: BuildCompareTreeContext, pattern: RegExp) {
+  const counts = new Map<string, ComparedCountedTreeValue>();
+  if (!tree.spec) {
+    return counts;
+  }
+
+  for (const override of tree.spec.overrides) {
+    if (!pattern.test(override.name)) {
+      continue;
+    }
+
+    const key = override.name.trim();
+    const existing = counts.get(key);
+    if (existing) {
+      existing.count += 1;
+      continue;
+    }
+
+    counts.set(key, {
+      count: 1,
+      label: key,
+    });
+  }
+
+  return counts;
 }
 
 function sameVariantFingerprint(currentItem: ItemPayload, targetItem: ItemPayload) {

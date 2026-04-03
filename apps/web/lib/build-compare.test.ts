@@ -496,6 +496,132 @@ describe("buildBuildComparisonReport", () => {
     );
   });
 
+  it("compares tattoos explicitly in passive tree findings", () => {
+    const currentPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      treeSpecs: [
+        {
+          ...buildViewerPayloadFixture.treeSpecs[0],
+          active: true,
+          overrides: [
+            { effect: "+4 to Dexterity", name: "Tattoo of the Ramako Scout", nodeId: 11 },
+            { effect: "+4 to Dexterity", name: "Tattoo of the Ramako Scout", nodeId: 12 },
+          ],
+        },
+      ],
+    };
+
+    const targetPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      treeSpecs: [
+        {
+          ...buildViewerPayloadFixture.treeSpecs[0],
+          active: true,
+          overrides: [
+            { effect: "+4 to Dexterity", name: "Tattoo of the Ramako Scout", nodeId: 11 },
+            { effect: "+4 to Strength", name: "Tattoo of the Tukohama Warrior", nodeId: 13 },
+          ],
+        },
+      ],
+    };
+
+    const currentTree: NonNullable<Parameters<typeof buildBuildComparisonReport>[4]> = {
+      nodeIndex: new Map(buildViewerLayoutFixture.nodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree: NonNullable<Parameters<typeof buildBuildComparisonReport>[5]> = {
+      nodeIndex: new Map(buildViewerLayoutFixture.nodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "tree")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: "Allocated x2",
+          name: "Tattoo: Tattoo of the Ramako Scout",
+          targetValue: "Allocated",
+        }),
+        expect.objectContaining({
+          currentValue: "Missing",
+          name: "Tattoo: Tattoo of the Tukohama Warrior",
+          targetValue: "Allocated",
+        }),
+      ]),
+    );
+  });
+
+  it("compares runegrafts explicitly in passive tree findings", () => {
+    const currentPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      treeSpecs: [
+        {
+          ...buildViewerPayloadFixture.treeSpecs[0],
+          active: true,
+          overrides: [
+            { effect: "Banner Skills have 20% increased Aura Effect", name: "Runegraft of Rallying", nodeId: 13 },
+            { effect: "Banner Skills have 20% increased Aura Effect", name: "Runegraft of Rallying", nodeId: 14 },
+          ],
+        },
+      ],
+    };
+
+    const targetPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      treeSpecs: [
+        {
+          ...buildViewerPayloadFixture.treeSpecs[0],
+          active: true,
+          overrides: [
+            { effect: "Banner Skills have 20% increased Aura Effect", name: "Runegraft of Rallying", nodeId: 13 },
+            { effect: "Auras from your Skills have 8% increased Effect on you", name: "Runegraft of Bellows", nodeId: 15 },
+          ],
+        },
+      ],
+    };
+
+    const currentTree: NonNullable<Parameters<typeof buildBuildComparisonReport>[4]> = {
+      nodeIndex: new Map(buildViewerLayoutFixture.nodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree: NonNullable<Parameters<typeof buildBuildComparisonReport>[5]> = {
+      nodeIndex: new Map(buildViewerLayoutFixture.nodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "tree")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: "Allocated x2",
+          name: "Runegraft: Runegraft of Rallying",
+          targetValue: "Allocated",
+        }),
+        expect.objectContaining({
+          currentValue: "Missing",
+          name: "Runegraft: Runegraft of Bellows",
+          targetValue: "Allocated",
+        }),
+      ]),
+    );
+  });
+
   it("hides enemy stat rows when the compared build only exports PoB default boss values", () => {
     const currentPayload: BuildPayload = {
       ...buildViewerPayloadFixture,
@@ -818,5 +944,165 @@ describe("buildBuildComparisonReport", () => {
         }),
       ]),
     );
+  });
+
+  it("does not report item-granted skills with skill-id-only payloads as missing", () => {
+    const currentPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  level: 20,
+                  nameSpec: "",
+                  quality: 0,
+                  selected: true,
+                  skillId: "SummonSpectralTiger",
+                  support: false,
+                },
+                {
+                  enabled: true,
+                  level: 20,
+                  nameSpec: "",
+                  quality: 0,
+                  selected: false,
+                  skillId: "SummonElementalRelic",
+                  support: false,
+                },
+              ],
+              id: "item-granted-current",
+              mainActiveSkill: 1,
+              selected: true,
+            },
+          ],
+          id: 1,
+          title: "Current",
+        },
+      ],
+    };
+
+    const targetPayload: BuildPayload = {
+      ...currentPayload,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  level: 20,
+                  nameSpec: "",
+                  quality: 0,
+                  selected: true,
+                  skillId: "SummonSpectralTiger",
+                  support: false,
+                },
+                {
+                  enabled: true,
+                  level: 20,
+                  nameSpec: "",
+                  quality: 0,
+                  selected: false,
+                  skillId: "SummonElementalRelic",
+                  support: false,
+                },
+              ],
+              id: "item-granted-target",
+              mainActiveSkill: 1,
+              selected: true,
+            },
+          ],
+          id: 1,
+          title: "Target",
+        },
+      ],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "missing-skill-gems")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "missing-support-gems")).toBeUndefined();
+  });
+
+  it("normalizes item-granted skill name casing between nameSpec and skillId fallbacks", () => {
+    const currentPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  level: 20,
+                  nameSpec: "Summon Sentinel of Radiance",
+                  quality: 0,
+                  selected: true,
+                  support: false,
+                },
+              ],
+              id: "sentinel-current",
+              mainActiveSkill: 1,
+              selected: true,
+            },
+          ],
+          id: 1,
+          title: "Current",
+        },
+      ],
+    };
+
+    const targetPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  level: 20,
+                  nameSpec: "",
+                  quality: 0,
+                  selected: true,
+                  skillId: "SummonSentinelOfRadiance",
+                  support: false,
+                },
+              ],
+              id: "sentinel-target",
+              mainActiveSkill: 1,
+              selected: true,
+            },
+          ],
+          id: 1,
+          title: "Target",
+        },
+      ],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "missing-skill-gems")).toBeUndefined();
   });
 });

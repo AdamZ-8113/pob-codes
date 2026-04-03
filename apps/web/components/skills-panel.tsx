@@ -7,7 +7,7 @@ import type { BuildPayload, GemPayload, SkillGroupPayload } from "@pobcodes/shar
 
 import { getSelectedSkillSet, getSkillSetLabel } from "../lib/build-viewer-selection";
 import { GEM_COLOURS, GEM_COLOURS_BY_NAME } from "../lib/generated/gem-colours";
-import { GEM_DETAILS } from "../lib/generated/gem-details";
+import { GEM_DETAILS, type GemDetails } from "../lib/generated/gem-details";
 import { STAT_DESCRIPTIONS } from "../lib/generated/stat-descriptions";
 import { resolveGemIconPath } from "../lib/icon-paths";
 import { isWeaponSwapSlot } from "../lib/weapon-swap";
@@ -22,6 +22,11 @@ const RECOGNISED_PANEL_SLOTS = new Set([
   ...LEFT_COLUMN_ACCESSORY_SLOTS,
   ...RIGHT_COLUMN_SLOTS,
 ]);
+const GEM_DETAILS_BY_EFFECT_ID = new Map<string, GemDetails>(
+  Object.values(GEM_DETAILS)
+    .filter((details) => details.effectId.length > 0)
+    .map((details) => [details.effectId, details]),
+);
 
 function getInitialSkillSetId(payload: BuildPayload): number | undefined {
   return payload.activeSkillSetId ?? payload.skillSets.find((set) => set.active)?.id ?? payload.skillSets[0]?.id;
@@ -237,7 +242,7 @@ function renderGemRow(row: SkillGemRow): React.ReactNode {
 }
 
 function renderGemTooltip(gem: GemPayload, displayName: string): React.ReactNode {
-  const details = (gem.gemId && GEM_DETAILS[gem.gemId]) || undefined;
+  const details = resolveGemDetails(gem);
   const corrupted = isCorruptedGem(gem);
   const levelIndex = details ? Math.min(gem.level, details.maxLevel) - 1 : -1;
   const levelData = details ? (details.levels[levelIndex] ?? details.levels[details.levels.length - 1]) : undefined;
@@ -426,12 +431,35 @@ function getGemDisplayName(gem: GemPayload): string {
     return explicitName;
   }
 
-  if (gem.gemId) {
-    const derivedName = GEM_DETAILS[gem.gemId]?.name?.trim();
-    if (derivedName) {
-      return derivedName;
-    }
+  const details = resolveGemDetails(gem);
+  const derivedName = details?.name?.trim();
+  if (derivedName) {
+    return derivedName;
+  }
+
+  if (gem.skillId) {
+    return humanizeSkillId(gem.skillId);
   }
 
   return "";
+}
+
+function resolveGemDetails(gem: GemPayload): GemDetails | undefined {
+  if (gem.gemId && GEM_DETAILS[gem.gemId]) {
+    return GEM_DETAILS[gem.gemId];
+  }
+
+  if (gem.skillId && GEM_DETAILS_BY_EFFECT_ID.has(gem.skillId)) {
+    return GEM_DETAILS_BY_EFFECT_ID.get(gem.skillId);
+  }
+
+  return undefined;
+}
+
+function humanizeSkillId(value: string): string {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim();
 }
