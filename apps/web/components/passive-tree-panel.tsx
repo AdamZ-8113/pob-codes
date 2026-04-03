@@ -914,30 +914,6 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
     >
       <div className="panel-toolbar tree-panel-heading">
         <h2>Passive Tree</h2>
-        {payload.treeSpecs.length > 1 && (
-          <>
-            <label htmlFor="tree-spec" className="meta">
-              Tree Spec
-            </label>
-            <select
-              id="tree-spec"
-              value={treeIndex}
-              onChange={(event) => {
-                const nextTreeIndex = Number(event.target.value);
-                if (controlledTreeIndex === undefined) {
-                  setInternalTreeIndex(nextTreeIndex);
-                }
-                onTreeIndexChange?.(nextTreeIndex);
-              }}
-            >
-              {payload.treeSpecs.map((tree, index) => (
-                <option key={`tree-spec:${index}`} value={index}>
-                  {getTreeSpecLabel(index, tree.title)}
-                </option>
-              ))}
-            </select>
-          </>
-        )}
       </div>
       {treeHeaderSummary.length > 0 && (
         <div className="tree-header-summary">
@@ -950,6 +926,27 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
         </div>
       )}
       <div className="tree-actions">
+        {payload.treeSpecs.length > 1 && (
+          <select
+            id="tree-spec"
+            aria-label="Tree Spec"
+            className="panel-select build-loadout-select tree-spec-select"
+            value={treeIndex}
+            onChange={(event) => {
+              const nextTreeIndex = Number(event.target.value);
+              if (controlledTreeIndex === undefined) {
+                setInternalTreeIndex(nextTreeIndex);
+              }
+              onTreeIndexChange?.(nextTreeIndex);
+            }}
+          >
+            {payload.treeSpecs.map((tree, index) => (
+              <option key={`tree-spec:${index}`} value={index}>
+                {getTreeSpecLabel(index, tree.title)}
+              </option>
+            ))}
+          </select>
+        )}
         <button type="button" className="btn btn-secondary tree-focus-btn" onClick={fitBuild} disabled={!layout}>
           Fit Build
         </button>

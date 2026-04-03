@@ -1953,14 +1953,6 @@ main.build-page {
   margin-bottom: 10px;
 }
 
-.tree-panel-heading select {
-  border-radius: 6px;
-  border: 1px solid #2d2d2d;
-  background: #131313;
-  color: var(--text-main);
-  padding: 5px 8px;
-}
-
 .tree-header-summary {
   display: flex;
   flex-wrap: wrap;
@@ -1991,10 +1983,15 @@ main.build-page {
 
 .tree-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 10px;
+}
+
+.tree-spec-select {
+  flex: 0 1 220px;
 }
 
 .tree-focus-btn {
@@ -2916,6 +2913,12 @@ main.build-page {
 
   .tree-actions {
     width: 100%;
+  }
+
+  .tree-spec-select {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
   }
 
   .tree-header-summary {
