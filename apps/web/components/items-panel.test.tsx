@@ -23,7 +23,7 @@ describe("ItemsPanel", () => {
       "matchMedia",
       ((query: string) =>
         ({
-          matches: query === "(max-width: 640px)" || query === "(pointer: coarse)" || query === "(hover: none)",
+          matches: query === "(max-width: 1180px)" || query === "(pointer: coarse)" || query === "(hover: none)",
           media: query,
           onchange: null,
           addEventListener: vi.fn(),
