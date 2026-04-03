@@ -153,6 +153,11 @@ main.build-page {
   min-width: 0;
 }
 
+.build-layout-mobile-stats {
+  display: none;
+  min-width: 0;
+}
+
 .build-layout-top-side {
   display: flex;
   flex-direction: column;
@@ -914,6 +919,44 @@ main.build-page {
   visibility: visible;
 }
 
+.gear-slot--tooltip-open {
+  z-index: 80;
+}
+
+.gear-tooltip-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.gear-tooltip-panel--mobile-active {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  z-index: 160;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100vw - 24px));
+  max-width: min(440px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+}
+
+.gear-tooltip-panel--mobile-active .poe-tooltip {
+  width: 100%;
+  min-width: min(300px, calc(100vw - 24px));
+  max-width: min(440px, calc(100vw - 24px));
+}
+
 /* PoE-style item tooltip */
 .poe-tooltip {
   --rc: #c8c8c8;
@@ -1227,6 +1270,26 @@ main.build-page {
   left: 50%;
   bottom: calc(100% + 12px);
   transform: translateX(-50%);
+}
+
+.gear-panel--mobile-compact .gear-tooltip-panel--mobile-active,
+.gear-panel--mobile-compact .gear-tooltip-panel--left.gear-tooltip-panel--mobile-active,
+.gear-panel--mobile-compact .gear-tooltip-panel--right.gear-tooltip-panel--mobile-active,
+.gear-panel--mobile-compact .gear-tooltip-panel--above.gear-tooltip-panel--mobile-active {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  z-index: 160;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100vw - 24px));
+  max-width: min(440px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
 }
 
 .mod-line {
@@ -2550,6 +2613,14 @@ main.build-page {
     padding: 12px;
   }
 
+  .build-layout-sidebar {
+    display: none;
+  }
+
+  .build-layout-mobile-stats {
+    display: block;
+  }
+
   .build-code-form-actions {
     flex-direction: column;
     align-items: stretch;
@@ -2594,13 +2665,17 @@ main.build-page {
 
   .build-loadout-control-strip {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .build-loadout-control-strip > * {
     width: 100%;
     min-width: 0;
     flex: initial;
+  }
+
+  .build-loadout-select {
+    grid-column: 1 / -1;
   }
 
   .gear-equipment-grid {
@@ -2742,4 +2817,98 @@ main.build-page {
   .tree-summary-card {
     padding: 10px;
   }
+}
+
+.gear-panel--mobile-compact {
+  --gear-slot: clamp(28px, 8.1vw, 34px);
+  --gear-gap: clamp(3px, 0.9vw, 4px);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.gear-panel--mobile-compact .gear-board {
+  gap: 8px;
+  width: 100%;
+}
+
+.gear-panel--mobile-compact .gear-equipment-grid {
+  --slot: var(--gear-slot);
+  grid-template-columns: repeat(8, var(--slot));
+  grid-template-rows: repeat(6, var(--slot));
+  width: fit-content;
+  max-width: none;
+  gap: var(--gear-gap);
+  justify-content: center;
+}
+
+.gear-panel--mobile-compact .gear-equipment-grid--ring-third {
+  grid-template-areas:
+    "weapon weapon .      helm   helm   .       offhand offhand"
+    "weapon weapon .      helm   helm   .       offhand offhand"
+    "weapon weapon ring3  body   body   amulet  offhand offhand"
+    "weapon weapon ringl  body   body   ringr   offhand offhand"
+    "gloves gloves .      body   body   .       boots   boots"
+    "gloves gloves .      belt   belt   .       boots   boots";
+}
+
+.gear-panel--mobile-compact .gear-equipment-grid--standard {
+  grid-template-areas:
+    "weapon weapon .      helm   helm   .       offhand offhand"
+    "weapon weapon .      helm   helm   .       offhand offhand"
+    "weapon weapon .      body   body   amulet  offhand offhand"
+    "weapon weapon ringl  body   body   ringr   offhand offhand"
+    "gloves gloves .      body   body   .       boots   boots"
+    "gloves gloves .      belt   belt   .       boots   boots";
+}
+
+.gear-panel--mobile-compact .gear-equipment-grid > .gear-slot {
+  min-height: 0;
+}
+
+.gear-panel--mobile-compact .gear-slot--weapon-main { grid-area: weapon !important; }
+.gear-panel--mobile-compact .gear-slot--ring-third  { grid-area: ring3 !important; }
+.gear-panel--mobile-compact .gear-slot--ring-left   { grid-area: ringl !important; }
+.gear-panel--mobile-compact .gear-slot--helmet      { grid-area: helm !important; }
+.gear-panel--mobile-compact .gear-slot--amulet      { grid-area: amulet !important; }
+.gear-panel--mobile-compact .gear-slot--weapon-off  { grid-area: offhand !important; }
+.gear-panel--mobile-compact .gear-slot--gloves      { grid-area: gloves !important; }
+.gear-panel--mobile-compact .gear-slot--body-armour { grid-area: body !important; }
+.gear-panel--mobile-compact .gear-slot--ring-right  { grid-area: ringr !important; }
+.gear-panel--mobile-compact .gear-slot--boots       { grid-area: boots !important; }
+.gear-panel--mobile-compact .gear-slot--belt        { grid-area: belt !important; }
+
+.gear-panel--mobile-compact .gear-slot {
+  padding: 2px;
+  border-radius: 5px;
+}
+
+.gear-panel--mobile-compact .gear-slot--foulborn::after,
+.gear-panel--mobile-compact .gear-slot--corrupted::after {
+  border-radius: 5px;
+}
+
+.gear-panel--mobile-compact .gear-flask-row {
+  grid-template-columns: repeat(5, var(--gear-slot));
+  width: fit-content;
+}
+
+.gear-panel--mobile-compact .gear-slot--flask-1,
+.gear-panel--mobile-compact .gear-slot--flask-2,
+.gear-panel--mobile-compact .gear-slot--flask-3,
+.gear-panel--mobile-compact .gear-slot--flask-4,
+.gear-panel--mobile-compact .gear-slot--flask-5 {
+  min-height: clamp(44px, 12.8vw, 54px);
+}
+
+.gear-panel--mobile-compact .gear-jewel-row,
+.gear-panel--mobile-compact .gear-extras-row {
+  gap: var(--gear-gap);
+  max-width: calc((var(--gear-slot) * 8) + (var(--gear-gap) * 7));
+}
+
+.gear-panel--mobile-compact .gear-jewel-row .gear-slot,
+.gear-panel--mobile-compact .gear-extras-row .gear-slot {
+  width: var(--gear-slot);
+  flex: 0 0 var(--gear-slot);
+  min-height: clamp(28px, 8.1vw, 34px);
 }

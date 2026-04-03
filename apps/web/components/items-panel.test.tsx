@@ -18,6 +18,32 @@ describe("ItemsPanel", () => {
     vi.unstubAllGlobals();
   });
 
+  function mockCompactMobileViewport() {
+    vi.stubGlobal(
+      "matchMedia",
+      ((query: string) =>
+        ({
+          matches: query === "(max-width: 640px)" || query === "(pointer: coarse)" || query === "(hover: none)",
+          media: query,
+          onchange: null,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        }) satisfies MediaQueryList) as typeof window.matchMedia,
+    );
+
+    Object.defineProperty(window.navigator, "maxTouchPoints", {
+      configurable: true,
+      value: 5,
+    });
+    Object.defineProperty(window.navigator, "userAgent", {
+      configurable: true,
+      value: "Mozilla/5.0 (Linux; Android 15; Pixel 9)",
+    });
+  }
+
   it("renders tooltip sections in PoB order and moves influence state to header icons", () => {
     const payload: BuildPayload = {
       ...buildViewerPayloadFixture,
@@ -363,13 +389,8 @@ describe("ItemsPanel", () => {
     expect(tooltip?.style.getPropertyValue("--foil-rgb")).toBe("204 77 51");
   });
 
-  it("copies normalized raw item text when clicking an occupied item slot", async () => {
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(window.navigator, "clipboard", {
-      configurable: true,
-      value: { writeText },
-    });
-
+  it("opens a centered mobile tooltip when tapping an occupied item slot in compact mobile mode", async () => {
+    mockCompactMobileViewport();
     const payload: BuildPayload = {
       ...buildViewerPayloadFixture,
       activeItemSetId: 1,
@@ -411,15 +432,21 @@ describe("ItemsPanel", () => {
       ],
     };
 
-    const { getByRole, getByText } = render(<ItemsPanel payload={payload} />);
-    const slot = getByRole("button", { name: "Copy Yoke of Suffering to clipboard" });
+    const { container, getByRole } = render(<ItemsPanel payload={payload} />);
+
+    await waitFor(() => expect(container.querySelector(".gear-panel")?.className).toContain("gear-panel--mobile-compact"));
+
+    const slot = getByRole("button", { name: "Show Yoke of Suffering" });
     fireEvent.click(slot);
 
+    await waitFor(() => expect(slot.getAttribute("aria-expanded")).toBe("true"));
     await waitFor(() =>
-      expect(writeText).toHaveBeenCalledWith("Rarity: UNIQUE\nYoke of Suffering\nOnyx Amulet\nItem Level: 85"),
+      expect(container.querySelector(".gear-slot--amulet .gear-tooltip-panel")?.className).toContain("gear-tooltip-panel--mobile-active"),
     );
-    await waitFor(() => expect(getByText("Item copied to clipboard")).toBeTruthy());
-    await waitFor(() => expect(slot.className).toContain("gear-slot--copied"));
+
+    fireEvent.click(getByRole("button", { name: "Close item details" }));
+
+    await waitFor(() => expect(slot.getAttribute("aria-expanded")).toBe("false"));
   });
 
   it("renders anointments in their own section above implicits", () => {

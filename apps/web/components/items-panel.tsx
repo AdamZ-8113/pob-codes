@@ -143,43 +143,6 @@ function getFoilRgb(foilType?: string): string {
   return (foilType && FOIL_TYPE_RGB[foilType]) || FOIL_TYPE_RGB.Rainbow;
 }
 
-function getCopyableItemText(raw: string | undefined): string | undefined {
-  if (!raw) {
-    return undefined;
-  }
-
-  const normalized = raw
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0 && !/^[-]+$/.test(line))
-    .join("\n")
-    .trim();
-
-  return normalized.length > 0 ? normalized : undefined;
-}
-
-async function copyTextToClipboard(text: string): Promise<void> {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  textarea.style.pointerEvents = "none";
-  document.body.appendChild(textarea);
-  textarea.select();
-  const copied = document.execCommand("copy");
-  document.body.removeChild(textarea);
-
-  if (!copied) {
-    throw new Error("Clipboard copy failed");
-  }
-}
-
 interface TooltipLine {
   key: string;
   className: string;
@@ -953,7 +916,8 @@ export function ItemsPanel({
   treeIndex,
 }: ItemsPanelProps) {
   const [internalItemSetId, setInternalItemSetId] = useState<number | undefined>(() => getInitialItemSetId(payload));
-  const [copyFeedback, setCopyFeedback] = useState<{ area: string; nonce: number } | null>(null);
+  const [useCompactMobileLayout, setUseCompactMobileLayout] = useState(false);
+  const [activeTooltipArea, setActiveTooltipArea] = useState<string | null>(null);
   const byId = useMemo(() => new Map(payload.items.map((item) => [item.id, item])), [payload.items]);
   const itemSetId = controlledItemSetId ?? internalItemSetId;
   const activeSet = useMemo(() => getSelectedItemSet(payload, itemSetId), [itemSetId, payload]);
@@ -1015,40 +979,50 @@ export function ItemsPanel({
   }, [controlledItemSetId, payload]);
 
   useEffect(() => {
-    if (!copyFeedback) {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return;
     }
 
-    const timeoutId = window.setTimeout(() => {
-      setCopyFeedback(null);
-    }, 1000);
+    const narrowViewport = window.matchMedia("(max-width: 640px)");
+    const coarsePointer = window.matchMedia("(pointer: coarse)");
+    const noHover = window.matchMedia("(hover: none)");
 
-    return () => window.clearTimeout(timeoutId);
-  }, [copyFeedback]);
+    const updateLayoutMode = () => {
+      const userAgent = window.navigator.userAgent;
+      const looksMobile =
+        coarsePointer.matches ||
+        noHover.matches ||
+        window.navigator.maxTouchPoints > 0 ||
+        /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
+
+      setUseCompactMobileLayout(narrowViewport.matches && looksMobile);
+    };
+
+    updateLayoutMode();
+    narrowViewport.addEventListener("change", updateLayoutMode);
+    coarsePointer.addEventListener("change", updateLayoutMode);
+    noHover.addEventListener("change", updateLayoutMode);
+
+    return () => {
+      narrowViewport.removeEventListener("change", updateLayoutMode);
+      coarsePointer.removeEventListener("change", updateLayoutMode);
+      noHover.removeEventListener("change", updateLayoutMode);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!useCompactMobileLayout) {
+      setActiveTooltipArea(null);
+    }
+  }, [useCompactMobileLayout]);
 
   function handleItemSetChange(nextItemSetId: number) {
     if (controlledItemSetId === undefined) {
       setInternalItemSetId(nextItemSetId);
     }
 
+    setActiveTooltipArea(null);
     onItemSetChange?.(nextItemSetId);
-  }
-
-  async function handleItemCopy(area: string, item?: ItemPayload) {
-    const copyText = getCopyableItemText(item?.raw);
-    if (!copyText) {
-      return;
-    }
-
-    try {
-      await copyTextToClipboard(copyText);
-      setCopyFeedback({
-        area,
-        nonce: Date.now(),
-      });
-    } catch {
-      // Clipboard access can fail in some browser contexts; silently ignore here.
-    }
   }
 
   function renderItemSlot(area: string, slotName: string, item?: ItemPayload, iconKey = `${slotName}:${item?.id ?? "empty"}`) {
@@ -1057,24 +1031,33 @@ export function ItemsPanel({
     const foulborn = isFoulbornItem(item);
     const corrupted = isCorruptedItem(item) && !foulborn;
     const gridArea = getEquipmentGridArea(area);
-    const copyable = Boolean(getCopyableItemText(item?.raw));
-    const copied = copyFeedback?.area === area;
+    const interactive = useCompactMobileLayout && Boolean(item);
+    const tooltipActive = interactive && activeTooltipArea === area;
 
     return (
       <div
         key={area}
-        className={`gear-slot gear-slot--${area} ${item ? "gear-slot--occupied" : "gear-slot--empty"} ${foulborn ? "gear-slot--foulborn" : ""} ${corrupted ? "gear-slot--corrupted" : ""} ${copyable ? "gear-slot--copyable" : ""} ${copied ? "gear-slot--copied" : ""}`}
+        className={`gear-slot gear-slot--${area} ${item ? "gear-slot--occupied" : "gear-slot--empty"} ${foulborn ? "gear-slot--foulborn" : ""} ${corrupted ? "gear-slot--corrupted" : ""} ${tooltipActive ? " gear-slot--tooltip-open" : ""}`}
         style={gridArea ? { gridArea } : undefined}
-        role={copyable ? "button" : undefined}
-        tabIndex={copyable ? 0 : undefined}
-        aria-label={copyable ? `Copy ${item?.name || item?.base || slotName} to clipboard` : undefined}
-        onClick={copyable ? () => void handleItemCopy(area, item) : undefined}
+        role={interactive ? "button" : undefined}
+        tabIndex={interactive ? 0 : undefined}
+        aria-expanded={interactive ? tooltipActive : undefined}
+        aria-label={interactive ? `Show ${item?.name || item?.base || slotName}` : undefined}
+        onClick={
+          interactive
+            ? (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                setActiveTooltipArea((current) => (current === area ? null : area));
+              }
+            : undefined
+        }
         onKeyDown={
-          copyable
+          interactive
             ? (event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  void handleItemCopy(area, item);
+                  setActiveTooltipArea((current) => (current === area ? null : area));
                 }
               }
             : undefined
@@ -1092,7 +1075,10 @@ export function ItemsPanel({
         )}
 
         {item && (
-          <div className={`gear-tooltip-panel gear-tooltip-panel--${getTooltipSide(area)}`}>
+          <div
+            className={`gear-tooltip-panel gear-tooltip-panel--${getTooltipSide(area)}${tooltipActive ? " gear-tooltip-panel--mobile-active" : ""}`}
+            onClick={(event) => event.stopPropagation()}
+          >
             <ItemTooltip item={item} />
           </div>
         )}
@@ -1107,16 +1093,17 @@ export function ItemsPanel({
   }
 
   return (
-    <section className="panel gear-panel">
-      {copyFeedback && (
-        <div key={copyFeedback.nonce} className="item-copy-toast" role="status" aria-live="polite">
-          Item copied to clipboard
-        </div>
+    <section className={`panel gear-panel${useCompactMobileLayout ? " gear-panel--mobile-compact" : ""}`}>
+      {useCompactMobileLayout && activeTooltipArea && (
+        <button
+          aria-label="Close item details"
+          className="gear-tooltip-backdrop"
+          type="button"
+          onClick={() => setActiveTooltipArea(null)}
+        />
       )}
       <div className="panel-toolbar">
-        <h2>
-          Gear <span className="gear-copy-hint">(Click to copy to clipboard)</span>
-        </h2>
+        <h2>Gear</h2>
         {payload.itemSets.length > 1 && (
           <select
             aria-label="Item Set"

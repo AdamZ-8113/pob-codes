@@ -34,6 +34,7 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
   const [selection, setSelection] = useState<BuildViewerSelection>(() => getInitialBuildViewerSelection(payload));
   const [showWeaponSwap, setShowWeaponSwap] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState<{ message: string; nonce: number } | null>(null);
+  const [useMobileStatsPlacement, setUseMobileStatsPlacement] = useState(false);
   const recentBuildId = payload.meta.id?.trim();
   const loadouts = useMemo(() => getBuildLoadouts(payload), [payload]);
   const selectedLoadout = useMemo(() => findMatchingBuildLoadout(payload, selection), [payload, selection]);
@@ -77,6 +78,38 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
 
     return () => window.clearTimeout(timeoutId);
   }, [copyFeedback]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const narrowViewport = window.matchMedia("(max-width: 640px)");
+    const coarsePointer = window.matchMedia("(pointer: coarse)");
+    const noHover = window.matchMedia("(hover: none)");
+
+    const updateLayoutMode = () => {
+      const userAgent = window.navigator.userAgent;
+      const looksMobile =
+        coarsePointer.matches ||
+        noHover.matches ||
+        window.navigator.maxTouchPoints > 0 ||
+        /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
+
+      setUseMobileStatsPlacement(narrowViewport.matches && looksMobile);
+    };
+
+    updateLayoutMode();
+    narrowViewport.addEventListener("change", updateLayoutMode);
+    coarsePointer.addEventListener("change", updateLayoutMode);
+    noHover.addEventListener("change", updateLayoutMode);
+
+    return () => {
+      narrowViewport.removeEventListener("change", updateLayoutMode);
+      coarsePointer.removeEventListener("change", updateLayoutMode);
+      noHover.removeEventListener("change", updateLayoutMode);
+    };
+  }, []);
 
   useEffect(() => {
     if (!recentBuildId) {
@@ -146,9 +179,11 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
           {copyFeedback.message}
         </div>
       )}
-      <div className="build-layout-sidebar">
-        <StatsPanel payload={payload} />
-      </div>
+      {!useMobileStatsPlacement && (
+        <div className="build-layout-sidebar">
+          <StatsPanel payload={payload} />
+        </div>
+      )}
       <div className="build-layout-main">
         <section className="panel build-loadout-panel">
           <div className="build-loadout-summary">
@@ -283,6 +318,11 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
               }}
             />
           </div>
+          {useMobileStatsPlacement && (
+            <div className="build-layout-mobile-stats">
+              <StatsPanel payload={payload} />
+            </div>
+          )}
           <div className="build-layout-top-side">
             <SkillsPanel
               payload={payload}
