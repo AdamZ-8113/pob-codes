@@ -68,6 +68,19 @@ interface HoveredTreeNodeState {
   nodeId: number;
 }
 
+interface PassiveTreePointerState {
+  clientX: number;
+  clientY: number;
+}
+
+interface PassiveTreePinchState {
+  initialDistance: number;
+  initialZoom: number;
+  lastCenterX: number;
+  lastCenterY: number;
+  pointerIds: [number, number];
+}
+
 interface PassiveTreeHeaderSummaryEntry {
   key: string;
   label: string;
@@ -158,6 +171,8 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
   const svgRef = useRef<SVGSVGElement | null>(null);
   const sceneRef = useRef<SVGGElement | null>(null);
   const dragRef = useRef<{ clientX: number; clientY: number; pointerId: number } | null>(null);
+  const activePointersRef = useRef(new Map<number, PassiveTreePointerState>());
+  const pinchRef = useRef<PassiveTreePinchState | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const viewBoundsRef = useRef<PassiveTreeViewBounds | undefined>(undefined);
   const viewportRef = useRef<PassiveTreeViewport>(DEFAULT_VIEWPORT);
@@ -629,28 +644,167 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
     applyViewport(getPassiveTreeCenteredViewport(displayLayout, visibleNodeIds, DEFAULT_VIEWPORT.zoom, viewBounds));
   }
 
-  function handlePointerDown(event: ReactPointerEvent<SVGSVGElement>) {
-    if (!viewBoundsRef.current || event.button !== 0) {
+  function updateDraggingState(active: boolean) {
+    shellRef.current?.classList.toggle("tree-canvas-shell-dragging", active);
+  }
+
+  function getPrimaryTouchPoints(): [number, PassiveTreePointerState, number, PassiveTreePointerState] | null {
+    const points = [...activePointersRef.current.entries()];
+    if (points.length < 2) {
+      return null;
+    }
+
+    const [first, second] = points;
+    return [first[0], first[1], second[0], second[1]];
+  }
+
+  function getTouchDistance(first: PassiveTreePointerState, second: PassiveTreePointerState) {
+    return Math.max(Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY), 1);
+  }
+
+  function resetPointerInteraction() {
+    dragRef.current = null;
+    pinchRef.current = null;
+    updateDraggingState(false);
+  }
+
+  function syncTouchInteractionState() {
+    if (!zoomUnlocked) {
+      resetPointerInteraction();
       return;
     }
 
-    dragRef.current = {
+    const touchPoints = getPrimaryTouchPoints();
+    if (touchPoints) {
+      const [firstId, firstPoint, secondId, secondPoint] = touchPoints;
+      const centerX = (firstPoint.clientX + secondPoint.clientX) / 2;
+      const centerY = (firstPoint.clientY + secondPoint.clientY) / 2;
+
+      dragRef.current = null;
+      pinchRef.current = {
+        initialDistance: getTouchDistance(firstPoint, secondPoint),
+        initialZoom: viewportRef.current.zoom,
+        lastCenterX: centerX,
+        lastCenterY: centerY,
+        pointerIds: [firstId, secondId],
+      };
+      updateDraggingState(true);
+      return;
+    }
+
+    const [pointerId, point] = activePointersRef.current.entries().next().value ?? [];
+    if (typeof pointerId === "number" && point) {
+      pinchRef.current = null;
+      dragRef.current = {
+        clientX: point.clientX,
+        clientY: point.clientY,
+        pointerId,
+      };
+      updateDraggingState(true);
+      return;
+    }
+
+    resetPointerInteraction();
+  }
+
+  function panByClientDelta(deltaX: number, deltaY: number) {
+    const svg = svgRef.current;
+    const nextViewBounds = viewBoundsRef.current;
+    if (!svg || !nextViewBounds) {
+      return;
+    }
+
+    const rect = svg.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) {
+      return;
+    }
+
+    const currentViewport = viewportRef.current;
+    const worldPerPixelX = nextViewBounds.width / rect.width / currentViewport.zoom;
+    const worldPerPixelY = nextViewBounds.height / rect.height / currentViewport.zoom;
+
+    applyViewport({
+      panX: currentViewport.panX - deltaX * worldPerPixelX,
+      panY: currentViewport.panY - deltaY * worldPerPixelY,
+      zoom: currentViewport.zoom,
+    });
+  }
+
+  function handlePointerDown(event: ReactPointerEvent<SVGSVGElement>) {
+    if (!viewBoundsRef.current || (event.pointerType === "mouse" && event.button !== 0)) {
+      return;
+    }
+
+    activePointersRef.current.set(event.pointerId, {
       clientX: event.clientX,
       clientY: event.clientY,
-      pointerId: event.pointerId,
-    };
-    shellRef.current?.classList.add("tree-canvas-shell-dragging");
+    });
+
+    if (!zoomUnlocked) {
+      return;
+    }
+
     setHoveredNode(null);
-    event.currentTarget.setPointerCapture(event.pointerId);
+    if (typeof event.currentTarget.setPointerCapture === "function") {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+    syncTouchInteractionState();
   }
 
   function handlePointerMove(event: ReactPointerEvent<SVGSVGElement>) {
-    if (!svgRef.current || !dragRef.current || dragRef.current.pointerId !== event.pointerId || !viewBoundsRef.current) {
+    if (!viewBoundsRef.current) {
       return;
     }
 
-    const rect = svgRef.current.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) {
+    const existingPointer = activePointersRef.current.get(event.pointerId);
+    if (existingPointer) {
+      activePointersRef.current.set(event.pointerId, {
+        clientX: event.clientX,
+        clientY: event.clientY,
+      });
+    }
+
+    if (!zoomUnlocked) {
+      return;
+    }
+
+    const touchPoints = getPrimaryTouchPoints();
+    if (touchPoints) {
+      const [firstId, firstPoint, secondId, secondPoint] = touchPoints;
+      const pointerIds: [number, number] = [firstId, secondId];
+      const centerX = (firstPoint.clientX + secondPoint.clientX) / 2;
+      const centerY = (firstPoint.clientY + secondPoint.clientY) / 2;
+
+      if (
+        !pinchRef.current ||
+        pinchRef.current.pointerIds[0] !== pointerIds[0] ||
+        pinchRef.current.pointerIds[1] !== pointerIds[1]
+      ) {
+        pinchRef.current = {
+          initialDistance: getTouchDistance(firstPoint, secondPoint),
+          initialZoom: viewportRef.current.zoom,
+          lastCenterX: centerX,
+          lastCenterY: centerY,
+          pointerIds,
+        };
+      }
+
+      const currentPinch = pinchRef.current;
+      const targetZoom = currentPinch.initialZoom * (getTouchDistance(firstPoint, secondPoint) / currentPinch.initialDistance);
+      zoomAtClientPoint(targetZoom, centerX, centerY);
+
+      const deltaX = centerX - currentPinch.lastCenterX;
+      const deltaY = centerY - currentPinch.lastCenterY;
+      currentPinch.lastCenterX = centerX;
+      currentPinch.lastCenterY = centerY;
+
+      if (Math.abs(deltaX) > 0 || Math.abs(deltaY) > 0) {
+        panByClientDelta(deltaX, deltaY);
+      }
+      return;
+    }
+
+    if (!dragRef.current || dragRef.current.pointerId !== event.pointerId) {
       return;
     }
 
@@ -662,30 +816,32 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
       pointerId: event.pointerId,
     };
 
-    const currentViewport = viewportRef.current;
-    const worldPerPixelX = viewBoundsRef.current.width / rect.width / currentViewport.zoom;
-    const worldPerPixelY = viewBoundsRef.current.height / rect.height / currentViewport.zoom;
-
-    applyViewport(
-      {
-        panX: currentViewport.panX - deltaX * worldPerPixelX,
-        panY: currentViewport.panY - deltaY * worldPerPixelY,
-        zoom: currentViewport.zoom,
-      },
-    );
+    panByClientDelta(deltaX, deltaY);
   }
 
   function handlePointerEnd(event: ReactPointerEvent<SVGSVGElement>) {
-    if (!dragRef.current || dragRef.current.pointerId !== event.pointerId) {
+    activePointersRef.current.delete(event.pointerId);
+    if (
+      zoomUnlocked &&
+      typeof event.currentTarget.hasPointerCapture === "function" &&
+      event.currentTarget.hasPointerCapture(event.pointerId)
+    ) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    if (!zoomUnlocked) {
       return;
     }
 
-    dragRef.current = null;
-    shellRef.current?.classList.remove("tree-canvas-shell-dragging");
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
+    syncTouchInteractionState();
   }
+
+  useEffect(() => {
+    if (!zoomUnlocked) {
+      activePointersRef.current.clear();
+      resetPointerInteraction();
+    }
+  }, [zoomUnlocked]);
 
   function handleWheelCapture(event: ReactWheelEvent<HTMLDivElement>) {
     if (!zoomUnlocked || !viewBoundsRef.current) {
@@ -809,12 +965,12 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
             <div className="tree-layout-main">
               <div
                 ref={shellRef}
-                className="tree-canvas-shell"
+                className={`tree-canvas-shell${zoomUnlocked ? " tree-canvas-shell-interactive" : ""}`}
                 onWheelCapture={handleWheelCapture}
               >
                 <svg
                   ref={svgRef}
-                  className="tree-canvas"
+                  className={`tree-canvas${zoomUnlocked ? " tree-canvas-interactive" : ""}`}
                   viewBox={staticViewBox}
                   onPointerCancel={handlePointerEnd}
                   onPointerDown={handlePointerDown}

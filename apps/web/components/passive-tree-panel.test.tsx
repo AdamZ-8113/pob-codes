@@ -10,6 +10,44 @@ import type { BuildPayload } from "@pobcodes/shared-types";
 import { buildViewerPayloadFixture } from "../test/fixtures/build-viewer-fixture";
 import { PassiveTreePanel } from "./passive-tree-panel";
 
+function stubInteractiveTreeSvg(svg: SVGSVGElement) {
+  const capturedPointerIds = new Set<number>();
+
+  Object.defineProperty(svg, "getBoundingClientRect", {
+    configurable: true,
+    value: () => ({
+      bottom: 600,
+      height: 600,
+      left: 0,
+      right: 800,
+      top: 0,
+      width: 800,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    }),
+  });
+
+  Object.defineProperty(svg, "setPointerCapture", {
+    configurable: true,
+    value: (pointerId: number) => {
+      capturedPointerIds.add(pointerId);
+    },
+  });
+
+  Object.defineProperty(svg, "releasePointerCapture", {
+    configurable: true,
+    value: (pointerId: number) => {
+      capturedPointerIds.delete(pointerId);
+    },
+  });
+
+  Object.defineProperty(svg, "hasPointerCapture", {
+    configurable: true,
+    value: (pointerId: number) => capturedPointerIds.has(pointerId),
+  });
+}
+
 describe("PassiveTreePanel", () => {
   beforeEach(() => {
     vi.stubGlobal(
@@ -904,6 +942,50 @@ describe("PassiveTreePanel", () => {
     expect(event.defaultPrevented).toBe(false);
   });
 
+  it("does not pan the tree with touch drag while zoom is locked", async () => {
+    const { container } = render(<PassiveTreePanel payload={buildViewerPayloadFixture} treeIndex={0} />);
+
+    await waitFor(() => {
+      expect(container.querySelector(".tree-canvas-shell")).toBeTruthy();
+    });
+
+    const shell = container.querySelector(".tree-canvas-shell");
+    const svg = container.querySelector(".tree-canvas");
+    expect(shell).toBeTruthy();
+    expect(svg).toBeTruthy();
+
+    stubInteractiveTreeSvg(svg as SVGSVGElement);
+
+    await waitFor(() => {
+      expect(container.querySelector(".tree-canvas > g")?.getAttribute("transform")).toBeTruthy();
+    });
+
+    const initialTransform = container.querySelector(".tree-canvas > g")?.getAttribute("transform");
+
+    fireEvent.pointerDown(svg as SVGSVGElement, {
+      button: 0,
+      clientX: 160,
+      clientY: 180,
+      pointerId: 1,
+      pointerType: "touch",
+    });
+    fireEvent.pointerMove(svg as SVGSVGElement, {
+      clientX: 240,
+      clientY: 260,
+      pointerId: 1,
+      pointerType: "touch",
+    });
+    fireEvent.pointerUp(svg as SVGSVGElement, {
+      clientX: 240,
+      clientY: 260,
+      pointerId: 1,
+      pointerType: "touch",
+    });
+
+    expect(shell?.classList.contains("tree-canvas-shell-dragging")).toBe(false);
+    expect(container.querySelector(".tree-canvas > g")?.getAttribute("transform")).toBe(initialTransform);
+  });
+
   it("still captures wheel input when zooming in on the tree", async () => {
     const { container } = render(<PassiveTreePanel payload={buildViewerPayloadFixture} treeIndex={0} />);
 
@@ -927,6 +1009,50 @@ describe("PassiveTreePanel", () => {
 
     expect(dispatchResult).toBe(false);
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("supports touch pinch zoom when the tree is unlocked", async () => {
+    const { container } = render(<PassiveTreePanel payload={buildViewerPayloadFixture} treeIndex={0} />);
+
+    await waitFor(() => {
+      expect(container.querySelector(".tree-canvas-shell")).toBeTruthy();
+    });
+
+    const shell = container.querySelector(".tree-canvas-shell");
+    const svg = container.querySelector(".tree-canvas");
+    expect(shell).toBeTruthy();
+    expect(svg).toBeTruthy();
+
+    stubInteractiveTreeSvg(svg as SVGSVGElement);
+
+    fireEvent.click(screen.getByRole("button", { name: "Unlock passive tree zoom" }));
+
+    expect(shell?.classList.contains("tree-canvas-shell-interactive")).toBe(true);
+
+    fireEvent.pointerDown(svg as SVGSVGElement, {
+      button: 0,
+      clientX: 160,
+      clientY: 180,
+      pointerId: 1,
+      pointerType: "touch",
+    });
+    fireEvent.pointerDown(svg as SVGSVGElement, {
+      button: 0,
+      clientX: 240,
+      clientY: 180,
+      pointerId: 2,
+      pointerType: "touch",
+    });
+    fireEvent.pointerMove(svg as SVGSVGElement, {
+      clientX: 300,
+      clientY: 180,
+      pointerId: 2,
+      pointerType: "touch",
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/^Current zoom:/).textContent).not.toContain("1.40x");
+    });
   });
 
   it("lets page scrolling continue when the tree is already at its maximum zoom", async () => {

@@ -2052,8 +2052,13 @@ main.build-page {
   background: #161a20;
   /* Allow wheel scrolling to chain back to the page when tree zoom is locked. */
   overscroll-behavior: auto;
-  touch-action: none;
+  touch-action: auto;
   user-select: none;
+}
+
+.tree-canvas-shell-interactive {
+  overscroll-behavior: contain;
+  touch-action: none;
 }
 
 .tree-canvas-shell-dragging {
@@ -2073,8 +2078,12 @@ main.build-page {
   width: 100%;
   height: var(--passive-tree-panel-height);
   cursor: grab;
-  touch-action: none;
+  touch-action: auto;
   contain: layout style paint;
+}
+
+.tree-canvas-interactive {
+  touch-action: none;
 }
 
 .tree-zoom-toggle {
