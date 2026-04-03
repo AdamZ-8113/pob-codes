@@ -907,6 +907,7 @@ main.build-page {
 .gear-tooltip-panel {
   position: absolute;
   z-index: 40;
+  display: none;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -914,7 +915,10 @@ main.build-page {
   filter: drop-shadow(0 12px 32px rgba(0,0,0,0.8));
 }
 
-.gear-slot:hover .gear-tooltip-panel {
+.gear-slot:hover .gear-tooltip-panel,
+.gear-slot--tooltip-open .gear-tooltip-panel,
+.gear-tooltip-panel--mobile-active {
+  display: block;
   opacity: 1;
   visibility: visible;
 }
@@ -2787,13 +2791,15 @@ main.build-page {
   }
 
   .config-summary-row--value {
-    grid-template-columns: 1fr;
-    gap: 4px;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    gap: 10px;
+    align-items: baseline;
   }
 
   .config-summary-value {
-    justify-self: start;
-    text-align: left;
+    justify-self: end;
+    text-align: right;
+    white-space: nowrap;
   }
 
   .recent-build-row {
@@ -2822,8 +2828,8 @@ main.build-page {
 .gear-panel--mobile-compact {
   --gear-slot: clamp(28px, 8.1vw, 34px);
   --gear-gap: clamp(3px, 0.9vw, 4px);
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .gear-panel--mobile-compact .gear-board {

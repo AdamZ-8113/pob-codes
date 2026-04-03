@@ -91,6 +91,10 @@ function compactUniquePaths(candidates: Array<string | undefined>): string[] {
 }
 
 export function resolveGemIconPath(gem: GemPayload): string | undefined {
+  if (!gem.gemId && !gem.support) {
+    return undefined;
+  }
+
   // Support gem gemIds use "SupportGem*" prefix in PoB XML, but the asset manifest
   // keys them as "SkillGemSupport*" (matching the Gems.lua table key format).
   const altGemId = gem.gemId?.replace(

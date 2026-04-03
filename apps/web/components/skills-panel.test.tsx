@@ -545,6 +545,44 @@ describe("SkillsPanel", () => {
     expect(container.querySelectorAll(".poe-gem-icon-sprite-overlay")).toHaveLength(1);
   });
 
+  it("renders no icon for item-granted skills without a real gem item id", () => {
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      activeSkillSetId: 1,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  level: 20,
+                  nameSpec: "Aspect of the Cat",
+                  quality: 0,
+                  selected: true,
+                  skillId: "AspectOfTheCat",
+                  support: false,
+                },
+              ],
+              id: "aspect-of-the-cat",
+              mainActiveSkill: 1,
+              selected: true,
+              slot: "Helmet",
+            },
+          ],
+          id: 1,
+          title: "Mapping",
+        },
+      ],
+    };
+
+    const { container } = render(<SkillsPanel payload={payload} />);
+    expect(container.querySelector(".poe-gem-icon")).toBeNull();
+    expect(container.querySelector(".poe-gem-icon-sprite-base")).toBeNull();
+  });
+
   it("renders gem tooltip stat lines with duplicate stat keys without React key warnings", () => {
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 

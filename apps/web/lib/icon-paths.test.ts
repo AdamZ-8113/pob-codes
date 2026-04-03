@@ -527,6 +527,20 @@ describe("icon-paths", () => {
     ).toBe("/assets/items/art/Gems/Support/SupportPlus/WeaponElementalDamagePlus.png");
   });
 
+  it("returns no icon for item-granted skills without a real gem item id", () => {
+    expect(
+      resolveGemIconPath({
+        enabled: true,
+        level: 20,
+        nameSpec: "Aspect of the Cat",
+        quality: 0,
+        selected: true,
+        skillId: "AspectOfTheCat",
+        support: false,
+      }),
+    ).toBeUndefined();
+  });
+
   it("resolves known influence icons", () => {
     expect(resolveInfluenceIconPath("Shaper Item")).toBe("/assets/ui/influences/shapericon.png");
   });
