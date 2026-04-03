@@ -7,6 +7,7 @@ import { parseBuildCodeToPayload } from "../../../packages/pob-parser/src/index"
 
 import {
   augmentPassiveTreeLayoutWithClusters,
+  buildPassiveTreeJewelRadiusOverlays,
   buildPassiveTreeLinks,
   getPassiveTreeLinkPath,
   buildAllocatedPassiveTreeLinks,
@@ -15,6 +16,7 @@ import {
   getPassiveTreeCenteredViewport,
   getPassiveTreeDisplayLayout,
   getPassiveTreeInitialViewport,
+  getPassiveTreeNodeKind,
   getVisiblePassiveTreeNodeIds,
   getPassiveTreeViewBounds,
   pickPassiveTreeVariant,
@@ -188,6 +190,57 @@ const arcLayout: PassiveTreeLayout = {
       stats: [],
       x: 0,
       y: 200,
+    },
+  ],
+  unpositionedNodeIds: [],
+};
+
+const impossibleEscapeLayout: PassiveTreeLayout = {
+  bounds: { maxX: 1200, maxY: 1200, minX: -1200, minY: -1200 },
+  groups: [{ id: 1, x: 0, y: 0 }],
+  nodes: [
+    {
+      flavourText: [],
+      groupId: 1,
+      groupCenterX: 0,
+      groupCenterY: 0,
+      id: 101,
+      isJewelSocket: true,
+      isKeystone: false,
+      isMastery: false,
+      isNotable: false,
+      masteryEffects: [],
+      name: "Jewel Socket",
+      orbit: 1,
+      orbitIndex: 0,
+      orbitRadius: 82,
+      out: [],
+      reminderText: [],
+      stats: [],
+      x: 120,
+      y: -80,
+    },
+    {
+      flavourText: [],
+      groupId: 1,
+      groupCenterX: 0,
+      groupCenterY: 0,
+      id: 202,
+      icon: "Art/2DArt/SkillIcons/passives/KeystoneChaosInoculation.png",
+      isJewelSocket: false,
+      isKeystone: true,
+      isMastery: false,
+      isNotable: false,
+      masteryEffects: [],
+      name: "Chaos Inoculation",
+      orbit: 2,
+      orbitIndex: 0,
+      orbitRadius: 200,
+      out: [],
+      reminderText: [],
+      stats: ["Maximum Life becomes 1, Immune to Chaos Damage"],
+      x: -420,
+      y: 260,
     },
   ],
   unpositionedNodeIds: [],
@@ -1598,6 +1651,133 @@ describe("passive-tree helpers", () => {
     expect(viewBox.y + viewBox.height / 2).toBeLessThan(150);
   });
 
+  it("anchors Impossible Escape radius overlays on the named keystone instead of the jewel socket", () => {
+    const item: ItemPayload = {
+      anointments: [],
+      base: "Viridian Jewel",
+      corrupted: true,
+      crafted: [],
+      enchantments: [],
+      explicits: ["Passive Skills in radius of Chaos Inoculation can be allocated without being connected to your tree"],
+      fractured: false,
+      fracturedMods: [],
+      id: 9001,
+      implicits: [],
+      influences: [],
+      mirrored: false,
+      name: "Impossible Escape",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Impossible Escape",
+        "Viridian Jewel",
+        "Radius: Small",
+        "Selected Variant: 1",
+        "Passive Skills in Radius of Chaos Inoculation can be Allocated",
+        "without being connected to your tree",
+        "Corrupted",
+      ].join("\n"),
+      scourgedMods: [],
+      crucibleMods: [],
+      synthesizedMods: [],
+    };
+
+    const overlays = buildPassiveTreeJewelRadiusOverlays(
+      impossibleEscapeLayout,
+      {
+        active: true,
+        masteryEffects: [],
+        nodes: [],
+        overrides: [],
+        sockets: [{ itemId: 9001, nodeId: 101 }],
+      },
+      new Map([[9001, item]]),
+    );
+
+    expect(overlays).toEqual([
+      {
+        itemId: 9001,
+        innerRadius: 0,
+        nodeId: 202,
+        socketNodeId: 101,
+        outerRadius: 960,
+        x: -420,
+        y: 260,
+      },
+    ]);
+  });
+
+  it("builds annulus overlays for Thread of Hope using the selected ring size", () => {
+    const item: ItemPayload = {
+      anointments: [],
+      base: "Crimson Jewel",
+      corrupted: true,
+      crafted: [],
+      enchantments: [],
+      explicits: ["Only affects Passives in Very Large Ring", "-12% to all Elemental Resistances"],
+      fractured: false,
+      fracturedMods: [],
+      id: 9002,
+      implicits: [],
+      influences: [],
+      mirrored: false,
+      name: "Thread of Hope",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Thread of Hope",
+        "Crimson Jewel",
+        "Radius: Variable",
+        "Variant: Small Ring",
+        "Variant: Medium Ring",
+        "Variant: Large Ring",
+        "Variant: Very Large Ring",
+        "Variant: Massive Ring (Uber)",
+        "Selected Variant: 4",
+        "{variant:4}Only affects Passives in Very Large Ring",
+        "Corrupted",
+      ].join("\n"),
+      scourgedMods: [],
+      crucibleMods: [],
+      synthesizedMods: [],
+      jewelRadius: "veryLarge",
+    };
+
+    const overlays = buildPassiveTreeJewelRadiusOverlays(
+      impossibleEscapeLayout,
+      {
+        active: true,
+        masteryEffects: [],
+        nodes: [],
+        overrides: [],
+        sockets: [{ itemId: 9002, nodeId: 101 }],
+      },
+      new Map([[9002, item]]),
+    );
+
+    expect(overlays).toEqual([
+      {
+        itemId: 9002,
+        innerRadius: 2040,
+        nodeId: 101,
+        socketNodeId: 101,
+        outerRadius: 2400,
+        x: 120,
+        y: -80,
+      },
+    ]);
+  });
+
+  it("prefers jewel socket styling when a jewel node is also marked notable", () => {
+    expect(
+      getPassiveTreeNodeKind({
+        ...layout.nodes[1],
+        isJewelSocket: true,
+        isNotable: true,
+      }),
+    ).toBe("jewel-socket");
+  });
+
   it("accounts for orbit arc extents when centering the full tree", () => {
     const viewBounds = getPassiveTreeViewBounds(arcLayout.bounds);
     const viewport = getPassiveTreeCenteredViewport(arcLayout, [101, 102], 1.25, viewBounds);
@@ -1673,6 +1853,12 @@ describe("passive-tree helpers", () => {
     expect(
       allDynamicNodes.some((node) => node.name === "Small Passive" && node.stats.includes("15% increased Armour")),
     ).toBe(true);
+    expect(
+      allDynamicNodes.find((node) => node.name === "Enduring Composure")?.orbitRadius,
+    ).toBeGreaterThan(82);
+    expect(
+      allDynamicNodes.find((node) => node.name === "Small Passive" && node.stats.includes("15% increased Armour"))?.orbitRadius,
+    ).toBeGreaterThan(82);
   });
 
   it("resolves atlas-backed sprites for regular and mastery nodes", () => {

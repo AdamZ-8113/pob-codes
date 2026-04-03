@@ -29,7 +29,15 @@
 
 body {
   margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   background: #161616;
   color: var(--text-main);
 }
@@ -1761,7 +1769,7 @@ main.build-page {
 .gem-lq {
   flex-shrink: 0;
   font-size: 0.8rem;
-  color: #3d5070;
+  color: #8694ac;
   margin-left: 5px;
   white-space: nowrap;
 }
@@ -2015,16 +2023,16 @@ main.build-page {
   --tree-passive-core-fill: rgba(86, 180, 233, 0.34);
   --tree-notable-ring-fill: rgba(122, 86, 0, 0.22);
   --tree-notable-ring-stroke: rgba(230, 159, 0, 0.68);
-  --tree-notable-core-fill: rgba(230, 159, 0, 0.42);
+  --tree-notable-core-fill: rgba(196, 145, 7, 0.464);
   --tree-keystone-ring-fill: rgba(110, 62, 90, 0.22);
   --tree-keystone-ring-stroke: rgba(204, 121, 167, 0.7);
-  --tree-keystone-core-fill: rgba(204, 121, 167, 0.44);
+  --tree-keystone-core-fill: rgba(190, 70, 136, 0.507);
   --tree-mastery-ring-fill: rgba(0, 92, 68, 0.24);
   --tree-mastery-ring-stroke: rgba(0, 158, 115, 0.72);
   --tree-mastery-core-fill: rgba(0, 158, 115, 0.46);
-  --tree-jewel-ring-fill: rgba(87, 72, 146, 0.22);
-  --tree-jewel-ring-stroke: rgba(140, 122, 230, 0.66);
-  --tree-jewel-core-fill: rgba(140, 122, 230, 0.4);
+  --tree-jewel-ring-fill: rgba(87, 72, 146, 0.463);
+  --tree-jewel-ring-stroke: rgba(106, 76, 253, 0.834);
+  --tree-jewel-core-fill: rgba(118, 97, 226, 0.805);
   --tree-class-start-ring-fill: rgba(110, 98, 43, 0.25);
   --tree-class-start-ring-stroke: rgba(233, 213, 119, 0.52);
   --tree-class-start-core-fill: rgba(209, 183, 79, 0.38);
@@ -2040,9 +2048,12 @@ main.build-page {
   --tree-mastery-allocated-ring-fill: rgba(0, 112, 82, 0.36);
   --tree-mastery-allocated-ring-stroke: rgba(124, 239, 195, 0.98);
   --tree-mastery-allocated-core-fill: rgba(90, 214, 165, 0.92);
-  --tree-jewel-allocated-ring-fill: rgba(169, 126, 47, 0.28);
-  --tree-jewel-allocated-ring-stroke: rgba(255, 224, 144, 0.92);
-  --tree-jewel-allocated-core-fill: rgba(255, 214, 114, 0.88);
+  --tree-runegraft-ring-fill: rgba(135, 15, 21, 0.329);
+  --tree-runegraft-ring-stroke: rgba(228, 9, 20, 0.649);
+  --tree-runegraft-core-fill: rgba(206, 6, 16, 0.649);
+  --tree-jewel-allocated-ring-fill: rgba(68, 47, 140, 0.38);
+  --tree-jewel-allocated-ring-stroke: rgba(191, 171, 255, 0.96);
+  --tree-jewel-allocated-core-fill: rgba(146, 117, 255, 0.92);
   --tree-class-start-allocated-ring-fill: rgba(169, 126, 47, 0.28);
   --tree-class-start-allocated-ring-stroke: rgba(255, 224, 144, 0.92);
   --tree-class-start-allocated-core-fill: rgba(255, 214, 114, 0.88);
@@ -2140,6 +2151,22 @@ main.build-page {
   display: block;
 }
 
+.tree-zoom-indicator {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 8;
+  border: 1px solid rgba(77, 91, 112, 0.82);
+  border-radius: 6px;
+  background: rgba(18, 23, 31, 0.9);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.24);
+  color: #d2dae8;
+  padding: 7px 10px;
+  font-size: 0.78rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
 .tree-layer-links {
   pointer-events: none;
 }
@@ -2150,6 +2177,17 @@ main.build-page {
 
 .tree-jewel-radius-circle {
   fill: var(--tree-jewel-radius-fill);
+  stroke: var(--tree-jewel-radius-stroke);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.tree-jewel-radius-annulus-fill {
+  fill: var(--tree-jewel-radius-fill);
+}
+
+.tree-jewel-radius-annulus-ring {
+  fill: none;
   stroke: var(--tree-jewel-radius-stroke);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
@@ -2284,6 +2322,24 @@ main.build-page {
 
 .tree-node-mastery.tree-node-allocated .tree-node-core {
   fill: var(--tree-mastery-allocated-core-fill);
+}
+
+.tree-node-mastery.tree-node-allocated.tree-node-runegraft .tree-node-ring {
+  fill: var(--tree-runegraft-ring-fill);
+  stroke: var(--tree-runegraft-ring-stroke);
+}
+
+.tree-node-mastery.tree-node-allocated.tree-node-runegraft .tree-node-core {
+  fill: var(--tree-runegraft-core-fill);
+}
+
+.tree-node-runegraft .tree-node-ring {
+  fill: var(--tree-runegraft-ring-fill);
+  stroke: var(--tree-runegraft-ring-stroke);
+}
+
+.tree-node-runegraft .tree-node-core {
+  fill: var(--tree-runegraft-core-fill);
 }
 
 .tree-node-jewel-socket.tree-node-allocated .tree-node-ring {
@@ -2428,10 +2484,6 @@ main.build-page {
   grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
   gap: 16px;
   align-items: start;
-}
-
-.tree-footnote {
-  margin-top: 10px;
 }
 
 .tree-layout-main {

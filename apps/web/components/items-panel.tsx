@@ -27,6 +27,10 @@ const NAMELESS_BLOODLINE_ASCENDANCY_ID = 6;
 const flaskSlots = ["Flask 1", "Flask 2", "Flask 3", "Flask 4", "Flask 5"];
 const equipmentSlotNames = new Set([...equipmentLayout.map((entry) => entry.slotName), ...flaskSlots]);
 const tooltipLeftAreas = new Set(["amulet", "ring-right", "weapon-off", "boots"]);
+const jewelSortCollator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: "base",
+});
 const itemInfluenceLines = new Set([
   "Shaper Item",
   "Elder Item",
@@ -99,6 +103,159 @@ const FOIL_TYPE_RGB: Record<string, string> = {
   "Celestial Pearl": "255 217 230",
   "Celestial Amethyst": "128 153 255",
 };
+
+interface SocketedJewelEntry {
+  item: ItemPayload;
+  itemId: number;
+  nodeId: number;
+}
+
+function getItemClipboardText(item: ItemPayload): string {
+  const raw = item.raw?.trim();
+  if (raw) {
+    return raw;
+  }
+
+  return [item.name, item.base].filter((value): value is string => Boolean(value)).join("\n").trim();
+}
+
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  if (typeof navigator !== "undefined" && typeof navigator.clipboard?.writeText === "function") {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fall back to a legacy copy path when the Clipboard API is unavailable or denied.
+    }
+  }
+
+  if (typeof document === "undefined") {
+    return false;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  textarea.style.inset = "0";
+
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  const copied = typeof document.execCommand === "function" ? document.execCommand("copy") : false;
+  document.body.removeChild(textarea);
+  return copied;
+}
+
+function buildJewelSortKey(entry: SocketedJewelEntry) {
+  const { item } = entry;
+  const displayName = getSocketedJewelDisplayName(item);
+  const rarity = item.rarity;
+
+  if (isVoicesClusterJewel(item)) {
+    return [0, 0, displayName, entry.nodeId] as const;
+  }
+
+  if (isClusterJewel(item)) {
+    return [1, getClusterJewelSizeRank(item), displayName, entry.nodeId] as const;
+  }
+
+  if (isUniqueLikeJewel(item)) {
+    return [2, 0, displayName, entry.nodeId] as const;
+  }
+
+  if (isRegularJewel(item) && rarity === "Rare") {
+    return [3, 0, displayName, entry.nodeId] as const;
+  }
+
+  if (isRegularJewel(item) && rarity === "Magic") {
+    return [4, 0, displayName, entry.nodeId] as const;
+  }
+
+  if (isAbyssJewel(item) && rarity === "Rare") {
+    return [5, 0, displayName, entry.nodeId] as const;
+  }
+
+  if (isAbyssJewel(item) && rarity === "Magic") {
+    return [6, 0, displayName, entry.nodeId] as const;
+  }
+
+  return [7, 0, displayName, entry.nodeId] as const;
+}
+
+function compareSocketedJewels(left: SocketedJewelEntry, right: SocketedJewelEntry): number {
+  const leftKey = buildJewelSortKey(left);
+  const rightKey = buildJewelSortKey(right);
+
+  if (leftKey[0] !== rightKey[0]) {
+    return leftKey[0] - rightKey[0];
+  }
+
+  if (leftKey[1] !== rightKey[1]) {
+    return leftKey[1] - rightKey[1];
+  }
+
+  const nameComparison = jewelSortCollator.compare(leftKey[2], rightKey[2]);
+  if (nameComparison !== 0) {
+    return nameComparison;
+  }
+
+  return leftKey[3] - rightKey[3];
+}
+
+function getSocketedJewelDisplayName(item: ItemPayload): string {
+  return item.name?.trim() || item.base?.trim() || "";
+}
+
+function getJewelSourceText(item: ItemPayload): string {
+  return [item.name, item.base, item.raw, item.iconKey]
+    .filter((value): value is string => Boolean(value))
+    .join("\n")
+    .toLowerCase();
+}
+
+function isClusterJewel(item: ItemPayload): boolean {
+  return /\b(?:large|medium|small)\s+cluster jewel\b/i.test(getJewelSourceText(item));
+}
+
+function getClusterJewelSizeRank(item: ItemPayload): number {
+  const sourceText = getJewelSourceText(item);
+
+  if (sourceText.includes("large cluster jewel")) {
+    return 0;
+  }
+
+  if (sourceText.includes("medium cluster jewel")) {
+    return 1;
+  }
+
+  if (sourceText.includes("small cluster jewel")) {
+    return 2;
+  }
+
+  return 3;
+}
+
+function isVoicesClusterJewel(item: ItemPayload): boolean {
+  return isClusterJewel(item) && getSocketedJewelDisplayName(item).toLowerCase() === "voices";
+}
+
+function isAbyssJewel(item: ItemPayload): boolean {
+  return /\beye jewel\b/i.test(getJewelSourceText(item));
+}
+
+function isUniqueLikeJewel(item: ItemPayload): boolean {
+  return item.rarity === "Unique" || item.rarity === "Relic";
+}
+
+function isRegularJewel(item: ItemPayload): boolean {
+  const sourceText = getJewelSourceText(item);
+  return sourceText.includes("jewel") && !isClusterJewel(item) && !isAbyssJewel(item);
+}
 
 function getInitialItemSetId(payload: BuildPayload): number | undefined {
   return payload.activeItemSetId ?? payload.itemSets.find((set) => set.active)?.id ?? payload.itemSets[0]?.id;
@@ -918,6 +1075,8 @@ export function ItemsPanel({
   const [internalItemSetId, setInternalItemSetId] = useState<number | undefined>(() => getInitialItemSetId(payload));
   const [useCompactMobileLayout, setUseCompactMobileLayout] = useState(false);
   const [activeTooltipArea, setActiveTooltipArea] = useState<string | null>(null);
+  const [copiedArea, setCopiedArea] = useState<string | null>(null);
+  const [copyToastMessage, setCopyToastMessage] = useState<string | null>(null);
   const byId = useMemo(() => new Map(payload.items.map((item) => [item.id, item])), [payload.items]);
   const itemSetId = controlledItemSetId ?? internalItemSetId;
   const activeSet = useMemo(() => getSelectedItemSet(payload, itemSetId), [itemSetId, payload]);
@@ -930,7 +1089,7 @@ export function ItemsPanel({
     return next;
   }, [activeSet]);
   const socketedJewels = useMemo(() => {
-    const next: Array<{ item: ItemPayload; itemId: number; nodeId: number }> = [];
+    const next: SocketedJewelEntry[] = [];
     const seenItemIds = new Set<number>();
 
     for (const socket of [...(activeTree?.sockets ?? [])].sort((left, right) => left.nodeId - right.nodeId)) {
@@ -947,7 +1106,7 @@ export function ItemsPanel({
       });
     }
 
-    return next;
+    return next.sort(compareSocketedJewels);
   }, [activeTree, byId]);
   const socketedJewelItemIds = useMemo(() => new Set(socketedJewels.map((entry) => entry.itemId)), [socketedJewels]);
   const extraSlots = useMemo(
@@ -1016,6 +1175,21 @@ export function ItemsPanel({
     }
   }, [useCompactMobileLayout]);
 
+  useEffect(() => {
+    if (!copiedArea && !copyToastMessage) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setCopiedArea(null);
+      setCopyToastMessage(null);
+    }, 1100);
+
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [copiedArea, copyToastMessage]);
+
   function handleItemSetChange(nextItemSetId: number) {
     if (controlledItemSetId === undefined) {
       setInternalItemSetId(nextItemSetId);
@@ -1025,39 +1199,68 @@ export function ItemsPanel({
     onItemSetChange?.(nextItemSetId);
   }
 
+  async function handleDesktopItemCopy(item: ItemPayload, area: string) {
+    const copied = await copyTextToClipboard(getItemClipboardText(item));
+    setCopiedArea(copied ? area : null);
+    setCopyToastMessage(copied ? "Item copied to clipboard" : "Could not copy item");
+  }
+
   function renderItemSlot(area: string, slotName: string, item?: ItemPayload, iconKey = `${slotName}:${item?.id ?? "empty"}`) {
     const iconCandidates = item ? resolveItemIconCandidates(item, slotName) : [];
     const showIcon = Boolean(item && iconCandidates.length > 0);
     const foulborn = isFoulbornItem(item);
     const corrupted = isCorruptedItem(item) && !foulborn;
     const gridArea = getEquipmentGridArea(area);
-    const interactive = useCompactMobileLayout && Boolean(item);
-    const tooltipActive = interactive && activeTooltipArea === area;
+    const mobileInteractive = useCompactMobileLayout && Boolean(item);
+    const desktopCopyable = !useCompactMobileLayout && Boolean(item);
+    const interactive = mobileInteractive || desktopCopyable;
+    const tooltipActive = mobileInteractive && activeTooltipArea === area;
+    const copied = desktopCopyable && copiedArea === area;
 
     return (
       <div
         key={area}
-        className={`gear-slot gear-slot--${area} ${item ? "gear-slot--occupied" : "gear-slot--empty"} ${foulborn ? "gear-slot--foulborn" : ""} ${corrupted ? "gear-slot--corrupted" : ""} ${tooltipActive ? " gear-slot--tooltip-open" : ""}`}
+        className={`gear-slot gear-slot--${area} ${item ? "gear-slot--occupied" : "gear-slot--empty"} ${foulborn ? "gear-slot--foulborn" : ""} ${corrupted ? "gear-slot--corrupted" : ""}${desktopCopyable ? " gear-slot--copyable" : ""}${copied ? " gear-slot--copied" : ""}${tooltipActive ? " gear-slot--tooltip-open" : ""}`}
         style={gridArea ? { gridArea } : undefined}
         role={interactive ? "button" : undefined}
         tabIndex={interactive ? 0 : undefined}
-        aria-expanded={interactive ? tooltipActive : undefined}
-        aria-label={interactive ? `Show ${item?.name || item?.base || slotName}` : undefined}
+        aria-expanded={mobileInteractive ? tooltipActive : undefined}
+        aria-label={
+          interactive
+            ? mobileInteractive
+              ? `Show ${item?.name || item?.base || slotName}`
+              : `Copy ${item?.name || item?.base || slotName} to clipboard`
+            : undefined
+        }
         onClick={
           interactive
-            ? (event) => {
+            ? async (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                setActiveTooltipArea((current) => (current === area ? null : area));
+                if (mobileInteractive) {
+                  setActiveTooltipArea((current) => (current === area ? null : area));
+                  return;
+                }
+
+                if (item) {
+                  await handleDesktopItemCopy(item, area);
+                }
               }
             : undefined
         }
         onKeyDown={
           interactive
-            ? (event) => {
+            ? async (event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  setActiveTooltipArea((current) => (current === area ? null : area));
+                  if (mobileInteractive) {
+                    setActiveTooltipArea((current) => (current === area ? null : area));
+                    return;
+                  }
+
+                  if (item) {
+                    await handleDesktopItemCopy(item, area);
+                  }
                 }
               }
             : undefined
@@ -1094,6 +1297,7 @@ export function ItemsPanel({
 
   return (
     <section className={`panel gear-panel${useCompactMobileLayout ? " gear-panel--mobile-compact" : ""}`}>
+      {copyToastMessage && <div className="item-copy-toast" role="status">{copyToastMessage}</div>}
       {useCompactMobileLayout && activeTooltipArea && (
         <button
           aria-label="Close item details"

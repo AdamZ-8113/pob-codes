@@ -5,10 +5,11 @@ import { GENERATED_PASSIVE_TREE_CLUSTER_DATA } from "./generated/passive-tree-cl
 export const PASSIVE_TREE_VARIANT_ORDER = ["default", "alternate", "ruthless", "ruthlessAlternate"] as const;
 export const PASSIVE_TREE_VIEW_PADDING = 1000;
 export const PASSIVE_TREE_MIN_ZOOM = 0.25;
-export const PASSIVE_TREE_MAX_ZOOM = 5;
+export const PASSIVE_TREE_MAX_ZOOM = 7;
 
 const MIN_FOCUS_SPAN = 2400;
 const PASSIVE_TREE_ORBIT_RADII = [0, 82, 162, 335, 493, 662, 846] as const;
+const PASSIVE_TREE_SMALL_CLUSTER_ORBIT_RADIUS = 128;
 const PASSIVE_TREE_SKILLS_PER_ORBIT = [1, 6, 16, 16, 40, 72, 72] as const;
 const PRIMARY_ASCENDANCY_TARGET_X_FACTOR = 0.88;
 const SECONDARY_ASCENDANCY_TARGET_X_FACTOR = 0.82;
@@ -24,6 +25,13 @@ const PASSIVE_JEWEL_RADIUS_VALUES: Record<ItemJewelRadius, number> = {
   medium: 1440,
   small: 960,
   veryLarge: 2400,
+};
+const PASSIVE_JEWEL_RING_RADIUS_VALUES: Record<ItemJewelRadius, { innerRadius: number; outerRadius: number }> = {
+  large: { innerRadius: 1680, outerRadius: 2040 },
+  massive: { innerRadius: 2400, outerRadius: 2880 },
+  medium: { innerRadius: 1320, outerRadius: 1680 },
+  small: { innerRadius: 960, outerRadius: 1320 },
+  veryLarge: { innerRadius: 2040, outerRadius: 2400 },
 };
 const PASSIVE_TREE_CLUSTER_VARIANTS = GENERATED_PASSIVE_TREE_CLUSTER_DATA.variants as Record<
   string,
@@ -251,8 +259,10 @@ export interface PassiveTreeLink {
 
 export interface PassiveTreeJewelRadiusOverlay {
   itemId: number;
+  innerRadius: number;
   nodeId: number;
-  radius: number;
+  socketNodeId: number;
+  outerRadius: number;
   x: number;
   y: number;
 }
@@ -371,7 +381,10 @@ export function augmentPassiveTreeLayoutWithClusters(
     const nodeOrbit = clusterTemplate.sizeIndex + 1;
     const groupCenterX = proxyNode.groupCenterX ?? proxyNode.x;
     const groupCenterY = proxyNode.groupCenterY ?? proxyNode.y;
-    const orbitRadius = PASSIVE_TREE_ORBIT_RADII[nodeOrbit] ?? proxyNode.orbitRadius ?? 0;
+    const orbitRadius =
+      parsedClusterJewel.sizeName === "Small Cluster Jewel"
+        ? Math.max(PASSIVE_TREE_SMALL_CLUSTER_ORBIT_RADIUS, PASSIVE_TREE_ORBIT_RADII[nodeOrbit] ?? proxyNode.orbitRadius ?? 0)
+        : PASSIVE_TREE_ORBIT_RADII[nodeOrbit] ?? proxyNode.orbitRadius ?? 0;
     const indicies = new Map<number, PassiveTreeLayoutNode>();
 
     const createDynamicNode = (
@@ -633,17 +646,21 @@ export function buildPassiveTreeJewelRadiusOverlays(
     const item = itemsById.get(socket.itemId);
     const node = nodeIndex.get(socket.nodeId);
     const jewelRadius = item ? resolvePassiveJewelRadius(item) : undefined;
+    const radiusAnchorNode = item ? resolvePassiveJewelRadiusAnchorNode(item, nodeIndex, node) : node;
 
-    if (!item || !node || !jewelRadius) {
+    if (!item || !node || !radiusAnchorNode || !jewelRadius) {
       continue;
     }
 
+    const innerRadius = resolvePassiveJewelInnerRadius(item, jewelRadius);
     overlays.push({
       itemId: item.id,
-      nodeId: node.id,
-      radius: PASSIVE_JEWEL_RADIUS_VALUES[jewelRadius],
-      x: node.x,
-      y: node.y,
+      innerRadius,
+      nodeId: radiusAnchorNode.id,
+      socketNodeId: socket.nodeId,
+      outerRadius: innerRadius > 0 ? PASSIVE_JEWEL_RING_RADIUS_VALUES[jewelRadius].outerRadius : PASSIVE_JEWEL_RADIUS_VALUES[jewelRadius],
+      x: radiusAnchorNode.x,
+      y: radiusAnchorNode.y,
     });
   }
 
@@ -1022,25 +1039,25 @@ export function getPassiveTreeNodeKind(node: PassiveTreeLayoutNode): PassiveTree
   if (node.classStartIndex !== undefined) return "class-start";
   if (node.isMastery) return "mastery";
   if (node.isKeystone) return "keystone";
-  if (node.isNotable) return "notable";
   if (node.isJewelSocket) return "jewel-socket";
+  if (node.isNotable) return "notable";
   return "passive";
 }
 
 export function getPassiveTreeNodeRadius(node: PassiveTreeLayoutNode): number {
   switch (getPassiveTreeNodeKind(node)) {
     case "class-start":
-      return 68;
+      return 72;
     case "keystone":
       return 58;
     case "mastery":
       return 40;
     case "notable":
-      return 40;
+      return 44;
     case "jewel-socket":
       return 44;
     default:
-      return 32;
+      return 36;
   }
 }
 
@@ -1133,6 +1150,17 @@ export function resolvePassiveTreeSprite(
     ], node.icon);
   }
 
+  if (node.isJewelSocket && node.icon) {
+    return resolveAtlasEntries(manifest, [
+      allocated ? "normalActive" : "normalInactive",
+      allocated ? "legacyNormalActive" : "legacyNormalInactive",
+      allocated ? "notableActive" : "notableInactive",
+      allocated ? "legacyNotableActive" : "legacyNotableInactive",
+      allocated ? "keystoneActive" : "keystoneInactive",
+      allocated ? "legacyKeystoneActive" : "legacyKeystoneInactive",
+    ], node.icon);
+  }
+
   if (node.isNotable && node.icon) {
     return resolveAtlasEntries(manifest, [
       allocated ? "notableActive" : "notableInactive",
@@ -1171,12 +1199,12 @@ export function resolvePassiveTreeNodeFrameSprite(
     return resolveAtlasEntry(manifest, "frame", allocated ? "KeystoneFrameAllocated" : "KeystoneFrameUnallocated");
   }
 
-  if (node.isNotable) {
-    return resolveAtlasEntry(manifest, "frame", allocated ? "NotableFrameAllocated" : "NotableFrameUnallocated");
-  }
-
   if (node.isJewelSocket) {
     return resolveAtlasEntry(manifest, "frame", allocated ? "JewelFrameAllocated" : "JewelFrameUnallocated");
+  }
+
+  if (node.isNotable) {
+    return resolveAtlasEntry(manifest, "frame", allocated ? "NotableFrameAllocated" : "NotableFrameUnallocated");
   }
 
   return resolveAtlasEntry(manifest, "frame", allocated ? "PSSkillFrameActive" : "PSSkillFrame");
@@ -1460,6 +1488,98 @@ function resolvePassiveJewelRadius(item: ItemPayload): ItemJewelRadius | undefin
   }
 
   return item.jewelRadius ?? inferPassiveJewelRadiusFromRaw(item.raw);
+}
+
+function resolvePassiveJewelInnerRadius(item: ItemPayload, jewelRadius: ItemJewelRadius): number {
+  if (!usesPassiveJewelRingOverlay(item)) {
+    return 0;
+  }
+
+  return PASSIVE_JEWEL_RING_RADIUS_VALUES[jewelRadius]?.innerRadius ?? 0;
+}
+
+function usesPassiveJewelRingOverlay(item: ItemPayload): boolean {
+  if (!item.raw) {
+    return false;
+  }
+
+  return /Only affects Passives in (Small|Medium|Large|Very Large|Massive) Ring/i.test(item.raw);
+}
+
+function resolvePassiveJewelRadiusAnchorNode(
+  item: ItemPayload,
+  nodeIndex: ReadonlyMap<number, PassiveTreeLayoutNode>,
+  defaultNode?: PassiveTreeLayoutNode,
+): PassiveTreeLayoutNode | undefined {
+  const impossibleEscapeKeystoneNames = resolveImpossibleEscapeKeystoneNames(item);
+  if (impossibleEscapeKeystoneNames.length === 0) {
+    return defaultNode;
+  }
+
+  const keystonesByName = new Map<string, PassiveTreeLayoutNode>();
+  for (const node of nodeIndex.values()) {
+    if (node.isKeystone && !keystonesByName.has(node.name.toLowerCase())) {
+      keystonesByName.set(node.name.toLowerCase(), node);
+    }
+  }
+
+  for (const keystoneName of impossibleEscapeKeystoneNames) {
+    const matchedNode = keystonesByName.get(keystoneName.toLowerCase());
+    if (matchedNode) {
+      return matchedNode;
+    }
+  }
+
+  return defaultNode;
+}
+
+function resolveImpossibleEscapeKeystoneNames(item: ItemPayload): string[] {
+  const title = `${item.name ?? ""} ${item.base ?? ""}`.toLowerCase();
+  if (!title.includes("impossible escape")) {
+    return [];
+  }
+
+  return collectImpossibleEscapeKeystoneNames(item.raw);
+}
+
+function collectImpossibleEscapeKeystoneNames(raw: string): string[] {
+  if (!raw) {
+    return [];
+  }
+
+  const lines = raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !/^[-]+$/.test(line));
+  const selectedVariant = parseSelectedVariantIndex(lines);
+  const keystoneNames: string[] = [];
+  const impossibleEscapePattern =
+    /^Passive Skills in radius of (.+?) can be allocated without being connected to your tree$/i;
+
+  const tryCollectKeystoneName = (value: string) => {
+    const match = value.match(impossibleEscapePattern);
+    const keystoneName = match?.[1]?.trim();
+    if (keystoneName && !keystoneNames.includes(keystoneName)) {
+      keystoneNames.push(keystoneName);
+    }
+  };
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!line || !matchesSelectedVariantLine(line, selectedVariant)) {
+      continue;
+    }
+
+    const normalizedLine = stripLineTags(line);
+    tryCollectKeystoneName(normalizedLine);
+
+    const nextLine = lines[index + 1];
+    if (nextLine && matchesSelectedVariantLine(nextLine, selectedVariant)) {
+      tryCollectKeystoneName(`${normalizedLine} ${stripLineTags(nextLine)}`);
+    }
+  }
+
+  return keystoneNames;
 }
 
 function inferPassiveJewelRadiusFromRaw(raw: string): ItemJewelRadius | undefined {

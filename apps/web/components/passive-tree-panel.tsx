@@ -455,12 +455,12 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
   const inactiveNodeBatch = useMemo(() => buildPassiveTreeNodeBatch(inactiveNodes), [inactiveNodes]);
   const jewelRadiusOverlays = useMemo(
     () =>
-      displayLayout && activeTree
-        ? buildPassiveTreeJewelRadiusOverlays(displayLayout, activeTree, itemsById).filter((overlay) =>
-            visibleNodeIds.has(overlay.nodeId),
+      augmentedLayout && activeTree
+        ? buildPassiveTreeJewelRadiusOverlays(augmentedLayout, activeTree, itemsById).filter((overlay) =>
+            visibleNodeIds.has(overlay.socketNodeId),
           )
         : [],
-    [activeTree, displayLayout, itemsById, visibleNodeIds],
+    [activeTree, augmentedLayout, itemsById, visibleNodeIds],
   );
   const hoveredNode = hoveredNodeId !== null ? nodeIndex.get(hoveredNodeId) : undefined;
   const hoveredSocketedItem = useMemo(() => {
@@ -471,6 +471,15 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
     const socket = activeTree.sockets.find((entry) => entry.nodeId === hoveredNodeId);
     return socket ? itemsById.get(socket.itemId) : undefined;
   }, [activeTree, hoveredNodeId, itemsById]);
+  const runegraftNodeIds = useMemo(
+    () =>
+      new Set(
+        activeTree?.overrides
+          .filter((override) => /\bRunegraft\b/i.test(override.name))
+          .map((override) => override.nodeId) ?? [],
+      ),
+    [activeTree],
+  );
   const hoveredDescription = hoveredNode && activeTree ? describePassiveTreeNode(hoveredNode, activeTree) : undefined;
   const timelessKeystoneTransformations = useMemo(
     () => (activeTree ? resolveTimelessKeystoneTransformations(activeTree, layoutNodeIndex, itemsById) : new Map()),
@@ -980,15 +989,37 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
                 >
                   <g ref={sceneRef} style={{ willChange: "transform" }}>
                     <g className="tree-layer tree-layer-jewel-radii">
-                      {jewelRadiusOverlays.map((overlay) => (
-                        <circle
-                          key={`tree-jewel-radius:${overlay.nodeId}:${overlay.itemId}`}
-                          className="tree-jewel-radius-circle"
-                          cx={overlay.x}
-                          cy={overlay.y}
-                          r={overlay.radius}
-                        />
-                      ))}
+                      {jewelRadiusOverlays.map((overlay) =>
+                        overlay.innerRadius > 0 ? (
+                          <g key={`tree-jewel-radius:${overlay.nodeId}:${overlay.itemId}`} className="tree-jewel-radius-annulus">
+                            <path
+                              className="tree-jewel-radius-annulus-fill"
+                              d={buildPassiveTreeAnnulusPath(overlay.x, overlay.y, overlay.innerRadius, overlay.outerRadius)}
+                              fillRule="evenodd"
+                            />
+                            <circle
+                              className="tree-jewel-radius-annulus-ring"
+                              cx={overlay.x}
+                              cy={overlay.y}
+                              r={overlay.outerRadius}
+                            />
+                            <circle
+                              className="tree-jewel-radius-annulus-ring"
+                              cx={overlay.x}
+                              cy={overlay.y}
+                              r={overlay.innerRadius}
+                            />
+                          </g>
+                        ) : (
+                          <circle
+                            key={`tree-jewel-radius:${overlay.nodeId}:${overlay.itemId}`}
+                            className="tree-jewel-radius-circle"
+                            cx={overlay.x}
+                            cy={overlay.y}
+                            r={overlay.outerRadius}
+                          />
+                        ),
+                      )}
                     </g>
 
                     <g className="tree-layer tree-layer-links tree-layer-links-all">
@@ -1016,6 +1047,7 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
                           node={node}
                           allocated
                           onHoverChange={setHoveredNode}
+                          runegraft={runegraftNodeIds.has(node.id)}
                         />
                       ))}
                     </g>
@@ -1079,6 +1111,8 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
                 >
                   <TreeZoomLockIcon unlocked={zoomUnlocked} />
                 </button>
+
+                <div className="tree-zoom-indicator meta">Current zoom: {displayZoom.toFixed(2)}x</div>
               </div>
             </div>
 
@@ -1184,7 +1218,6 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
               </div>
             </aside>
           </div>
-          <div className="tree-footnote meta">Current zoom: {displayZoom.toFixed(2)}x</div>
         </>
       )}
     </section>
@@ -1248,10 +1281,12 @@ const TreeNode = memo(function TreeNode({
   allocated,
   node,
   onHoverChange,
+  runegraft,
 }: {
   allocated: boolean;
   node: PassiveTreeLayoutNode;
   onHoverChange?: Dispatch<SetStateAction<HoveredTreeNodeState | null>>;
+  runegraft?: boolean;
 }) {
   const kind = getPassiveTreeNodeKind(node);
   const radius = getPassiveTreeNodeRadius(node) * 1.4;
@@ -1281,7 +1316,7 @@ const TreeNode = memo(function TreeNode({
 
   return (
     <g
-      className={`tree-node tree-node-${kind}${allocated ? " tree-node-allocated" : ""}${isInteractive ? " tree-node-interactive" : ""}`}
+      className={`tree-node tree-node-${kind}${allocated ? " tree-node-allocated" : ""}${runegraft ? " tree-node-runegraft" : ""}${isInteractive ? " tree-node-interactive" : ""}`}
       transform={`translate(${node.x} ${node.y})`}
       onBlur={clearHover}
       onFocus={setHoverFromFocus}
@@ -1345,6 +1380,10 @@ function buildPassiveTreeCirclePath(cx: number, cy: number, radius: number): str
   const centerY = roundSvgPathCoordinate(cy);
   const arcRadius = roundSvgPathCoordinate(radius);
   return `M ${leftX} ${centerY} a ${arcRadius} ${arcRadius} 0 1 0 ${diameter} 0 a ${arcRadius} ${arcRadius} 0 1 0 -${diameter} 0`;
+}
+
+function buildPassiveTreeAnnulusPath(cx: number, cy: number, innerRadius: number, outerRadius: number): string {
+  return `${buildPassiveTreeCirclePath(cx, cy, outerRadius)} ${buildPassiveTreeCirclePath(cx, cy, innerRadius)}`;
 }
 
 function roundSvgPathCoordinate(value: number): string {

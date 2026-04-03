@@ -344,6 +344,324 @@ describe("PassiveTreePanel", () => {
     expect(circle?.getAttribute("r")).toBe("1800");
   });
 
+  it("anchors Impossible Escape radius overlays on the named keystone", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        return new Response(
+          JSON.stringify({
+            bounds: {
+              maxX: 500,
+              maxY: 400,
+              minX: -500,
+              minY: -400,
+            },
+            groups: [
+              {
+                id: 1,
+                x: 0,
+                y: 0,
+              },
+            ],
+            nodes: [
+              {
+                classStartIndex: 5,
+                flavourText: [],
+                groupCenterX: 0,
+                groupCenterY: 0,
+                groupId: 1,
+                id: 6,
+                isJewelSocket: false,
+                isKeystone: false,
+                isMastery: false,
+                isNotable: false,
+                masteryEffects: [],
+                name: "Templar Start",
+                orbit: 0,
+                orbitIndex: 0,
+                orbitRadius: 0,
+                out: [99],
+                reminderText: [],
+                startArt: "centertemplar",
+                stats: ["+10 to Strength"],
+                x: 0,
+                y: 0,
+              },
+              {
+                flavourText: [],
+                groupCenterX: 0,
+                groupCenterY: 0,
+                groupId: 1,
+                id: 99,
+                isJewelSocket: true,
+                isKeystone: false,
+                isMastery: false,
+                isNotable: false,
+                masteryEffects: [],
+                name: "Jewel Socket",
+                orbit: 1,
+                orbitIndex: 0,
+                orbitRadius: 82,
+                out: [],
+                reminderText: [],
+                stats: [],
+                x: 120,
+                y: -80,
+              },
+              {
+                flavourText: [],
+                groupCenterX: 0,
+                groupCenterY: 0,
+                groupId: 1,
+                id: 200,
+                icon: "Art/2DArt/SkillIcons/passives/KeystoneChaosInoculation.png",
+                isJewelSocket: false,
+                isKeystone: true,
+                isMastery: false,
+                isNotable: false,
+                masteryEffects: [],
+                name: "Chaos Inoculation",
+                orbit: 2,
+                orbitIndex: 0,
+                orbitRadius: 200,
+                out: [],
+                reminderText: [],
+                stats: ["Maximum Life becomes 1, Immune to Chaos Damage"],
+                x: -240,
+                y: 180,
+              },
+            ],
+            unpositionedNodeIds: [],
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            status: 200,
+          },
+        );
+      }),
+    );
+
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      items: [
+        {
+          anointments: [],
+          base: "Viridian Jewel",
+          corrupted: true,
+          crafted: [],
+          enchantments: [],
+          explicits: ["Passive Skills in radius of Chaos Inoculation can be allocated without being connected to your tree"],
+          fractured: false,
+          fracturedMods: [],
+          id: 7002,
+          implicits: [],
+          influences: [],
+          mirrored: false,
+          name: "Impossible Escape",
+          rarity: "Unique",
+          raw: [
+            "Rarity: Unique",
+            "Impossible Escape",
+            "Viridian Jewel",
+            "Radius: Small",
+            "Selected Variant: 1",
+            "Passive Skills in Radius of Chaos Inoculation can be Allocated",
+            "without being connected to your tree",
+            "Corrupted",
+          ].join("\n"),
+          scourgedMods: [],
+          crucibleMods: [],
+          synthesizedMods: [],
+        },
+      ],
+      treeSpecs: [
+        {
+          active: true,
+          ascendancyId: 2,
+          classId: 5,
+          masteryEffects: [],
+          nodes: [6, 99],
+          overrides: [],
+          sockets: [
+            {
+              itemId: 7002,
+              nodeId: 99,
+            },
+          ],
+          title: "Main Tree",
+          url: "https://example.com/trees/main",
+          version: "3.28",
+        },
+      ],
+    };
+
+    const { container } = render(<PassiveTreePanel payload={payload} treeIndex={0} />);
+
+    await waitFor(() => {
+      expect(container.querySelector(".tree-jewel-radius-circle")).toBeTruthy();
+    });
+
+    const circle = container.querySelector(".tree-jewel-radius-circle");
+    expect(circle?.getAttribute("cx")).toBe("-240");
+    expect(circle?.getAttribute("cy")).toBe("180");
+    expect(circle?.getAttribute("r")).toBe("960");
+  });
+
+  it("renders Thread of Hope as an annulus overlay", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        return new Response(
+          JSON.stringify({
+            bounds: {
+              maxX: 500,
+              maxY: 400,
+              minX: -500,
+              minY: -400,
+            },
+            groups: [
+              {
+                id: 1,
+                x: 0,
+                y: 0,
+              },
+            ],
+            nodes: [
+              {
+                classStartIndex: 5,
+                flavourText: [],
+                groupCenterX: 0,
+                groupCenterY: 0,
+                groupId: 1,
+                id: 6,
+                isJewelSocket: false,
+                isKeystone: false,
+                isMastery: false,
+                isNotable: false,
+                masteryEffects: [],
+                name: "Templar Start",
+                orbit: 0,
+                orbitIndex: 0,
+                orbitRadius: 0,
+                out: [99],
+                reminderText: [],
+                startArt: "centertemplar",
+                stats: ["+10 to Strength"],
+                x: 0,
+                y: 0,
+              },
+              {
+                flavourText: [],
+                groupCenterX: 0,
+                groupCenterY: 0,
+                groupId: 1,
+                id: 99,
+                isJewelSocket: true,
+                isKeystone: false,
+                isMastery: false,
+                isNotable: false,
+                masteryEffects: [],
+                name: "Jewel Socket",
+                orbit: 1,
+                orbitIndex: 0,
+                orbitRadius: 82,
+                out: [],
+                reminderText: [],
+                stats: [],
+                x: 120,
+                y: -80,
+              },
+            ],
+            unpositionedNodeIds: [],
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            status: 200,
+          },
+        );
+      }),
+    );
+
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      items: [
+        {
+          anointments: [],
+          base: "Crimson Jewel",
+          corrupted: true,
+          crafted: [],
+          enchantments: [],
+          explicits: ["Only affects Passives in Very Large Ring", "-12% to all Elemental Resistances"],
+          fractured: false,
+          fracturedMods: [],
+          id: 7003,
+          implicits: [],
+          influences: [],
+          mirrored: false,
+          name: "Thread of Hope",
+          rarity: "Unique",
+          raw: [
+            "Rarity: Unique",
+            "Thread of Hope",
+            "Crimson Jewel",
+            "Radius: Variable",
+            "Variant: Small Ring",
+            "Variant: Medium Ring",
+            "Variant: Large Ring",
+            "Variant: Very Large Ring",
+            "Variant: Massive Ring (Uber)",
+            "Selected Variant: 4",
+            "{variant:4}Only affects Passives in Very Large Ring",
+            "Corrupted",
+          ].join("\n"),
+          scourgedMods: [],
+          crucibleMods: [],
+          synthesizedMods: [],
+          jewelRadius: "veryLarge",
+        },
+      ],
+      treeSpecs: [
+        {
+          active: true,
+          ascendancyId: 2,
+          classId: 5,
+          masteryEffects: [],
+          nodes: [6, 99],
+          overrides: [],
+          sockets: [
+            {
+              itemId: 7003,
+              nodeId: 99,
+            },
+          ],
+          title: "Main Tree",
+          url: "https://example.com/trees/main",
+          version: "3.28",
+        },
+      ],
+    };
+
+    const { container } = render(<PassiveTreePanel payload={payload} treeIndex={0} />);
+
+    await waitFor(() => {
+      expect(container.querySelector(".tree-jewel-radius-annulus-fill")).toBeTruthy();
+    });
+
+    const annulusFill = container.querySelector(".tree-jewel-radius-annulus-fill");
+    const annulusRings = Array.from(container.querySelectorAll(".tree-jewel-radius-annulus-ring"));
+    expect(annulusFill?.getAttribute("fill-rule")).toBe("evenodd");
+    expect(annulusFill?.getAttribute("d")).toContain("a 2400 2400");
+    expect(annulusFill?.getAttribute("d")).toContain("a 2040 2040");
+    expect(annulusRings).toHaveLength(2);
+    expect(annulusRings[0]?.getAttribute("r")).toBe("2400");
+    expect(annulusRings[1]?.getAttribute("r")).toBe("2040");
+    expect(container.querySelector(".tree-jewel-radius-circle")).toBeNull();
+  });
+
   it("does not render an unsocketed cluster jewel branch", async () => {
     const payload: BuildPayload = {
       ...buildViewerPayloadFixture,
@@ -576,6 +894,102 @@ describe("PassiveTreePanel", () => {
     ]);
     expect(screen.getByText("Runegraft of Rallying")).toBeTruthy();
     expect(screen.getByText("Tattoo of the Tukohama Warrior (x2)")).toBeTruthy();
+  });
+
+  it("applies runegraft styling to allocated mastery override nodes", async () => {
+    vi.mocked(fetch).mockImplementation(async () => {
+      return new Response(
+        JSON.stringify({
+          bounds: {
+            maxX: 400,
+            maxY: 300,
+            minX: -400,
+            minY: -300,
+          },
+          groups: [
+            {
+              id: 1,
+              x: 0,
+              y: 0,
+            },
+          ],
+          nodes: [
+            {
+              classStartIndex: 5,
+              flavourText: [],
+              groupCenterX: 0,
+              groupCenterY: 0,
+              groupId: 1,
+              id: 6,
+              isJewelSocket: false,
+              isKeystone: false,
+              isMastery: false,
+              isNotable: false,
+              masteryEffects: [],
+              name: "Templar Start",
+              orbit: 0,
+              orbitIndex: 0,
+              orbitRadius: 0,
+              out: [13],
+              reminderText: [],
+              startArt: "centertemplar",
+              stats: ["+10 to Strength"],
+              x: 0,
+              y: 0,
+            },
+            {
+              activeIcon: "Art/2DArt/SkillIcons/passives/MasteryPassiveIcons/PassiveMasteryAreaActive.png",
+              flavourText: [],
+              groupCenterX: 0,
+              groupCenterY: 0,
+              groupId: 1,
+              id: 13,
+              inactiveIcon: "Art/2DArt/SkillIcons/passives/MasteryPassiveIcons/PassiveMasteryAreaInactive.png",
+              isJewelSocket: false,
+              isKeystone: false,
+              isMastery: true,
+              isNotable: false,
+              masteryEffects: [],
+              name: "Aura Mastery",
+              orbit: 1,
+              orbitIndex: 0,
+              orbitRadius: 82,
+              out: [6],
+              reminderText: [],
+              stats: [],
+              x: 0,
+              y: -82,
+            },
+          ],
+          unpositionedNodeIds: [],
+        }),
+      );
+    });
+
+    const payload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      items: [],
+      treeSpecs: [
+        {
+          active: true,
+          ascendancyId: 2,
+          classId: 5,
+          masteryEffects: [],
+          nodes: [6, 13],
+          overrides: [{ effect: "Banner Skills have 20% increased Aura Effect", name: "Runegraft of Rallying", nodeId: 13 }],
+          sockets: [],
+          title: "Main Tree",
+          url: "https://example.com/trees/main",
+          version: "3.28",
+        },
+      ],
+    };
+
+    const { container } = render(<PassiveTreePanel payload={payload} treeIndex={0} />);
+
+    await waitFor(() => {
+      expect(container.querySelector(".tree-node-runegraft.tree-node-mastery.tree-node-allocated")).toBeTruthy();
+    });
   });
 
   it("shows transformed timeless keystones with the original keystone in parentheses", async () => {
