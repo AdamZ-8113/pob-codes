@@ -983,7 +983,7 @@ export function ItemsPanel({
       return;
     }
 
-    const narrowViewport = window.matchMedia("(max-width: 640px)");
+    const narrowViewport = window.matchMedia("(max-width: 1180px)");
     const coarsePointer = window.matchMedia("(pointer: coarse)");
     const noHover = window.matchMedia("(hover: none)");
 

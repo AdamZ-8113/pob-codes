@@ -122,9 +122,21 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
                             className={`compare-finding-table-row ${row.highlight ? "compare-finding-table-row--highlight" : ""}`}
                             key={`${finding.key}:${row.key}`}
                           >
-                            <div className="compare-finding-cell compare-finding-cell--name">{row.name}</div>
-                            <div className="compare-finding-cell compare-finding-cell--current">{row.currentValue}</div>
-                            <div className="compare-finding-cell compare-finding-cell--target">{row.targetValue}</div>
+                            <div className="compare-finding-cell compare-finding-cell--name" data-mobile-label="Compared field">
+                              {row.name}
+                            </div>
+                            <div
+                              className="compare-finding-cell compare-finding-cell--current"
+                              data-mobile-label="Current build"
+                            >
+                              {row.currentValue}
+                            </div>
+                            <div
+                              className="compare-finding-cell compare-finding-cell--target"
+                              data-mobile-label="Compared build"
+                            >
+                              {row.targetValue}
+                            </div>
                           </div>
                         ))}
                       </div>

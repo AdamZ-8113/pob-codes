@@ -559,6 +559,10 @@ main.build-page {
   font-size: 0.92rem;
 }
 
+.compare-finding-cell::before {
+  display: none;
+}
+
 .error-box {
   border: 1px solid #702020;
   background: #2a1111;
@@ -2526,11 +2530,19 @@ main.build-page {
   background: rgba(17, 24, 36, 0.36);
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1180px) {
   .grid-3,
   .build-grid,
   .build-layout {
     grid-template-columns: 1fr;
+  }
+
+  .build-layout-sidebar {
+    display: none;
+  }
+
+  .build-layout-mobile-stats {
+    display: block;
   }
 
   .build-layout-top {
@@ -2626,12 +2638,106 @@ main.build-page {
     padding: 12px;
   }
 
-  .build-layout-sidebar {
+  .compare-modal-backdrop {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .compare-modal {
+    width: min(100%, 720px);
+    max-height: calc(100vh - 24px);
+  }
+
+  .compare-modal-toolbar {
+    align-items: flex-start;
+  }
+
+  .compare-modal-close {
+    min-width: 0;
+  }
+
+  .compare-modal-source-row,
+  .compare-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .compare-modal-source-row > *,
+  .compare-modal-actions > * {
+    width: 100%;
+  }
+
+  .compare-report {
+    gap: 10px;
+  }
+
+  .compare-report-summary {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .compare-finding {
+    padding: 12px;
+  }
+
+  .compare-finding-table {
+    gap: 10px;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .compare-finding-table-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(8, 13, 20, 0.5);
+  }
+
+  .compare-finding-table-row + .compare-finding-table-row {
+    border-top: none;
+  }
+
+  .compare-finding-table-row--header {
     display: none;
   }
 
-  .build-layout-mobile-stats {
+  .compare-finding-table-row--highlight {
+    background: linear-gradient(180deg, rgba(130, 102, 47, 0.18), rgba(255, 214, 128, 0.04));
+  }
+
+  .compare-finding-cell {
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .compare-finding-cell + .compare-finding-cell {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .compare-finding-cell--name {
+    background: rgba(255, 255, 255, 0.035);
+    color: #f2d798;
+    font-weight: 600;
+  }
+
+  .compare-finding-cell--current::before,
+  .compare-finding-cell--target::before {
     display: block;
+    margin-bottom: 4px;
+    color: #d7c08d;
+    content: attr(data-mobile-label);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 
   .build-code-form-actions {
