@@ -78,6 +78,8 @@ export function SkillsPanel({
   skillSetId: controlledSkillSetId,
 }: SkillsPanelProps) {
   const [internalSkillSetId, setInternalSkillSetId] = useState<number | undefined>(() => getInitialSkillSetId(payload));
+  const [useCompactMobileLayout, setUseCompactMobileLayout] = useState(false);
+  const [activeTooltipGemKey, setActiveTooltipGemKey] = useState<string | null>(null);
   const skillSetId = controlledSkillSetId ?? internalSkillSetId;
   const activeSet = getSelectedSkillSet(payload, skillSetId);
   const skillCards = useMemo(
@@ -90,18 +92,66 @@ export function SkillsPanel({
     if (controlledSkillSetId === undefined) {
       setInternalSkillSetId(getInitialSkillSetId(payload));
     }
+    setActiveTooltipGemKey(null);
   }, [controlledSkillSetId, payload]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const narrowViewport = window.matchMedia("(max-width: 1180px)");
+    const coarsePointer = window.matchMedia("(pointer: coarse)");
+    const noHover = window.matchMedia("(hover: none)");
+
+    const updateLayoutMode = () => {
+      const userAgent = window.navigator.userAgent;
+      const looksMobile =
+        coarsePointer.matches ||
+        noHover.matches ||
+        window.navigator.maxTouchPoints > 0 ||
+        /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
+
+      setUseCompactMobileLayout(narrowViewport.matches && looksMobile);
+    };
+
+    updateLayoutMode();
+    narrowViewport.addEventListener("change", updateLayoutMode);
+    coarsePointer.addEventListener("change", updateLayoutMode);
+    noHover.addEventListener("change", updateLayoutMode);
+
+    return () => {
+      narrowViewport.removeEventListener("change", updateLayoutMode);
+      coarsePointer.removeEventListener("change", updateLayoutMode);
+      noHover.removeEventListener("change", updateLayoutMode);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!useCompactMobileLayout) {
+      setActiveTooltipGemKey(null);
+    }
+  }, [useCompactMobileLayout]);
 
   function handleSkillSetChange(nextSkillSetId: number) {
     if (controlledSkillSetId === undefined) {
       setInternalSkillSetId(nextSkillSetId);
     }
 
+    setActiveTooltipGemKey(null);
     onSkillSetChange?.(nextSkillSetId);
   }
 
   return (
-    <section className="panel skills-panel">
+    <section className={`panel skills-panel${useCompactMobileLayout ? " skills-panel--mobile-compact" : ""}`}>
+      {useCompactMobileLayout && activeTooltipGemKey && (
+        <button
+          aria-label="Close gem details"
+          className="gear-tooltip-backdrop"
+          type="button"
+          onClick={() => setActiveTooltipGemKey(null)}
+        />
+      )}
       <div className="panel-toolbar">
         <h2>Gems</h2>
         {payload.skillSets.length > 1 && (
@@ -119,7 +169,11 @@ export function SkillsPanel({
           </select>
         )}
       </div>
-      {renderSkillCards(skillCards)}
+      {renderSkillCards(skillCards, {
+        activeTooltipGemKey,
+        onTooltipToggle: setActiveTooltipGemKey,
+        useCompactMobileLayout,
+      })}
     </section>
   );
 }
@@ -160,7 +214,14 @@ function buildSkillCards(groups: SkillGroupPayload[]): SkillCard[] {
   return cards;
 }
 
-function renderSkillCards(cards: SkillCard[]): React.ReactNode {
+function renderSkillCards(
+  cards: SkillCard[],
+  tooltipState: {
+    activeTooltipGemKey: string | null;
+    onTooltipToggle: React.Dispatch<React.SetStateAction<string | null>>;
+    useCompactMobileLayout: boolean;
+  },
+): React.ReactNode {
   const slottedBySlot = new Map<string, SkillCard>();
   const unslotted: SkillCard[] = [];
 
@@ -184,22 +245,29 @@ function renderSkillCards(cards: SkillCard[]): React.ReactNode {
     <>
       <div className="skills-columns">
         <div className="skills-column skills-column-left">
-          {leftColumnCards.map((card) => renderSkillCard(card))}
+          {leftColumnCards.map((card) => renderSkillCard(card, tooltipState))}
         </div>
         <div className="skills-column skills-column-right">
-          {rightColumnCards.map((card) => renderSkillCard(card))}
+          {rightColumnCards.map((card) => renderSkillCard(card, tooltipState))}
         </div>
       </div>
       {unslotted.length > 0 && (
         <div className="skills-unslotted">
-          {unslotted.map((card) => renderSkillCard(card))}
+          {unslotted.map((card) => renderSkillCard(card, tooltipState))}
         </div>
       )}
     </>
   );
 }
 
-function renderSkillCard(card: SkillCard): React.ReactNode {
+function renderSkillCard(
+  card: SkillCard,
+  tooltipState: {
+    activeTooltipGemKey: string | null;
+    onTooltipToggle: React.Dispatch<React.SetStateAction<string | null>>;
+    useCompactMobileLayout: boolean;
+  },
+): React.ReactNode {
   const gemRows = buildGemRows(card.groups);
   if (gemRows.length === 0) {
     return null;
@@ -208,17 +276,56 @@ function renderSkillCard(card: SkillCard): React.ReactNode {
   return (
     <div className="item-box skill-group-card" key={card.key}>
       {(card.slot || card.label) && <div className="skill-group-slot-badge">{card.slot ?? card.label}</div>}
-      <div className="gem-group">{gemRows.map((row) => renderGemRow(row))}</div>
+      <div className="gem-group">{gemRows.map((row) => renderGemRow(row, tooltipState))}</div>
     </div>
   );
 }
 
-function renderGemRow(row: SkillGemRow): React.ReactNode {
+function renderGemRow(
+  row: SkillGemRow,
+  {
+    activeTooltipGemKey,
+    onTooltipToggle,
+    useCompactMobileLayout,
+  }: {
+    activeTooltipGemKey: string | null;
+    onTooltipToggle: React.Dispatch<React.SetStateAction<string | null>>;
+    useCompactMobileLayout: boolean;
+  },
+): React.ReactNode {
   const colour = (row.gem.gemId && GEM_COLOURS[row.gem.gemId]) || GEM_COLOURS_BY_NAME[row.displayName] || "w";
+  const mobileInteractive = useCompactMobileLayout;
+  const tooltipActive = mobileInteractive && activeTooltipGemKey === row.key;
+  const interactive = mobileInteractive;
   return (
     <React.Fragment key={row.key}>
       {row.groupDivider && <div className="gem-group-divider" />}
-      <div className="gem-row-wrapper">
+      <div
+        aria-expanded={interactive ? tooltipActive : undefined}
+        aria-label={interactive ? `Show details for ${row.displayName}` : undefined}
+        className={`gem-row-wrapper${interactive ? " gem-row-wrapper--interactive" : ""}${tooltipActive ? " gem-row-wrapper--tooltip-open" : ""}`}
+        role={interactive ? "button" : undefined}
+        tabIndex={interactive ? 0 : undefined}
+        onClick={
+          interactive
+            ? (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onTooltipToggle((current) => (current === row.key ? null : row.key));
+              }
+            : undefined
+        }
+        onKeyDown={
+          interactive
+            ? (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onTooltipToggle((current) => (current === row.key ? null : row.key));
+                }
+              }
+            : undefined
+        }
+      >
         <div className="gem-row">
           {row.gem.support && (
             <span className={`gem-connector gem-connector-${row.connector}`} aria-hidden="true" />
@@ -233,7 +340,10 @@ function renderGemRow(row: SkillGemRow): React.ReactNode {
             <span className="gem-lq">{row.gem.level}/{row.gem.quality}</span>
           )}
         </div>
-        <div className="gem-tooltip-panel gem-tooltip-panel--left">
+        <div
+          className={`gem-tooltip-panel gem-tooltip-panel--left${tooltipActive ? " gem-tooltip-panel--mobile-active" : ""}`}
+          onClick={(event) => event.stopPropagation()}
+        >
           {renderGemTooltip(row.gem, row.displayName)}
         </div>
       </div>

@@ -2,13 +2,26 @@
 
 import React from "react";
 
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { BuildPayload } from "@pobcodes/shared-types";
 
 import { buildViewerPayloadFixture } from "../test/fixtures/build-viewer-fixture";
 import { SkillsPanel } from "./skills-panel";
+
+function createMatchMediaResult(matches: boolean): MediaQueryList {
+  return {
+    addEventListener: vi.fn(),
+    addListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+    matches,
+    media: "",
+    onchange: null,
+    removeEventListener: vi.fn(),
+    removeListener: vi.fn(),
+  } as MediaQueryList;
+}
 
 describe("SkillsPanel", () => {
   afterEach(() => {
@@ -682,5 +695,37 @@ describe("SkillsPanel", () => {
         String(message).includes("Encountered two children with the same key"),
       ),
     ).toBe(false);
+  });
+
+  it("centers gem tooltips on mobile when tapping a gem row", () => {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => {
+        if (query.includes("max-width: 1180px") || query.includes("pointer: coarse") || query.includes("hover: none")) {
+          return createMatchMediaResult(true);
+        }
+
+        return createMatchMediaResult(false);
+      }),
+    });
+
+    Object.defineProperty(window.navigator, "maxTouchPoints", {
+      configurable: true,
+      value: 1,
+    });
+
+    const { container } = render(<SkillsPanel payload={buildViewerPayloadFixture} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Show details for Arc" }));
+
+    expect(container.querySelector(".skills-panel--mobile-compact")).toBeTruthy();
+    expect(container.querySelector(".gear-tooltip-backdrop")).toBeTruthy();
+    expect(container.querySelector(".gem-tooltip-panel--mobile-active")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Close gem details" }));
+
+    expect(container.querySelector(".gear-tooltip-backdrop")).toBeNull();
+    expect(container.querySelector(".gem-tooltip-panel--mobile-active")).toBeNull();
   });
 });

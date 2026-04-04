@@ -78,6 +78,10 @@ export function buildPlayerStatRowsForDisplay(payload: BuildPayload): ExportedSt
   );
 }
 
+export function buildPlayerMaxHitRowsForDisplay(payload: BuildPayload): ExportedStatRowDisplay[] {
+  return buildPlayerStatRowsForDisplay(payload).filter((row) => row.key.endsWith("MaximumHitTaken"));
+}
+
 export function buildMinionStatRowsForDisplay(payload: BuildPayload): ExportedStatRowDisplay[] {
   return buildStatRowsForDisplay(
     payload.stats.minionRows,

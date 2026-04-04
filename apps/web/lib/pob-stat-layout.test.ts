@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildPlayerStatRowsForDisplay } from "./pob-stat-layout";
+import { buildPlayerMaxHitRowsForDisplay, buildPlayerStatRowsForDisplay } from "./pob-stat-layout";
 
 function buildSkillPayload({
   gemId,
@@ -105,6 +105,40 @@ describe("pob-stat-layout", () => {
     } as never);
 
     expect(rows[0]?.label).toBe("Elemental Max Hit");
+  });
+
+  it("extracts only maximum hit rows in the displayed order", () => {
+    const rows = buildPlayerMaxHitRowsForDisplay({
+      stats: {
+        playerRows: [
+          { stat: "Life", value: "4123" },
+          { stat: "PhysicalMaximumHitTaken", value: "18976.2" },
+          { stat: "FireMaximumHitTaken", value: "35560" },
+          { stat: "ColdMaximumHitTaken", value: "43642" },
+          { stat: "LightningMaximumHitTaken", value: "35560" },
+          { stat: "ChaosMaximumHitTaken", value: "12874" },
+        ],
+        player: {
+          Life: "4123",
+          PhysicalMaximumHitTaken: "18976.2",
+          FireMaximumHitTaken: "35560",
+          ColdMaximumHitTaken: "43642",
+          LightningMaximumHitTaken: "35560",
+          ChaosMaximumHitTaken: "12874",
+        },
+        minionRows: [],
+        minion: {},
+        fullDpsSkills: [],
+      },
+    } as never);
+
+    expect(rows.map((row) => row.label)).toEqual([
+      "Phys Max Hit",
+      "Fire Max Hit",
+      "Cold Max Hit",
+      "Lightning Max Hit",
+      "Chaos Max Hit",
+    ]);
   });
 
   it("abbreviates stat requirements as req", () => {

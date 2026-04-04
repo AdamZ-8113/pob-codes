@@ -21,6 +21,7 @@ import {
   buildRecentBuildSnapshot,
   resolveBuildPatchVersion,
 } from "../lib/build-overview";
+import { buildPlayerMaxHitRowsForDisplay } from "../lib/pob-stat-layout";
 import { POB_CONFIG_OPTIONS } from "../lib/generated/pob-config-options";
 import { copyTextToClipboard } from "../lib/clipboard";
 import { recordRecentBuild } from "../lib/recent-builds";
@@ -69,10 +70,12 @@ function formatGuardAnnotation(annotation: string | undefined): string | undefin
 export function BuildViewer({ payload }: { payload: BuildPayload }) {
   const [selection, setSelection] = useState<BuildViewerSelection>(() => getInitialBuildViewerSelection(payload));
   const [showWeaponSwap, setShowWeaponSwap] = useState(false);
+  const [showMobileMaxHitTooltip, setShowMobileMaxHitTooltip] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState<{ message: string; nonce: number } | null>(null);
   const [useMobileStatsPlacement, setUseMobileStatsPlacement] = useState(false);
   const recentBuildId = payload.meta.id?.trim();
   const loadouts = useMemo(() => getBuildLoadouts(payload), [payload]);
+  const playerMaxHitRows = useMemo(() => buildPlayerMaxHitRowsForDisplay(payload), [payload]);
   const selectedLoadout = useMemo(() => findMatchingBuildLoadout(payload, selection), [payload, selection]);
   const activeConfigSet = useMemo(() => getSelectedConfigSet(payload, selection.configSetId), [payload, selection.configSetId]);
   const activeTree = payload.treeSpecs[selection.treeIndex] ?? payload.treeSpecs[payload.activeTreeIndex];
@@ -125,6 +128,7 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
   useEffect(() => {
     setSelection(getInitialBuildViewerSelection(payload));
     setShowWeaponSwap(false);
+    setShowMobileMaxHitTooltip(false);
   }, [payload]);
 
   useEffect(() => {
@@ -170,6 +174,27 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
       noHover.removeEventListener("change", updateLayoutMode);
     };
   }, []);
+
+  useEffect(() => {
+    if (!useMobileStatsPlacement) {
+      setShowMobileMaxHitTooltip(false);
+    }
+  }, [useMobileStatsPlacement]);
+
+  useEffect(() => {
+    if (!showMobileMaxHitTooltip || typeof window === "undefined") {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowMobileMaxHitTooltip(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showMobileMaxHitTooltip]);
 
   useEffect(() => {
     if (!recentBuildId) {
@@ -244,6 +269,14 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
           {copyFeedback.message}
         </div>
       )}
+      {useMobileStatsPlacement && showMobileMaxHitTooltip && playerMaxHitRows.length > 0 && (
+        <button
+          aria-label="Close max hit details"
+          className="gear-tooltip-backdrop"
+          type="button"
+          onClick={() => setShowMobileMaxHitTooltip(false)}
+        />
+      )}
       {!useMobileStatsPlacement && (
         <div className="build-layout-sidebar">
           <StatsPanel payload={payload} />
@@ -266,7 +299,14 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
                   {summaryParts.map((part, index) => (
                     <React.Fragment key={part.key}>
                       {index > 0 && <span className="recent-build-divider">|</span>}
-                      {renderBuildLoadoutSummaryPart(part)}
+                      {part.kind === "metric" && part.key === "ehp" && playerMaxHitRows.length > 0
+                        ? renderEhpSummaryPart(part, {
+                            maxHitRows: playerMaxHitRows,
+                            mobileInteractive: useMobileStatsPlacement,
+                            mobileTooltipOpen: showMobileMaxHitTooltip,
+                            onMobileToggle: setShowMobileMaxHitTooltip,
+                          })
+                        : renderBuildLoadoutSummaryPart(part)}
                     </React.Fragment>
                   ))}
                 </div>
@@ -503,6 +543,74 @@ function renderBuildLoadoutSummaryPart(part: BuildLoadoutSummaryPart) {
       <span className="build-loadout-stat-label">{part.label}</span>
       <span className="build-loadout-stat-value">{part.value}</span>
       {part.annotation ? <span className="build-loadout-stat-annotation">{part.annotation}</span> : null}
+    </span>
+  );
+}
+
+function renderEhpSummaryPart(
+  part: Extract<BuildLoadoutSummaryPart, { kind: "metric" }>,
+  {
+    maxHitRows,
+    mobileInteractive,
+    mobileTooltipOpen,
+    onMobileToggle,
+  }: {
+    maxHitRows: Array<{ color?: string; key: string; label: string; value: string }>;
+    mobileInteractive: boolean;
+    mobileTooltipOpen: boolean;
+    onMobileToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  },
+) {
+  return (
+    <span
+      aria-expanded={mobileInteractive ? mobileTooltipOpen : undefined}
+      aria-label={mobileInteractive ? `Show max hit details for ${part.label} ${part.value}` : undefined}
+      className={`ehp-max-hit-tooltip-anchor${mobileInteractive ? " ehp-max-hit-tooltip-anchor--interactive" : ""}${mobileTooltipOpen ? " ehp-max-hit-tooltip-anchor--tooltip-open" : ""}`}
+      role={mobileInteractive ? "button" : undefined}
+      tabIndex={mobileInteractive ? 0 : undefined}
+      onClick={
+        mobileInteractive
+          ? (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onMobileToggle((current) => !current);
+            }
+          : undefined
+      }
+      onKeyDown={
+        mobileInteractive
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onMobileToggle((current) => !current);
+              }
+            }
+          : undefined
+      }
+    >
+      <span className={`build-loadout-stat recent-build-summary-stat build-loadout-stat--${part.tone}`}>
+        <span className="build-loadout-stat-label">{part.label}</span>
+        <span className="build-loadout-stat-value">{part.value}</span>
+        {part.annotation ? <span className="build-loadout-stat-annotation">{part.annotation}</span> : null}
+      </span>
+      <div
+        className={`ehp-max-hit-tooltip-panel${mobileTooltipOpen ? " ehp-max-hit-tooltip-panel--mobile-active" : ""}`}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="ehp-max-hit-tooltip">
+          {maxHitRows.map((row, index) => (
+            <div className="ehp-max-hit-tooltip-line" key={`${row.key}:${index}`}>
+              <span className="ehp-max-hit-tooltip-label">{row.label}:</span>
+              <span
+                className="ehp-max-hit-tooltip-value"
+                style={row.color ? ({ "--ehp-max-hit-color": row.color } as React.CSSProperties) : undefined}
+              >
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </span>
   );
 }
