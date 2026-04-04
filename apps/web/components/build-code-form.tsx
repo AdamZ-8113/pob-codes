@@ -110,7 +110,7 @@ export function BuildCodeForm() {
         className="code-area"
         value={code}
         onChange={(e) => setCode(e.target.value)}
-        placeholder="Paste a Path of Building export string, pobb.in link, Maxroll PoB link, Pastebin, poe.ninja, or similar..."
+        placeholder="Paste a Path of Building export string, pob.codes or pobb.in link, Maxroll PoB link, Pastebin, poe.ninja, or similar..."
       />
       <div className="build-code-form-actions">
         {sampleFiles.length > 0 ? (

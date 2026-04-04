@@ -6,6 +6,7 @@ const KNOWN_IMPORT_HOSTS = [
   "maxroll.gg",
   "planners.maxroll.gg",
   "pobb.in",
+  "pob.codes",
   "poe.ninja",
   "pastebin.com",
   "poedb.tw",
@@ -15,7 +16,7 @@ const DEFAULT_IMPORT_FETCH_TIMEOUT_MS = 8_000;
 const DEFAULT_IMPORT_MAX_RESPONSE_BYTES = 1_048_576;
 const DEFAULT_IMPORT_REDIRECT_LIMIT = 4;
 const SUPPORTED_LINK_PATTERN =
-  /\b(?:https?:\/\/|pob:\/\/|www\.)[^\s"'<>]+|(?:\/poe\/pob\/[A-Za-z0-9_-]+|\/poe\/planner\/[A-Za-z0-9_-]+|\/pob\/[A-Za-z0-9_-]+|\/poe1\/pob\/[A-Za-z0-9_-]+)\b/g;
+  /\b(?:https?:\/\/|pob:\/\/|www\.)[^\s"'<>]+|(?:\/poe\/pob\/[A-Za-z0-9_-]+|\/poe\/planner\/[A-Za-z0-9_-]+|\/pob\/[A-Za-z0-9_-]+|\/poe1\/pob\/[A-Za-z0-9_-]+|\/b\/[A-Za-z0-9_-]+)\b/g;
 
 export async function resolveBuildInput(input: string, fetchImpl: FetchImpl = fetch): Promise<string> {
   const trimmed = input.trim();
@@ -286,6 +287,11 @@ function getDirectDownloadUrl(importUrl: string): string | undefined {
       return `https://pobb.in/pob/${segments[0]}`;
     }
     return undefined;
+  }
+
+  if (host === "pob.codes") {
+    const buildId = getPathMatch(segments, ["b"]);
+    return buildId ? `https://api.pob.codes/${buildId}/raw` : undefined;
   }
 
   if (host === "poe.ninja") {

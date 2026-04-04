@@ -488,6 +488,52 @@ describe("worker routes", () => {
     );
   });
 
+  it("imports pob.codes share links for uploads and compare parsing", async () => {
+    const { env } = createEnv();
+    const xml = '<PathOfBuilding><Build level="1" className="Templar" mainSocketGroup="1" /></PathOfBuilding>';
+    const code = await encodeCode(xml);
+    const fetchMock = vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      if (url === "https://api.pob.codes/demo123/raw") {
+        return new Response(code, { status: 200 });
+      }
+      return new Response("Not found", { status: 404 });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const uploadRes = await worker.fetch(
+      new Request("https://example.test/pob", {
+        body: "https://pob.codes/b/demo123",
+        method: "POST",
+      }),
+      env,
+    );
+    expect(uploadRes.status).toBe(201);
+
+    const parseRes = await worker.fetch(
+      new Request("https://example.test/pob/parse", {
+        body: "https://pob.codes/b/demo123",
+        method: "POST",
+      }),
+      env,
+    );
+    expect(parseRes.status).toBe(200);
+    expect((await parseRes.json()) as { build: { className: string } }).toMatchObject({
+      build: {
+        className: "Templar",
+      },
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.pob.codes/demo123/raw",
+      expect.objectContaining({
+        redirect: "manual",
+        signal: expect.any(AbortSignal),
+      }),
+    );
+  });
+
   it("imports Maxroll pages by following embedded PoB links", async () => {
     const { env } = createEnv();
     const xml = '<PathOfBuilding><Build level="1" className="Shadow" mainSocketGroup="1" /></PathOfBuilding>';

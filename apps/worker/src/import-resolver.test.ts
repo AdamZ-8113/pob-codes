@@ -48,6 +48,28 @@ describe("resolveBuildInput", () => {
     );
   });
 
+  it("resolves pob.codes share URLs through the raw api endpoint", async () => {
+    const xml = '<PathOfBuilding><Build level="1" className="Witch" mainSocketGroup="1" /></PathOfBuilding>';
+    const code = await encodeBuildCode(xml);
+    const fetchMock = vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      if (url === "https://api.pob.codes/demo123/raw") {
+        return new Response(code, { status: 200 });
+      }
+
+      return new Response("Not found", { status: 404 });
+    });
+
+    await expect(resolveBuildInput("https://pob.codes/b/demo123", fetchMock as typeof fetch)).resolves.toBe(code);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.pob.codes/demo123/raw",
+      expect.objectContaining({
+        redirect: "manual",
+        signal: expect.any(AbortSignal),
+      }),
+    );
+  });
+
   it("rejects redirects to unsupported hosts", async () => {
     const fetchMock = vi.fn(async () =>
       new Response(null, {

@@ -89,7 +89,7 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
               <>
                 <textarea
                   className="code-area compare-modal-input"
-                  placeholder="Paste a Path of Building code, pobb.in link, Maxroll link, Maxroll planner, Pastebin, poe.ninja, or similar..."
+                  placeholder="Paste a Path of Building code, pob.codes or pobb.in link, Maxroll link, Maxroll planner, Pastebin, poe.ninja, or similar..."
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
                 />

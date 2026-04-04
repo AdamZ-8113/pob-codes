@@ -56,7 +56,7 @@ describe("CompareBuildModal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
     fireEvent.change(screen.getByRole("textbox"), {
       target: {
-        value: "https://pobb.in/example",
+        value: "https://pob.codes/b/example123",
       },
     });
     fireEvent.click(screen.getByRole("button", { name: "Compare Builds" }));
@@ -65,14 +65,14 @@ describe("CompareBuildModal", () => {
       expect(compareBuildAgainstInput).toHaveBeenCalledWith(
         buildViewerPayloadFixture,
         getInitialBuildViewerSelection(buildViewerPayloadFixture),
-        "https://pobb.in/example",
+        "https://pob.codes/b/example123",
       );
     });
 
     expect(await screen.findByText("Compared against Templar / Hierophant (Level 95)")).toBeTruthy();
     expect(screen.getByText("Configurations")).toBeTruthy();
     expect(screen.getByText("[When In Combat] Do you use Power Charges")).toBeTruthy();
-    expect(screen.getByDisplayValue("https://pobb.in/example")).toBeTruthy();
+    expect(screen.getByDisplayValue("https://pob.codes/b/example123")).toBeTruthy();
     expect(document.querySelector("textarea")).toBeNull();
     expect(screen.getByText("Disabled")).toBeTruthy();
     expect(screen.getByText("Enabled")).toBeTruthy();
