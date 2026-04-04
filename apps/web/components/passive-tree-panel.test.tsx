@@ -858,7 +858,111 @@ describe("PassiveTreePanel", () => {
     expect(within(runegraftsEntry.parentElement as HTMLElement).getByText("1")).toBeTruthy();
   });
 
-  it("separates masteries, runegrafts, and tattoos in the side panel and groups duplicate tattoos", async () => {
+  it("separates masteries, runegrafts, and tattoos in the side panel without duplicating runegrafts in masteries", async () => {
+    vi.mocked(fetch).mockImplementation(async () => {
+      return new Response(
+        JSON.stringify({
+          bounds: {
+            maxX: 400,
+            maxY: 300,
+            minX: -400,
+            minY: -300,
+          },
+          groups: [
+            {
+              id: 1,
+              x: 0,
+              y: 0,
+            },
+          ],
+          nodes: [
+            {
+              classStartIndex: 5,
+              flavourText: [],
+              groupCenterX: 0,
+              groupCenterY: 0,
+              groupId: 1,
+              id: 6,
+              isJewelSocket: false,
+              isKeystone: false,
+              isMastery: false,
+              isNotable: false,
+              masteryEffects: [],
+              name: "Templar Start",
+              orbit: 0,
+              orbitIndex: 0,
+              orbitRadius: 0,
+              out: [13, 14],
+              reminderText: [],
+              startArt: "centertemplar",
+              stats: ["+10 to Strength"],
+              x: 0,
+              y: 0,
+            },
+            {
+              activeIcon: "Art/2DArt/SkillIcons/passives/MasteryPassiveIcons/PassiveMasteryChargesActive.png",
+              flavourText: [],
+              groupCenterX: 0,
+              groupCenterY: 0,
+              groupId: 1,
+              id: 13,
+              inactiveIcon: "Art/2DArt/SkillIcons/passives/MasteryPassiveIcons/PassiveMasteryChargesInactive.png",
+              isJewelSocket: false,
+              isKeystone: false,
+              isMastery: true,
+              isNotable: false,
+              masteryEffects: [
+                {
+                  effect: 777,
+                  reminderText: [],
+                  stats: ["Cannot be Ignited while at maximum Endurance Charges"],
+                },
+              ],
+              name: "Charge Mastery",
+              orbit: 1,
+              orbitIndex: 0,
+              orbitRadius: 82,
+              out: [6],
+              reminderText: [],
+              stats: [],
+              x: -82,
+              y: -82,
+            },
+            {
+              activeIcon: "Art/2DArt/SkillIcons/passives/MasteryPassiveIcons/PassiveMasteryEnergyActive.png",
+              flavourText: [],
+              groupCenterX: 0,
+              groupCenterY: 0,
+              groupId: 1,
+              id: 14,
+              inactiveIcon: "Art/2DArt/SkillIcons/passives/MasteryPassiveIcons/PassiveMasteryEnergyInactive.png",
+              isJewelSocket: false,
+              isKeystone: false,
+              isMastery: true,
+              isNotable: false,
+              masteryEffects: [
+                {
+                  effect: 888,
+                  reminderText: [],
+                  stats: ["50% of your Energy Shield is added to your Stun Threshold"],
+                },
+              ],
+              name: "Energy Shield Mastery",
+              orbit: 1,
+              orbitIndex: 1,
+              orbitRadius: 82,
+              out: [6],
+              reminderText: [],
+              stats: [],
+              x: 82,
+              y: -82,
+            },
+          ],
+          unpositionedNodeIds: [],
+        }),
+      );
+    });
+
     const payload: BuildPayload = {
       ...buildViewerPayloadFixture,
       items: [],
@@ -867,12 +971,19 @@ describe("PassiveTreePanel", () => {
           active: true,
           ascendancyId: 2,
           classId: 5,
-          masteryEffects: [],
-          nodes: [6],
+          masteryEffects: [
+            [13, 777],
+            [14, 888],
+          ],
+          nodes: [6, 13, 14],
           overrides: [
             { effect: "+4 to Strength", name: "Tattoo of the Tukohama Warrior", nodeId: 11 },
             { effect: "+4 to Strength", name: "Tattoo of the Tukohama Warrior", nodeId: 12 },
-            { effect: "Banner Skills have 20% increased Aura Effect", name: "Runegraft of Rallying", nodeId: 13 },
+            {
+              effect: "10% reduced Attributes\n40% increased Global Defences\nLimited to 1 Runegraft of the Fortress",
+              name: "Runegraft of the Fortress",
+              nodeId: 13,
+            },
           ],
           sockets: [],
           title: "Main Tree",
@@ -892,8 +1003,23 @@ describe("PassiveTreePanel", () => {
       "Runegrafts",
       "Tattoos",
     ]);
-    expect(screen.getByText("Runegraft of Rallying")).toBeTruthy();
     expect(screen.getByText("Tattoo of the Tukohama Warrior (x2)")).toBeTruthy();
+
+    const masteryHeading = Array.from(container.querySelectorAll(".tree-summary-heading")).find(
+      (node) => node.textContent === "Masteries",
+    ) as HTMLElement;
+    const masteriesSection = masteryHeading.parentElement as HTMLElement;
+    expect(within(masteriesSection).getByText(/Energy Shield Mastery/)).toBeTruthy();
+    expect(within(masteriesSection).queryByText("Runegraft of the Fortress (Charge Mastery)")).toBeNull();
+
+    const runegraftsHeading = Array.from(container.querySelectorAll(".tree-summary-heading")).find(
+      (node) => node.textContent === "Runegrafts",
+    ) as HTMLElement;
+    const runegraftsSection = runegraftsHeading.parentElement as HTMLElement;
+    expect(within(runegraftsSection).getByText("Runegraft of the Fortress (Charge Mastery)")).toBeTruthy();
+    expect(within(runegraftsSection).getByText("10% reduced Attributes")).toBeTruthy();
+    expect(within(runegraftsSection).getByText("40% increased Global Defences")).toBeTruthy();
+    expect(within(runegraftsSection).getByText("Limited to 1 Runegraft of the Fortress")).toBeTruthy();
   });
 
   it("applies runegraft styling to allocated mastery override nodes", async () => {

@@ -117,9 +117,17 @@ interface PassiveTreeOverrideGroup {
   title: string;
 }
 
+function splitPassiveTreeSummaryLines(value: string) {
+  return value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+}
+
 function groupTreeOverrides(
   overrides: BuildPayload["treeSpecs"][number]["overrides"],
   pattern: RegExp,
+  nodeIndex?: ReadonlyMap<number, PassiveTreeLayoutNode>,
 ): PassiveTreeOverrideGroup[] {
   const groups = new Map<string, PassiveTreeOverrideGroup>();
 
@@ -128,19 +136,24 @@ function groupTreeOverrides(
       continue;
     }
 
-    const existing = groups.get(override.name);
+    const node = nodeIndex?.get(override.nodeId);
+    const title = node?.isMastery ? `${override.name} (${node.name})` : override.name;
+    const overrideLines = splitPassiveTreeSummaryLines(override.effect);
+    const existing = groups.get(title);
     if (existing) {
       existing.count += 1;
-      if (override.effect.length > 0 && !existing.lines.includes(override.effect)) {
-        existing.lines.push(override.effect);
+      for (const line of overrideLines) {
+        if (!existing.lines.includes(line)) {
+          existing.lines.push(line);
+        }
       }
       continue;
     }
 
-    groups.set(override.name, {
+    groups.set(title, {
       count: 1,
-      lines: override.effect.length > 0 ? [override.effect] : [],
-      title: override.name,
+      lines: overrideLines,
+      title,
     });
   }
 
@@ -543,7 +556,7 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
 
     for (const nodeId of activeTree.nodes) {
       const node = nodeIndex.get(nodeId);
-      if (!node?.isMastery) {
+      if (!node?.isMastery || runegraftNodeIds.has(node.id)) {
         continue;
       }
 
@@ -567,10 +580,10 @@ export function PassiveTreePanel({ onTreeIndexChange, payload, treeIndex: contro
     }
 
     return [...groups.values()];
-  }, [activeTree, nodeIndex]);
+  }, [activeTree, nodeIndex, runegraftNodeIds]);
   const runegraftGroups = useMemo(
-    () => (activeTree ? groupTreeOverrides(activeTree.overrides, /\bRunegraft\b/i) : []),
-    [activeTree],
+    () => (activeTree ? groupTreeOverrides(activeTree.overrides, /\bRunegraft\b/i, nodeIndex) : []),
+    [activeTree, nodeIndex],
   );
   const tattooGroups = useMemo(
     () => (activeTree ? groupTreeOverrides(activeTree.overrides, /\bTattoo\b/i) : []),
