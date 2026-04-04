@@ -8,6 +8,10 @@
     "global_fetch_strictly_public"
   ],
   "workers_dev": true,
+  "vars": {
+    "NEXT_PUBLIC_API_BASE": "https://api.pob.codes",
+    "POB_CODES_API_BASE": "https://api.pob.codes"
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

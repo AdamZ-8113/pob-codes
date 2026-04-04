@@ -1,7 +1,7 @@
 import { isLocalHostname } from "./local-host";
 
-const LOCAL_WORKER_API_BASE = "http://localhost:8787";
-const PUBLIC_WORKER_API_BASE = "https://api.pob.codes";
+export const LOCAL_WORKER_API_BASE = "http://localhost:8787";
+export const PUBLIC_WORKER_API_BASE = "https://api.pob.codes";
 
 export function getApiBase(): string {
   const configuredBase = process.env.NEXT_PUBLIC_API_BASE;
@@ -18,7 +18,7 @@ export function getApiBase(): string {
     return inferBrowserApiBase(window.location);
   }
 
-  return LOCAL_WORKER_API_BASE;
+  return String(process.env.NODE_ENV) === "development" ? LOCAL_WORKER_API_BASE : PUBLIC_WORKER_API_BASE;
 }
 
 export function buildApiUrl(pathname: string, base = getApiBase()): string {

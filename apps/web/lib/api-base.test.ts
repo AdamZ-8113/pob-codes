@@ -5,6 +5,7 @@ import { buildApiUrl, getApiBase, normalizeApiBase } from "./api-base";
 describe("api base helpers", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
   it("trims whitespace and trailing slashes from configured bases", () => {
@@ -67,5 +68,12 @@ describe("api base helpers", () => {
     );
 
     expect(getApiBase()).toBe("https://preview.example.com");
+  });
+
+  it("defaults server-side production requests to the public api host", () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_API_BASE", "");
+
+    expect(getApiBase()).toBe("https://api.pob.codes");
   });
 });
