@@ -445,9 +445,11 @@ main.build-page {
 }
 
 .recent-build-link {
+  display: block;
   color: var(--text-accent);
   font-weight: 600;
   text-decoration: none;
+  overflow-wrap: anywhere;
 }
 
 .recent-build-link:hover,
@@ -2927,17 +2929,12 @@ main.build-page {
   }
 
   .recent-build-actions {
-    width: 100%;
     justify-content: flex-end;
   }
 
-  .recent-build-side {
-    width: 100%;
-    align-items: flex-end;
-  }
-
   .recent-build-side-top {
-    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .gear-flask-row {
@@ -3320,14 +3317,43 @@ main.build-page {
   }
 
   .recent-build-header {
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
   }
 
+  .recent-build-copy {
+    width: 100%;
+  }
+
+  .recent-build-summary-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 12px;
+    align-items: start;
+  }
+
+  .recent-build-summary-row > * {
+    min-width: 0;
+  }
+
+  .recent-build-divider {
+    display: none;
+  }
+
+  .recent-build-summary-stat--resistances,
+  .recent-build-detail {
+    grid-column: 1 / -1;
+  }
+
   .recent-build-side {
+    width: 100%;
     align-items: stretch;
+    gap: 10px;
   }
 
   .recent-build-side-top {
+    width: 100%;
     align-items: stretch;
     flex-direction: column;
   }
