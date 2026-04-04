@@ -64,7 +64,7 @@ describe("RecentBuildsPanel", () => {
     expect(screen.queryByText("/b/demo-build")).toBeNull();
     expect(await screen.findByText(/2026/)).toBeTruthy();
 
-    fireEvent.click(screen.getByRole("button", { name: "Share Arc / Hierophant (Templar) (Level 95)" }));
+    fireEvent.click(screen.getByRole("button", { name: "Copy link for Arc / Hierophant (Templar) (Level 95)" }));
 
     await waitFor(() => {
       expect(writeText).toHaveBeenCalledWith("http://localhost:3000/b/demo-build");
@@ -106,7 +106,7 @@ describe("RecentBuildsPanel", () => {
       ]),
     );
 
-    render(<RecentBuildsPanel />);
+    const { container } = render(<RecentBuildsPanel />);
 
     await screen.findByRole("heading", { name: "Recently Viewed" });
 
@@ -114,6 +114,7 @@ describe("RecentBuildsPanel", () => {
 
     expect(await screen.findByRole("heading", { name: "Pinned" })).toBeTruthy();
     expect(await screen.findByRole("button", { name: "Unpin Arc / Hierophant (Templar) (Level 95)" })).toBeTruthy();
+    expect(container.querySelectorAll(".panel.recent-builds-panel")).toHaveLength(2);
 
     fireEvent.click(screen.getByRole("button", { name: "Rename Arc / Hierophant (Templar) (Level 95)" }));
     const renameInput = screen.getByRole("textbox", { name: "Nickname for Arc / Hierophant (Templar) (Level 95)" });

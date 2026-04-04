@@ -75,7 +75,7 @@ describe("/b/[id] page", () => {
     expect(screen.getByText("Passive Tree")).toBeTruthy();
     expect(screen.getByText("Notes")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Compare my POB" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Share this PoB" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Copy Link" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Copy Full PoB Code" })).toBeTruthy();
     expect(screen.queryByText("Notes & Config")).toBeNull();
     expect(screen.getByText("Boss setup enabled")).toBeTruthy();
@@ -353,7 +353,7 @@ describe("/b/[id] page", () => {
     expect(getSummaryLine()).toContain("(w/o Guard)");
   });
 
-  it("copies the current short build URL from Share this PoB", async () => {
+  it("copies the current short build URL from Copy Link", async () => {
     mockedFetchBuildPayload.mockResolvedValue(buildViewerPayloadFixture);
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", {
@@ -365,7 +365,7 @@ describe("/b/[id] page", () => {
 
     render(await BuildPage({ params: Promise.resolve({ id: "demo-build" }) }));
 
-    fireEvent.click(await screen.findByRole("button", { name: "Share this PoB" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Copy Link" }));
 
     await waitFor(() => {
       expect(writeText).toHaveBeenCalledWith("http://localhost:3000/b/demo-build");

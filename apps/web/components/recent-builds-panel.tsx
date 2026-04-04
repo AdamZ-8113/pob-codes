@@ -118,7 +118,7 @@ export function RecentBuildsPanel() {
   }
 
   return (
-    <section className="panel recent-builds-panel">
+    <>
       {pinnedBuilds.length > 0 ? (
         <RecentBuildSection
           entries={pinnedBuilds}
@@ -153,7 +153,7 @@ export function RecentBuildsPanel() {
           onCancelRename={handleCancelRename}
         />
       ) : null}
-    </section>
+    </>
   );
 }
 
@@ -189,7 +189,7 @@ function RecentBuildSection({
   shareFeedbackId,
 }: RecentBuildSectionProps) {
   return (
-    <section className="recent-build-section">
+    <section className="panel recent-builds-panel recent-build-section">
       <h2 className="recent-build-section-heading">{heading}</h2>
       <ul className="recent-builds-list">
         {entries.map((entry) => {
@@ -216,12 +216,12 @@ function RecentBuildSection({
                   <div className="recent-build-side-top">
                     <div className="recent-build-actions">
                       <button
-                        aria-label={`Share ${displayTitle}`}
+                        aria-label={`Copy link for ${displayTitle}`}
                         className="btn btn-secondary recent-build-share-button"
                         type="button"
                         onClick={() => void onShareBuild(entry)}
                       >
-                        Share PoB
+                        Copy Link
                       </button>
                     </div>
                     <div className="recent-build-icon-actions">

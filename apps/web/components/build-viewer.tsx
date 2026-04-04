@@ -298,7 +298,7 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
               )}
               <CompareBuildModal payload={payload} selection={selection} />
               <button className="btn btn-secondary build-share-button" type="button" onClick={() => void handleShareBuild()}>
-                Share this PoB
+                Copy Link
               </button>
               <button
                 className="btn btn-secondary build-share-button"

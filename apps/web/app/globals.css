@@ -316,8 +316,8 @@ main.build-page {
   margin-top: 16px;
 }
 
-.recent-build-section + .recent-build-section {
-  margin-top: 18px;
+.recent-builds-panel + .recent-builds-panel {
+  margin-top: 16px;
 }
 
 .recent-build-section-heading {
