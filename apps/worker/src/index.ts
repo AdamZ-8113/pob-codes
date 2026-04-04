@@ -24,6 +24,7 @@ const DEFAULT_PARSED_PAYLOAD_TTL_SECONDS = 30 * 24 * 60 * 60;
 const DEFAULT_RATE_LIMIT_ENABLED = true;
 const DEFAULT_RATE_LIMIT_MAX_REQUESTS = 30;
 const DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 60;
+const BUILD_PAGE_PATH_PATTERN = /^\/b\/([^/]+)\/?$/;
 const ID_PATTERN = /^[A-Za-z0-9_-]{8,40}$/;
 const JSON_RESPONSE_CACHE_VERSION_PARAM = "__payloadCacheVersion";
 const JSON_SUCCESS_CACHE_CONTROL = "public, max-age=31536000, immutable";
@@ -218,12 +219,24 @@ async function resolveParsedBuildRequest(
   }
 
   let code: string;
-  try {
-    code = await resolveBuildInput(source);
-  } catch (error) {
-    return {
-      error: jsonError(error instanceof Error ? error.message : "Invalid build URL", 400, "INVALID_IMPORT_URL"),
-    };
+  const selfHostedBuildId = extractSelfHostedBuildId(source, env);
+  if (selfHostedBuildId) {
+    const storedCode = await getStoredRawCode(selfHostedBuildId, env);
+    if (!storedCode) {
+      return {
+        error: jsonError("Build not found", 404, "NOT_FOUND"),
+      };
+    }
+
+    code = storedCode;
+  } else {
+    try {
+      code = await resolveBuildInput(source);
+    } catch (error) {
+      return {
+        error: jsonError(error instanceof Error ? error.message : "Invalid build URL", 400, "INVALID_IMPORT_URL"),
+      };
+    }
   }
 
   const sizeBytes = new TextEncoder().encode(code).byteLength;
@@ -248,6 +261,47 @@ async function resolveParsedBuildRequest(
     return {
       error: jsonError("Invalid PoB code or unsupported import link", 400, "INVALID_POB"),
     };
+  }
+}
+
+function extractSelfHostedBuildId(input: string, env: Env): string | undefined {
+  try {
+    const url = new URL(input.trim());
+    if (!isSelfHostedBuildHostname(url.hostname, env)) {
+      return undefined;
+    }
+
+    const matchedId = url.pathname.match(BUILD_PAGE_PATH_PATTERN)?.[1]?.trim();
+    return matchedId && isValidId(matchedId) ? matchedId : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function isSelfHostedBuildHostname(hostname: string, env: Env): boolean {
+  const normalizedHostname = hostname.trim().toLowerCase();
+  if (!normalizedHostname) {
+    return false;
+  }
+
+  const configuredBase = env.BASE_URL?.trim();
+  if (!configuredBase) {
+    return false;
+  }
+
+  try {
+    const configuredHostname = new URL(configuredBase).hostname.trim().toLowerCase();
+    if (!configuredHostname) {
+      return false;
+    }
+
+    return (
+      normalizedHostname === configuredHostname ||
+      (!configuredHostname.startsWith("www.") && normalizedHostname === `www.${configuredHostname}`)
+    );
+  } catch {
+    // Ignore malformed BASE_URL values and treat the link as external.
+    return false;
   }
 }
 

@@ -489,22 +489,18 @@ describe("worker routes", () => {
   });
 
   it("imports pob.codes share links for uploads and compare parsing", async () => {
-    const { env } = createEnv();
+    const hostedBuildId = "demo12345";
+    const { env, kv } = createEnv({ BASE_URL: "https://pob.codes" });
     const xml = '<PathOfBuilding><Build level="1" className="Templar" mainSocketGroup="1" /></PathOfBuilding>';
     const code = await encodeCode(xml);
-    const fetchMock = vi.fn(async (input: string | URL | Request) => {
-      const url = String(input);
-      if (url === "https://api.pob.codes/demo123/raw") {
-        return new Response(code, { status: 200 });
-      }
-      return new Response("Not found", { status: 404 });
-    });
+    await kv.put(`raw:${hostedBuildId}`, code);
+    const fetchMock = vi.fn();
 
     vi.stubGlobal("fetch", fetchMock);
 
     const uploadRes = await worker.fetch(
       new Request("https://example.test/pob", {
-        body: "https://pob.codes/b/demo123",
+        body: `https://pob.codes/b/${hostedBuildId}`,
         method: "POST",
       }),
       env,
@@ -513,7 +509,7 @@ describe("worker routes", () => {
 
     const parseRes = await worker.fetch(
       new Request("https://example.test/pob/parse", {
-        body: "https://pob.codes/b/demo123",
+        body: `https://pob.codes/b/${hostedBuildId}`,
         method: "POST",
       }),
       env,
@@ -525,8 +521,35 @@ describe("worker routes", () => {
       },
     });
 
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("keeps pob.codes imports external when the worker is not configured for pob.codes", async () => {
+    const hostedBuildId = "demo12345";
+    const { env } = createEnv();
+    const xml = '<PathOfBuilding><Build level="1" className="Duelist" mainSocketGroup="1" /></PathOfBuilding>';
+    const code = await encodeCode(xml);
+    const fetchMock = vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      if (url === `https://api.pob.codes/${hostedBuildId}/raw`) {
+        return new Response(code, { status: 200 });
+      }
+      return new Response("Not found", { status: 404 });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const uploadRes = await worker.fetch(
+      new Request("https://example.test/pob", {
+        body: `https://pob.codes/b/${hostedBuildId}`,
+        method: "POST",
+      }),
+      env,
+    );
+
+    expect(uploadRes.status).toBe(201);
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.pob.codes/demo123/raw",
+      `https://api.pob.codes/${hostedBuildId}/raw`,
       expect.objectContaining({
         redirect: "manual",
         signal: expect.any(AbortSignal),
