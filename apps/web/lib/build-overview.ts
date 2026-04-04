@@ -37,8 +37,13 @@ export interface BuildSummaryModel {
 export interface BuildRecentSnapshot {
   dps?: string;
   ehp?: string;
+  energyShield?: string;
+  guardAnnotation?: string;
   level?: number;
+  life?: string;
+  mana?: string;
   patchVersion?: string;
+  resistances?: string;
   title: string;
 }
 
@@ -62,6 +67,10 @@ export function formatBuildTitleWithLevel(title: string, level?: number) {
   }
 
   return `${title} (Level ${level})`;
+}
+
+function findSummaryMetric(entries: BuildSummaryEntry[], tone: BuildSummaryEntry["tone"]) {
+  return entries.find((entry) => entry.tone === tone);
 }
 
 export function buildBuildSummaryEntries(payload: BuildPayload, skillSetId?: number): BuildSummaryModel {
@@ -92,19 +101,41 @@ export function buildBuildSummaryEntries(payload: BuildPayload, skillSetId?: num
 
 export function buildRecentBuildSnapshot(payload: BuildPayload): BuildRecentSnapshot {
   const activeTree = payload.treeSpecs[payload.activeTreeIndex];
+  const summary = buildBuildSummaryEntries(payload, payload.activeSkillSetId);
+  const lifeMetric = findSummaryMetric(summary.metrics, "life");
+  const energyShieldMetric = findSummaryMetric(summary.metrics, "energy-shield");
+  const manaMetric = findSummaryMetric(summary.metrics, "mana");
+  const ehpMetric = findSummaryMetric(summary.metrics, "ehp");
   const dpsSummary = getBuildSummaryDps(payload.stats.player);
 
   return {
     dps: dpsSummary ? formatBuildSummaryValue(dpsSummary.value) : undefined,
-    ehp: formatOptionalBuildSummaryValue(payload.stats.player.TotalEHP),
+    ehp: ehpMetric?.value ?? formatOptionalBuildSummaryValue(payload.stats.player.TotalEHP),
+    energyShield: energyShieldMetric?.value,
+    guardAnnotation: formatRecentGuardAnnotation(ehpMetric?.annotation),
     level: payload.build.level,
+    life: lifeMetric?.value,
+    mana: manaMetric?.value,
     patchVersion: resolveBuildPatchVersion(payload, payload.activeTreeIndex),
+    resistances: summary.resistances.map((entry) => entry.value).join("/"),
     title: buildLoadoutTitle(
       payload,
       payload.activeSkillSetId,
       getSecondaryAscendancyName(activeTree?.secondaryAscendancyId),
     ),
   };
+}
+
+function formatRecentGuardAnnotation(annotation: string | undefined): string | undefined {
+  if (annotation === "Guard Skill ON") {
+    return "w/Guard";
+  }
+
+  if (annotation === "Guard Skill OFF") {
+    return "w/o Guard";
+  }
+
+  return undefined;
 }
 
 export function resolveBuildPatchVersion(payload: BuildPayload, treeIndex?: number): string | undefined {

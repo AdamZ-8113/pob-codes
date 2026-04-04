@@ -94,6 +94,27 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
     [activeConfigSet?.inputs, payload.config],
   );
   const guardAnnotation = useMemo(() => formatGuardAnnotation(summaryEhpMetric?.annotation), [summaryEhpMetric?.annotation]);
+  const summaryParts = useMemo(
+    () =>
+      buildLoadoutSummaryParts({
+        dpsMetric: summaryDpsMetric,
+        ehpMetric: summaryEhpMetric,
+        energyShieldMetric: summaryEnergyShieldMetric,
+        guardAnnotation,
+        lifeMetric: summaryLifeMetric,
+        manaMetric: summaryManaMetric,
+        resistances: summary.resistances,
+      }),
+    [
+      guardAnnotation,
+      summary.resistances,
+      summaryDpsMetric,
+      summaryEhpMetric,
+      summaryEnergyShieldMetric,
+      summaryLifeMetric,
+      summaryManaMetric,
+    ],
+  );
   const hasWeaponSwapContent = useMemo(
     () =>
       payload.itemSets.some((set) => set.slots.some((slot) => isWeaponSwapSlot(slot.name))) ||
@@ -158,9 +179,14 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
     recordRecentBuild({
       dps: recentBuildSnapshot.dps,
       ehp: recentBuildSnapshot.ehp,
+      energyShield: recentBuildSnapshot.energyShield,
+      guardAnnotation: recentBuildSnapshot.guardAnnotation,
       id: recentBuildId,
       level: recentBuildSnapshot.level,
+      life: recentBuildSnapshot.life,
+      mana: recentBuildSnapshot.mana,
       patchVersion: recentBuildSnapshot.patchVersion,
+      resistances: recentBuildSnapshot.resistances,
       title: recentBuildSnapshot.title || recentBuildId,
     });
   }, [recentBuildId, recentBuildSnapshot]);
@@ -234,68 +260,16 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
               </div>
               {loadoutPatchVersion ? <div className="build-loadout-version">{loadoutPatchVersion}</div> : null}
             </div>
-            {(summaryLifeMetric ||
-              summaryEnergyShieldMetric ||
-              summaryManaMetric ||
-              summaryEhpMetric ||
-              summaryDpsMetric ||
-              summary.resistances.length > 0 ||
-              enemyBossLabel) && (
+            {summaryParts.length > 0 && (
               <div className="build-loadout-stats">
-                {(summaryLifeMetric || summaryEnergyShieldMetric || summaryManaMetric || summaryEhpMetric) && (
-                  <div className="build-loadout-stats-line">
-                    {summaryLifeMetric && (
-                      <span className={`build-loadout-stat build-loadout-stat--${summaryLifeMetric.tone}`}>
-                        <span className="build-loadout-stat-label">{summaryLifeMetric.label}:</span>
-                        <span className="build-loadout-stat-value">{summaryLifeMetric.value}</span>
-                      </span>
-                    )}
-                    {summaryEnergyShieldMetric && (
-                      <span className={`build-loadout-stat build-loadout-stat--${summaryEnergyShieldMetric.tone}`}>
-                        <span className="build-loadout-stat-label">{summaryEnergyShieldMetric.label}:</span>
-                        <span className="build-loadout-stat-value">{summaryEnergyShieldMetric.value}</span>
-                      </span>
-                    )}
-                    {summaryManaMetric && (
-                      <span className={`build-loadout-stat build-loadout-stat--${summaryManaMetric.tone}`}>
-                        <span className="build-loadout-stat-label">{summaryManaMetric.label}:</span>
-                        <span className="build-loadout-stat-value">{summaryManaMetric.value}</span>
-                      </span>
-                    )}
-                    {summaryEhpMetric && (
-                      <span className={`build-loadout-stat build-loadout-stat--${summaryEhpMetric.tone}`}>
-                        <span className="build-loadout-stat-label">{summaryEhpMetric.label}:</span>
-                        <span className="build-loadout-stat-value">{summaryEhpMetric.value}</span>
-                        {guardAnnotation && <span className="build-loadout-stat-annotation">({guardAnnotation})</span>}
-                      </span>
-                    )}
-                  </div>
-                )}
-                {(summaryDpsMetric || summary.resistances.length > 0) && (
-                  <div className="build-loadout-stats-line">
-                    {summaryDpsMetric && (
-                      <span className={`build-loadout-stat build-loadout-stat--${summaryDpsMetric.tone}`}>
-                        <span className="build-loadout-stat-label">{summaryDpsMetric.label}:</span>
-                        <span className="build-loadout-stat-value">{summaryDpsMetric.value}</span>
-                      </span>
-                    )}
-                    {summary.resistances.length > 0 && (
-                      <span className="build-loadout-stat build-loadout-stat--resistances">
-                        <span className="build-loadout-stat-label">Resistances:</span>
-                        <span className="build-loadout-resistances">
-                          {summary.resistances.map((entry, index) => (
-                            <React.Fragment key={`build-resistance:${entry.key}`}>
-                              {index > 0 && <span className="build-loadout-resistance-separator">/</span>}
-                              <span className={`build-loadout-resistance build-loadout-stat--${entry.tone}`}>
-                                {entry.value}
-                              </span>
-                            </React.Fragment>
-                          ))}
-                        </span>
-                      </span>
-                    )}
-                  </div>
-                )}
+                <div className="build-loadout-stats-line recent-build-inline recent-build-summary-row">
+                  {summaryParts.map((part, index) => (
+                    <React.Fragment key={part.key}>
+                      {index > 0 && <span className="recent-build-divider">|</span>}
+                      {renderBuildLoadoutSummaryPart(part)}
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -399,6 +373,137 @@ export function BuildViewer({ payload }: { payload: BuildPayload }) {
         </div>
       </div>
     </div>
+  );
+}
+
+type BuildLoadoutSummaryPart =
+  | {
+      annotation?: string;
+      key: string;
+      kind: "metric";
+      label: string;
+      tone: "life" | "energy-shield" | "mana" | "ehp" | "dps";
+      value: string;
+    }
+  | {
+      key: string;
+      kind: "resistances";
+      values: Array<{
+        key: string;
+        tone: "fire" | "cold" | "lightning" | "chaos";
+        value: string;
+      }>;
+    };
+
+function buildLoadoutSummaryParts({
+  dpsMetric,
+  ehpMetric,
+  energyShieldMetric,
+  guardAnnotation,
+  lifeMetric,
+  manaMetric,
+  resistances,
+}: {
+  dpsMetric?: BuildSummaryEntry;
+  ehpMetric?: BuildSummaryEntry;
+  energyShieldMetric?: BuildSummaryEntry;
+  guardAnnotation?: string;
+  lifeMetric?: BuildSummaryEntry;
+  manaMetric?: BuildSummaryEntry;
+  resistances: BuildSummaryEntry[];
+}) {
+  const parts: BuildLoadoutSummaryPart[] = [];
+
+  if (lifeMetric) {
+    parts.push({
+      key: "life",
+      kind: "metric",
+      label: "Life:",
+      tone: "life",
+      value: lifeMetric.value,
+    });
+  }
+
+  if (energyShieldMetric) {
+    parts.push({
+      key: "energy-shield",
+      kind: "metric",
+      label: "ES:",
+      tone: "energy-shield",
+      value: energyShieldMetric.value,
+    });
+  }
+
+  if (manaMetric) {
+    parts.push({
+      key: "mana",
+      kind: "metric",
+      label: "Mana:",
+      tone: "mana",
+      value: manaMetric.value,
+    });
+  }
+
+  if (ehpMetric) {
+    parts.push({
+      annotation: guardAnnotation ? `(${guardAnnotation})` : undefined,
+      key: "ehp",
+      kind: "metric",
+      label: "eHP:",
+      tone: "ehp",
+      value: ehpMetric.value,
+    });
+  }
+
+  if (dpsMetric) {
+    parts.push({
+      key: "dps",
+      kind: "metric",
+      label: "DPS:",
+      tone: "dps",
+      value: dpsMetric.value,
+    });
+  }
+
+  if (resistances.length > 0) {
+    const tones: Array<"fire" | "cold" | "lightning" | "chaos"> = ["fire", "cold", "lightning", "chaos"];
+    parts.push({
+      key: "resistances",
+      kind: "resistances",
+      values: resistances.map((entry, index) => ({
+        key: entry.key,
+        tone: tones[index] ?? "chaos",
+        value: entry.value,
+      })),
+    });
+  }
+
+  return parts;
+}
+
+function renderBuildLoadoutSummaryPart(part: BuildLoadoutSummaryPart) {
+  if (part.kind === "resistances") {
+    return (
+      <span className="build-loadout-stat recent-build-summary-stat recent-build-summary-stat--resistances">
+        <span className="build-loadout-stat-label">Res:</span>
+        <span className="build-loadout-resistances">
+          {part.values.map((entry, index) => (
+            <React.Fragment key={entry.key}>
+              {index > 0 ? <span className="build-loadout-resistance-separator">/</span> : null}
+              <span className={`build-loadout-resistance build-loadout-stat--${entry.tone}`}>{entry.value}</span>
+            </React.Fragment>
+          ))}
+        </span>
+      </span>
+    );
+  }
+
+  return (
+    <span className={`build-loadout-stat recent-build-summary-stat build-loadout-stat--${part.tone}`}>
+      <span className="build-loadout-stat-label">{part.label}</span>
+      <span className="build-loadout-stat-value">{part.value}</span>
+      {part.annotation ? <span className="build-loadout-stat-annotation">{part.annotation}</span> : null}
+    </span>
   );
 }
 

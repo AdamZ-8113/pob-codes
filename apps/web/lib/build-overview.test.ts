@@ -8,8 +8,13 @@ describe("build overview helpers", () => {
     expect(buildRecentBuildSnapshot(buildViewerPayloadFixture)).toEqual({
       dps: "1,815,750",
       ehp: "640,068",
+      energyShield: "1,289",
+      guardAnnotation: undefined,
       level: 95,
+      life: "4,123",
+      mana: "938",
       patchVersion: "3.28 Mirage",
+      resistances: "75%/75%/75%/12%",
       title: "Arc / Hierophant (Templar)",
     });
   });

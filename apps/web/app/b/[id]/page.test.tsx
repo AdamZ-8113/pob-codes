@@ -102,8 +102,6 @@ describe("/b/[id] page", () => {
     expect(screen.getByText("202 (180 req)")).toBeTruthy();
     expect(screen.getByText("78% (+2%)")).toBeTruthy();
     expect(screen.getByText("75% (+28%)")).toBeTruthy();
-    expect(screen.getByText("Resistances:")).toBeTruthy();
-
     const summaryLines = Array.from(container.querySelectorAll(".build-loadout-stats-line")).map(
       (node) => node.textContent ?? "",
     );
@@ -111,11 +109,11 @@ describe("/b/[id] page", () => {
     expect(summaryLines[0]).toContain("ES:");
     expect(summaryLines[0]).toContain("Mana:");
     expect(summaryLines[0]).toContain("eHP:");
-    expect(summaryLines[1]).toContain("Hit DPS:");
-    expect(summaryLines[1]).toContain("1,815,750");
-    expect(summaryLines[1]).toContain("Resistances:");
-    expect(summaryLines[1]).toContain("75%/75%/75%/12%");
-    expect(summaryLines).toHaveLength(2);
+    expect(summaryLines[0]).toContain("DPS:");
+    expect(summaryLines[0]).toContain("1,815,750");
+    expect(summaryLines[0]).toContain("Res:");
+    expect(summaryLines[0]).toContain("75%/75%/75%/12%");
+    expect(summaryLines).toHaveLength(1);
 
     const playerStatRows = Array.from(container.querySelectorAll(".pob-stats-panel .pob-stat-list:first-of-type .pob-stat-row"));
     expect(playerStatRows[0]?.textContent).toContain("Average Damage:");
@@ -219,16 +217,16 @@ describe("/b/[id] page", () => {
     const firstSummaryLines = Array.from(first.container.querySelectorAll(".build-loadout-stats-line")).map(
       (node) => node.textContent ?? "",
     );
-    expect(firstSummaryLines[1]).toContain("Combined DPS:");
-    expect(firstSummaryLines[1]).toContain("2,345,679");
+    expect(firstSummaryLines[0]).toContain("DPS:");
+    expect(firstSummaryLines[0]).toContain("2,345,679");
     first.unmount();
 
     const second = render(await BuildPage({ params: Promise.resolve({ id: "hit-dps" }) }));
     const secondSummaryLines = Array.from(second.container.querySelectorAll(".build-loadout-stats-line")).map(
       (node) => node.textContent ?? "",
     );
-    expect(secondSummaryLines[1]).toContain("Hit DPS:");
-    expect(secondSummaryLines[1]).toContain("1,111,111");
+    expect(secondSummaryLines[0]).toContain("DPS:");
+    expect(secondSummaryLines[0]).toContain("1,111,111");
   });
 
   it("renders exported Full DPS breakdown details under the Full DPS row", async () => {
