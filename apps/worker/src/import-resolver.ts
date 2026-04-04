@@ -8,8 +8,6 @@ const KNOWN_IMPORT_HOSTS = [
   "pobb.in",
   "poe.ninja",
   "pastebin.com",
-  "pastebinp.com",
-  "rentry.co",
   "poedb.tw",
 ];
 
@@ -309,16 +307,6 @@ function getDirectDownloadUrl(importUrl: string): string | undefined {
     return id ? `https://pastebin.com/raw/${id}` : undefined;
   }
 
-  if (host === "pastebinp.com") {
-    const id = getPathMatch(segments, ["raw"]) ?? segments[0];
-    return id ? `https://pastebinp.com/raw/${id}` : undefined;
-  }
-
-  if (host === "rentry.co") {
-    const id = getPathMatch(segments, ["paste"]) ?? segments[0];
-    return id ? `https://rentry.co/paste/${id}/raw` : undefined;
-  }
-
   if (host === "poedb.tw") {
     const id = getPathMatch(segments, ["pob"]);
     return id ? `https://poedb.tw/pob/${id}/raw` : undefined;
@@ -382,12 +370,6 @@ function parseProtocolImportUrl(input: string): string | undefined {
   }
   if (siteId === "pastebin") {
     return `https://pastebin.com/${buildId}`;
-  }
-  if (siteId === "pastebinproxy") {
-    return `https://pastebinp.com/${buildId}`;
-  }
-  if (siteId === "rentry") {
-    return `https://rentry.co/${buildId}`;
   }
   if (siteId === "poedb") {
     return `https://poedb.tw/pob/${buildId}`;

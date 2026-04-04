@@ -94,4 +94,23 @@ describe("resolveBuildInput", () => {
 
     await pendingResolution;
   });
+
+  it("does not resolve removed importer hosts", async () => {
+    const fetchMock = vi.fn();
+
+    await expect(resolveBuildInput("https://pastebinp.com/demo123", fetchMock as typeof fetch)).resolves.toBe(
+      "https://pastebinp.com/demo123",
+    );
+    await expect(resolveBuildInput("https://rentry.co/demo123", fetchMock as typeof fetch)).resolves.toBe(
+      "https://rentry.co/demo123",
+    );
+    await expect(resolveBuildInput("pob://pastebinproxy/demo123", fetchMock as typeof fetch)).resolves.toBe(
+      "pob://pastebinproxy/demo123",
+    );
+    await expect(resolveBuildInput("pob://rentry/demo123", fetchMock as typeof fetch)).resolves.toBe(
+      "pob://rentry/demo123",
+    );
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });
