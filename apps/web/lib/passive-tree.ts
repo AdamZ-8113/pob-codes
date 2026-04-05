@@ -267,6 +267,15 @@ export interface PassiveTreeJewelRadiusOverlay {
   y: number;
 }
 
+export interface AllocatedClusterJewelNodeSummary {
+  item: ItemPayload;
+  itemId: number;
+  kind: "notable" | "small-passive";
+  name: string;
+  nodeId: number;
+  stats: string[];
+}
+
 export function augmentPassiveTreeLayoutWithClusters(
   layout: PassiveTreeLayout,
   spec: TreeSpecPayload,
@@ -540,6 +549,156 @@ export function augmentPassiveTreeLayoutWithClusters(
     ...layout,
     nodes: mergedNodes,
   };
+}
+
+export function collectAllocatedClusterJewelNodeSummaries(
+  spec: TreeSpecPayload,
+  itemsById?: ReadonlyMap<number, ItemPayload>,
+  variantKey?: string,
+): AllocatedClusterJewelNodeSummary[] {
+  if (!itemsById || spec.sockets.length === 0 || spec.nodes.length === 0) {
+    return [];
+  }
+
+  const variant = PASSIVE_TREE_CLUSTER_VARIANTS[variantKey ?? "default"] ?? PASSIVE_TREE_CLUSTER_VARIANTS.default;
+  const allocatedNodeIds = new Set(spec.nodes);
+  const socketByNodeId = new Map(spec.sockets.map((socket) => [socket.nodeId, socket]));
+  const visitedSocketNodeIds = new Set<number>();
+  const results: AllocatedClusterJewelNodeSummary[] = [];
+
+  const rootClusterSockets = spec.sockets.filter((socket) => {
+    const item = itemsById.get(socket.itemId);
+    const socketMeta = getClusterMetaNode(variant, socket.nodeId);
+    return (
+      item &&
+      isClusterJewelItem(item) &&
+      socketMeta?.expansionJewel &&
+      socketMeta.expansionJewel.parent === undefined
+    );
+  });
+
+  const collectForSocket = (socketNodeId: number, item: ItemPayload, clusterBaseId = CLUSTER_JEWEL_BASE_ID) => {
+    if (visitedSocketNodeIds.has(socketNodeId)) {
+      return;
+    }
+    visitedSocketNodeIds.add(socketNodeId);
+
+    const socketMeta = getClusterMetaNode(variant, socketNodeId);
+    if (!socketMeta?.expansionJewel) {
+      return;
+    }
+
+    const parsedClusterJewel = parseClusterJewel(item);
+    if (!parsedClusterJewel) {
+      return;
+    }
+
+    const clusterTemplate = PASSIVE_TREE_CLUSTER_TEMPLATES[parsedClusterJewel.sizeName];
+    if (!clusterTemplate) {
+      return;
+    }
+
+    let subgraphBaseId = clusterBaseId;
+    if (socketMeta.expansionJewel.size === 2) {
+      subgraphBaseId += socketMeta.expansionJewel.index << 6;
+    } else if (socketMeta.expansionJewel.size === 1) {
+      subgraphBaseId += socketMeta.expansionJewel.index << 9;
+    }
+
+    const clusterNodeBaseId = subgraphBaseId + (clusterTemplate.sizeIndex << 4);
+    const proxyNodeMeta = getClusterMetaNode(variant, socketMeta.expansionJewel.proxy);
+    if (!proxyNodeMeta) {
+      return;
+    }
+
+    const reservedIndices = new Map<number, PassiveTreeLayoutNode>();
+    const childSocketNodeIds: number[] = [];
+
+    const makeSocket = (nodeIndex: number, socketIndex: number) => {
+      const childSocketNodeId = findClusterSocketNodeId(variant, proxyNodeMeta.groupId, socketIndex, socketNodeId);
+      if (!childSocketNodeId) {
+        return;
+      }
+      reservedIndices.set(nodeIndex, {} as PassiveTreeLayoutNode);
+      childSocketNodeIds.push(childSocketNodeId);
+    };
+
+    if (parsedClusterJewel.socketCount > 0) {
+      if (parsedClusterJewel.sizeName === "Large Cluster Jewel" && parsedClusterJewel.socketCount === 1) {
+        makeSocket(6, 1);
+      } else {
+        for (
+          let index = 0;
+          index < parsedClusterJewel.socketCount && index < clusterTemplate.socketIndices.length;
+          index += 1
+        ) {
+          makeSocket(clusterTemplate.socketIndices[index], CLUSTER_LARGE_SOCKET_ORDER[index] ?? index);
+        }
+      }
+    }
+
+    const notableNames = [...parsedClusterJewel.notableNames].sort(compareClusterNotables);
+    const notableIndexList = gatherClusterNotableIndices(clusterTemplate, parsedClusterJewel, reservedIndices);
+    for (let index = 0; index < notableNames.length && index < notableIndexList.length; index += 1) {
+      const notableName = notableNames[index];
+      const nodeIndex = notableIndexList[index];
+      const nodeId = clusterNodeBaseId + nodeIndex;
+      const baseNode = PASSIVE_TREE_CLUSTER_BASE_NODES[notableName];
+      reservedIndices.set(nodeIndex, {} as PassiveTreeLayoutNode);
+      if (!allocatedNodeIds.has(nodeId)) {
+        continue;
+      }
+
+      results.push({
+        item,
+        itemId: item.id,
+        kind: "notable",
+        name: notableName,
+        nodeId,
+        stats: [...(baseNode?.stats ?? [])],
+      });
+    }
+
+    const smallIndexList = gatherClusterSmallIndices(clusterTemplate, parsedClusterJewel, reservedIndices);
+    const smallPassiveStats = [...parsedClusterJewel.smallPassiveLines, ...parsedClusterJewel.addedSmallPassiveLines];
+    for (const nodeIndex of smallIndexList) {
+      const nodeId = clusterNodeBaseId + nodeIndex;
+      reservedIndices.set(nodeIndex, {} as PassiveTreeLayoutNode);
+      if (!allocatedNodeIds.has(nodeId)) {
+        continue;
+      }
+
+      results.push({
+        item,
+        itemId: item.id,
+        kind: "small-passive",
+        name: "Small Passive",
+        nodeId,
+        stats: smallPassiveStats,
+      });
+    }
+
+    for (const childSocketNodeId of childSocketNodeIds) {
+      const childSocket = socketByNodeId.get(childSocketNodeId);
+      if (!childSocket) {
+        continue;
+      }
+
+      const childItem = itemsById.get(childSocket.itemId);
+      if (childItem && isClusterJewelItem(childItem)) {
+        collectForSocket(childSocketNodeId, childItem, subgraphBaseId);
+      }
+    }
+  };
+
+  for (const rootSocket of rootClusterSockets) {
+    const item = itemsById.get(rootSocket.itemId);
+    if (item) {
+      collectForSocket(rootSocket.nodeId, item);
+    }
+  }
+
+  return results;
 }
 
 export function getVisiblePassiveTreeNodeIds(

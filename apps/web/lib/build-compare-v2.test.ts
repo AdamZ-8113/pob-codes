@@ -5,6 +5,7 @@ import type { BuildPayload, ItemPayload, TreeSocketPayload } from "@pobcodes/sha
 import { buildViewerPayloadFixture } from "../test/fixtures/build-viewer-fixture";
 import { getInitialBuildViewerSelection } from "./build-viewer-selection";
 import { buildBuildComparisonReport } from "./build-compare-v2";
+import { collectAllocatedClusterJewelNodeSummaries } from "./passive-tree";
 
 function makeItem(overrides: Partial<ItemPayload> & Pick<ItemPayload, "id" | "raw">): ItemPayload {
   return {
@@ -31,6 +32,7 @@ function makeItem(overrides: Partial<ItemPayload> & Pick<ItemPayload, "id" | "ra
 
 function makePayload(args: {
   items: ItemPayload[];
+  nodes?: number[];
   sockets?: TreeSocketPayload[];
   slots: Array<{ itemId: number; name: string }>;
 }): BuildPayload {
@@ -49,11 +51,59 @@ function makePayload(args: {
       {
         ...buildViewerPayloadFixture.treeSpecs[0],
         active: true,
+        nodes: args.nodes ?? buildViewerPayloadFixture.treeSpecs[0].nodes,
         overrides: [],
         sockets: args.sockets ?? [],
       },
     ],
   };
+}
+
+function resolveAllocatedClusterNodeIds(args: {
+  allocations: Array<{
+    itemId: number;
+    notableNames?: string[];
+    smallPassiveCount?: number;
+  }>;
+  items: ItemPayload[];
+  sockets: TreeSocketPayload[];
+}) {
+  const probeNodes = Array.from({ length: 4096 }, (_, index) => 0x10000 + index);
+  const probeSpec = {
+    ...buildViewerPayloadFixture.treeSpecs[0],
+    active: true,
+    masteryEffects: [],
+    nodes: probeNodes,
+    overrides: [],
+    sockets: args.sockets,
+  };
+  const summaries = collectAllocatedClusterJewelNodeSummaries(
+    probeSpec,
+    new Map(args.items.map((item) => [item.id, item])),
+  );
+  const nodeIds: number[] = [];
+
+  for (const allocation of args.allocations) {
+    if (allocation.smallPassiveCount) {
+      nodeIds.push(
+        ...summaries
+          .filter((summary) => summary.itemId === allocation.itemId && summary.kind === "small-passive")
+          .slice(0, allocation.smallPassiveCount)
+          .map((summary) => summary.nodeId),
+      );
+    }
+
+    for (const notableName of allocation.notableNames ?? []) {
+      const notable = summaries.find(
+        (summary) => summary.itemId === allocation.itemId && summary.kind === "notable" && summary.name === notableName,
+      );
+      if (notable) {
+        nodeIds.push(notable.nodeId);
+      }
+    }
+  }
+
+  return nodeIds;
 }
 
 describe("buildBuildComparisonReport v2", () => {
@@ -654,13 +704,154 @@ describe("buildBuildComparisonReport v2", () => {
     );
 
     expect(report.findings.find((finding) => finding.key === "items")).toBeUndefined();
-    expect(report.findings.find((finding) => finding.key === "rare-item-mods")?.rows).toEqual(
+    expect(report.findings.find((finding) => finding.key === "magic-flask-mods")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "cluster-jewel-aggregates")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "rare-item-mods")).toBeUndefined();
+  });
+
+  it("aggregates allocated rare and magic cluster jewel effects across all cluster jewels", () => {
+    const currentColdCluster = makeItem({
+      id: 5201,
+      base: "Large Cluster Jewel",
+      explicits: [
+        "Adds 8 Passive Skills",
+        "Added Small Passive Skills grant: +1% to Cold Resistance",
+        "1 Added Passive Skill is Blanketed Snow",
+        "1 Added Passive Skill is Prodigious Defence",
+      ],
+      name: "Current Cold Cluster",
+      raw: "Rarity: Rare\nCurrent Cold Cluster\nLarge Cluster Jewel",
+    });
+    const currentShieldCluster = makeItem({
+      id: 5202,
+      base: "Large Cluster Jewel",
+      explicits: [
+        "Adds 8 Passive Skills",
+        "Added Small Passive Skills grant: 12% increased Attack Damage while holding a Shield",
+        "Added Small Passive Skills also grant: +1% to Chaos Resistance",
+        "1 Added Passive Skill is Prodigious Defence",
+        "1 Added Passive Skill is Feed the Fury",
+      ],
+      name: "Current Shield Cluster",
+      raw: "Rarity: Rare\nCurrent Shield Cluster\nLarge Cluster Jewel",
+    });
+    const targetDexCluster = makeItem({
+      id: 5203,
+      base: "Large Cluster Jewel",
+      explicits: [
+        "Adds 8 Passive Skills",
+        "Added Small Passive Skills grant: +1 to Dexterity",
+        "1 Added Passive Skill is Blanketed Snow",
+        "1 Added Passive Skill is Prodigious Defence",
+      ],
+      name: "Target Dex Cluster",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nTarget Dex Cluster\nLarge Cluster Jewel",
+    });
+    const targetColdDamageCluster = makeItem({
+      id: 5204,
+      base: "Large Cluster Jewel",
+      explicits: [
+        "Adds 8 Passive Skills",
+        "Added Small Passive Skills grant: 10% increased Cold Damage",
+        "Added Small Passive Skills also grant: +1% to Chaos Resistance",
+        "1 Added Passive Skill is Blanketed Snow",
+        "1 Added Passive Skill is Prodigious Defence",
+      ],
+      name: "Target Cold Damage Cluster",
+      raw: "Rarity: Rare\nTarget Cold Damage Cluster\nLarge Cluster Jewel",
+    });
+    const currentSockets = [
+      { itemId: 5201, nodeId: 2491 },
+      { itemId: 5202, nodeId: 7960 },
+    ];
+    const targetSockets = [
+      { itemId: 5203, nodeId: 2491 },
+      { itemId: 5204, nodeId: 7960 },
+    ];
+    const currentNodes = resolveAllocatedClusterNodeIds({
+      allocations: [
+        {
+          itemId: 5201,
+          notableNames: ["Blanketed Snow", "Prodigious Defence"],
+          smallPassiveCount: 3,
+        },
+        {
+          itemId: 5202,
+          notableNames: ["Prodigious Defence", "Feed the Fury"],
+          smallPassiveCount: 2,
+        },
+      ],
+      items: [currentColdCluster, currentShieldCluster],
+      sockets: currentSockets,
+    });
+    const targetNodes = resolveAllocatedClusterNodeIds({
+      allocations: [
+        {
+          itemId: 5203,
+          notableNames: ["Blanketed Snow", "Prodigious Defence"],
+          smallPassiveCount: 3,
+        },
+        {
+          itemId: 5204,
+          notableNames: ["Blanketed Snow", "Prodigious Defence"],
+          smallPassiveCount: 2,
+        },
+      ],
+      items: [targetDexCluster, targetColdDamageCluster],
+      sockets: targetSockets,
+    });
+    const currentPayload = makePayload({
+      items: [currentColdCluster, currentShieldCluster],
+      nodes: currentNodes,
+      slots: [],
+      sockets: currentSockets,
+    });
+    const targetPayload = makePayload({
+      items: [targetDexCluster, targetColdDamageCluster],
+      nodes: targetNodes,
+      slots: [],
+      sockets: targetSockets,
+    });
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "items")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "rare-item-mods")).toBeUndefined();
+
+    const clusterFinding = report.findings.find((finding) => finding.key === "cluster-jewel-aggregates");
+    expect(clusterFinding?.rows).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           itemCategory: "cluster-jewel",
-          name: "Brewer's Stone (Medium Cluster Jewel)",
+          name: "Allocated Small Passive Totals",
+          currentValue: expect.stringContaining("Small Passive: +3% to Cold Resistance"),
+          targetValue: expect.stringContaining("Small Passive: +3 to Dexterity"),
+        }),
+        expect.objectContaining({
+          itemCategory: "cluster-jewel",
+          name: "Allocated Notables",
+          currentValue: expect.stringContaining("Notable: Feed the Fury x1"),
+          targetValue: expect.stringContaining("Notable: Blanketed Snow x2"),
         }),
       ]),
+    );
+    expect(clusterFinding?.rows?.find((row) => row.name === "Allocated Small Passive Totals")?.currentValue).toContain(
+      "Small Passive: 24% increased Attack Damage while holding a Shield",
+    );
+    expect(clusterFinding?.rows?.find((row) => row.name === "Allocated Small Passive Totals")?.targetValue).toContain(
+      "Small Passive: 20% increased Cold Damage",
+    );
+    expect(clusterFinding?.rows?.find((row) => row.name === "Allocated Small Passive Totals")?.currentValue).not.toContain(
+      "Chaos Resistance",
+    );
+    expect(clusterFinding?.rows?.find((row) => row.name === "Allocated Small Passive Totals")?.targetValue).not.toContain(
+      "Chaos Resistance",
     );
   });
 
@@ -732,6 +923,177 @@ describe("buildBuildComparisonReport v2", () => {
     );
     expect(report.findings.find((finding) => finding.key === "magic-flask-mods")?.rows?.[0]?.currentValue).not.toContain(
       "Only in current\n- Explicit: 56% reduced Effect of Curses on you during Effect",
+    );
+  });
+
+  it("matches reordered tinctures before reporting item differences", () => {
+    const currentOakbranch = makeItem({
+      id: 5080,
+      base: "Oakbranch Tincture",
+      explicits: ["12% increased Attack Speed"],
+      name: "Oakbranch Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture",
+    });
+    const currentPrismatic = makeItem({
+      id: 5081,
+      base: "Prismatic Tincture",
+      explicits: ["10% increased Effect"],
+      name: "Prismatic Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nPrismatic Tincture\nPrismatic Tincture",
+    });
+    const targetOakbranch = makeItem({
+      id: 5082,
+      base: "Oakbranch Tincture",
+      explicits: ["12% increased Attack Speed"],
+      name: "Oakbranch Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture",
+    });
+    const targetPrismatic = makeItem({
+      id: 5083,
+      base: "Prismatic Tincture",
+      explicits: ["10% increased Effect"],
+      name: "Prismatic Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nPrismatic Tincture\nPrismatic Tincture",
+    });
+
+    const currentPayload = makePayload({
+      items: [currentOakbranch, currentPrismatic],
+      slots: [
+        { itemId: 5080, name: "Tincture 1" },
+        { itemId: 5081, name: "Tincture 2" },
+      ],
+    });
+    const targetPayload = makePayload({
+      items: [targetOakbranch, targetPrismatic],
+      slots: [
+        { itemId: 5083, name: "Tincture 1" },
+        { itemId: 5082, name: "Tincture 2" },
+      ],
+    });
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "items")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "tincture-mods")).toBeUndefined();
+  });
+
+  it("pools tincture modifiers across tincture bases", () => {
+    const currentOakbranch = makeItem({
+      id: 5084,
+      base: "Oakbranch Tincture",
+      explicits: ["12% increased Attack Speed"],
+      name: "Oakbranch Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture",
+    });
+    const currentPrismatic = makeItem({
+      id: 5085,
+      base: "Prismatic Tincture",
+      explicits: ["30% increased Critical Strike Chance"],
+      name: "Prismatic Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nPrismatic Tincture\nPrismatic Tincture",
+    });
+    const targetOakbranch = makeItem({
+      id: 5086,
+      base: "Oakbranch Tincture",
+      explicits: ["30% increased Critical Strike Chance"],
+      name: "Oakbranch Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture",
+    });
+    const targetPrismatic = makeItem({
+      id: 5087,
+      base: "Prismatic Tincture",
+      explicits: ["12% increased Attack Speed"],
+      name: "Prismatic Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nPrismatic Tincture\nPrismatic Tincture",
+    });
+
+    const currentPayload = makePayload({
+      items: [currentOakbranch, currentPrismatic],
+      slots: [
+        { itemId: 5084, name: "Tincture 1" },
+        { itemId: 5085, name: "Tincture 2" },
+      ],
+    });
+    const targetPayload = makePayload({
+      items: [targetOakbranch, targetPrismatic],
+      slots: [
+        { itemId: 5086, name: "Tincture 1" },
+        { itemId: 5087, name: "Tincture 2" },
+      ],
+    });
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "items")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "tincture-mods")).toBeUndefined();
+  });
+
+  it("shows missing tincture bases without repeating their modifiers in the item row", () => {
+    const currentOakbranch = makeItem({
+      id: 5088,
+      base: "Oakbranch Tincture",
+      explicits: ["12% increased Attack Speed"],
+      name: "Oakbranch Tincture",
+      rarity: "Magic",
+      raw: "Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture",
+    });
+
+    const currentPayload = makePayload({
+      items: [currentOakbranch],
+      slots: [{ itemId: 5088, name: "Tincture 1" }],
+    });
+    const targetPayload = makePayload({
+      items: [],
+      slots: [],
+    });
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "items")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: "Present",
+          itemCategory: "flask",
+          name: "Oakbranch Tincture",
+          targetValue: "Missing",
+        }),
+      ]),
+    );
+    expect(report.findings.find((finding) => finding.key === "items")?.rows?.[0]?.currentValue).not.toContain(
+      "increased Attack Speed",
+    );
+    expect(report.findings.find((finding) => finding.key === "tincture-mods")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: expect.stringContaining("Only in current"),
+          itemCategory: "flask",
+          name: "Tincture Modifier Pool",
+          targetValue: "None",
+        }),
+      ]),
     );
   });
 
