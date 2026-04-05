@@ -740,6 +740,36 @@ main.build-page {
   color: #f0e2bf;
 }
 
+.compare-finding-title {
+  margin: 0;
+}
+
+.compare-finding-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.compare-finding-toggle:hover {
+  color: #f7e8bf;
+}
+
+.compare-finding-toggle-icon {
+  flex: 0 0 auto;
+  color: #d7c08d;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
 .compare-finding--major,
 .compare-finding--notable {
   border-color: #33445b;
@@ -763,6 +793,10 @@ main.build-page {
   display: grid;
   grid-template-columns: minmax(240px, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 0;
+}
+
+.compare-finding-table-row--support-gems {
+  grid-template-columns: minmax(220px, 0.85fr) minmax(220px, 1fr) minmax(0, 0.95fr) minmax(0, 1fr);
 }
 
 .compare-finding-table-row + .compare-finding-table-row {

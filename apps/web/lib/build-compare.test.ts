@@ -337,11 +337,11 @@ describe("buildBuildComparisonReport", () => {
     const titles = report.findings.map((finding) => finding.title);
     expect(titles).toEqual([
       "Configurations",
-      "Missing Support Gems",
+      "Support Gem Differences",
       "Gem Levels and Quality",
       "Items",
       "Anointments",
-      "Unique Item Variants",
+      "Unique Item Mods",
       "Passive Tree",
     ]);
 
@@ -368,7 +368,11 @@ describe("buildBuildComparisonReport", () => {
       expect.arrayContaining([
         expect.objectContaining({
           currentValue: "Missing",
-          name: "Arc --> Awakened Added Lightning Damage",
+          nameDisplay: expect.objectContaining({
+            skillNames: ["Arc"],
+            supportName: "Awakened Added Lightning Damage",
+            type: "support-link-group",
+          }),
           targetValue: "5/20",
         }),
       ]),
@@ -402,10 +406,12 @@ describe("buildBuildComparisonReport", () => {
     expect(report.findings.find((finding) => finding.key === "unique-variants")?.rows).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: "Ralakesh's Impatience (Boots)",
+          itemCategory: "unique",
+          name: "Boots",
         }),
         expect.objectContaining({
-          name: "Watcher's Eye",
+          itemCategory: "regular-jewel",
+          name: "Watcher's Eye (Prismatic Jewel)",
         }),
       ]),
     );
@@ -483,14 +489,116 @@ describe("buildBuildComparisonReport", () => {
     expect(report.findings.find((finding) => finding.key === "unique-variants")?.rows).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          currentValue: expect.stringMatching(
-            /Synthesized and Corrupted Implicits[\s\S]*\+12% to all Elemental Resistances[\s\S]*\+1 to Level of Socketed Gems[\s\S]*Flags[\s\S]*Corrupted/,
-          ),
+          currentValue: expect.stringMatching(/Significant roll differences[\s\S]*Implicit: \+1 to Level of Socketed Gems/),
           highlight: true,
-          name: "Skin of the Lords (Body Armour)",
-          targetValue: expect.stringMatching(
-            /Synthesized and Corrupted Implicits[\s\S]*\+15% to all Elemental Resistances[\s\S]*\+2 to Level of Socketed Gems/,
-          ),
+          itemCategory: "unique",
+          name: "Body Armour",
+          targetValue: expect.stringMatching(/Significant roll differences[\s\S]*Implicit: \+2 to Level of Socketed Gems/),
+        }),
+      ]),
+    );
+  });
+
+  it("marks compared-build-only item rows so the UI can hide them by default", () => {
+    const targetBoots = makeItem({
+      id: 5001,
+      raw: "Rarity: Rare\nStorm March\nTitan Greaves",
+      base: "Titan Greaves",
+      name: "Storm March",
+    });
+
+    const currentPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      itemSets: [
+        {
+          active: true,
+          id: 1,
+          slots: [],
+          title: "Current",
+        },
+      ],
+      items: [],
+    };
+
+    const targetPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      itemSets: [
+        {
+          active: true,
+          id: 1,
+          slots: [{ active: true, itemId: 5001, name: "Boots" }],
+          title: "Target",
+        },
+      ],
+      items: [targetBoots],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "items")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: "Missing",
+          direction: "target-only",
+          name: "Boots",
+        }),
+      ]),
+    );
+  });
+
+  it("does not duplicate identical name and base lines in item output", () => {
+    const currentFlask = makeItem({
+      id: 5002,
+      raw: "Rarity: Magic\nRationed Iron Flask of Tenaciousness\nRationed Iron Flask of Tenaciousness",
+      base: "Rationed Iron Flask of Tenaciousness",
+      name: "Rationed Iron Flask of Tenaciousness",
+      rarity: "Magic",
+    });
+
+    const currentPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      itemSets: [
+        {
+          active: true,
+          id: 1,
+          slots: [{ active: true, itemId: 5002, name: "Flask 1" }],
+          title: "Current",
+        },
+      ],
+      items: [currentFlask],
+    };
+
+    const targetPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      itemSets: [
+        {
+          active: true,
+          id: 1,
+          slots: [],
+          title: "Target",
+        },
+      ],
+      items: [],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "items")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: "Present",
+          itemCategory: "flask",
+          name: "Iron Flask",
         }),
       ]),
     );
@@ -793,7 +901,11 @@ describe("buildBuildComparisonReport", () => {
       expect.arrayContaining([
         expect.objectContaining({
           currentValue: "Missing",
-          name: "Sniper's Mark --> Mark On Hit",
+          nameDisplay: expect.objectContaining({
+            skillNames: ["Sniper's Mark"],
+            supportName: "Mark On Hit",
+            type: "support-link-group",
+          }),
           targetValue: "18/20",
         }),
       ]),
@@ -801,7 +913,10 @@ describe("buildBuildComparisonReport", () => {
     expect(report.findings.find((finding) => finding.key === "missing-support-gems")?.rows).not.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: "Steelskin --> Mark On Hit",
+          nameDisplay: expect.objectContaining({
+            skillNames: expect.arrayContaining(["Steelskin"]),
+            supportName: "Mark On Hit",
+          }),
         }),
       ]),
     );
@@ -932,7 +1047,11 @@ describe("buildBuildComparisonReport", () => {
       expect.arrayContaining([
         expect.objectContaining({
           currentValue: "Missing",
-          name: "Precision --> Arrogance",
+          nameDisplay: expect.objectContaining({
+            skillNames: ["Precision"],
+            supportName: "Arrogance",
+            type: "support-link-group",
+          }),
           targetValue: "20/20",
         }),
       ]),
@@ -940,10 +1059,148 @@ describe("buildBuildComparisonReport", () => {
     expect(report.findings.find((finding) => finding.key === "missing-support-gems")?.rows).not.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: "Frostblink --> Arrogance",
+          nameDisplay: expect.objectContaining({
+            skillNames: expect.arrayContaining(["Frostblink"]),
+            supportName: "Arrogance",
+          }),
         }),
       ]),
     );
+  });
+
+  it("groups missing support gems by support name and lists all affected skills together", () => {
+    const currentPayload: BuildPayload = {
+      ...buildViewerPayloadFixture,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  gemId: "Metadata/Items/Gems/SkillGemArc",
+                  level: 20,
+                  nameSpec: "Arc",
+                  quality: 20,
+                  selected: true,
+                  skillId: "Arc",
+                  support: false,
+                },
+                {
+                  enabled: true,
+                  gemId: "Metadata/Items/Gems/SkillGemRighteousFire",
+                  level: 20,
+                  nameSpec: "Righteous Fire",
+                  quality: 20,
+                  selected: false,
+                  skillId: "RighteousFire",
+                  support: false,
+                },
+                {
+                  enabled: true,
+                  gemId: "Metadata/Items/Gems/SkillGemRaiseSpectre",
+                  level: 20,
+                  nameSpec: "Raise Spectre",
+                  quality: 20,
+                  selected: false,
+                  skillId: "RaiseSpectre",
+                  support: false,
+                },
+              ],
+              id: "body-armour",
+              mainActiveSkill: 1,
+              selected: true,
+              slot: "Body Armour",
+            },
+          ],
+          id: 1,
+          title: "Current",
+        },
+      ],
+    };
+
+    const targetPayload: BuildPayload = {
+      ...currentPayload,
+      skillSets: [
+        {
+          active: true,
+          groups: [
+            {
+              enabled: true,
+              gems: [
+                {
+                  enabled: true,
+                  gemId: "Metadata/Items/Gems/SkillGemArc",
+                  level: 20,
+                  nameSpec: "Arc",
+                  quality: 20,
+                  selected: true,
+                  skillId: "Arc",
+                  support: false,
+                },
+                {
+                  enabled: true,
+                  gemId: "Metadata/Items/Gems/SkillGemRighteousFire",
+                  level: 20,
+                  nameSpec: "Righteous Fire",
+                  quality: 20,
+                  selected: false,
+                  skillId: "RighteousFire",
+                  support: false,
+                },
+                {
+                  enabled: true,
+                  gemId: "Metadata/Items/Gems/SkillGemRaiseSpectre",
+                  level: 20,
+                  nameSpec: "Raise Spectre",
+                  quality: 20,
+                  selected: false,
+                  skillId: "RaiseSpectre",
+                  support: false,
+                },
+                {
+                  enabled: true,
+                  gemId: "Metadata/Items/Gems/SupportGemEmpower",
+                  level: 3,
+                  nameSpec: "Empower Support",
+                  quality: 23,
+                  selected: false,
+                  skillId: "SupportEmpower",
+                  support: true,
+                },
+              ],
+              id: "body-armour",
+              mainActiveSkill: 1,
+              selected: true,
+              slot: "Body Armour",
+            },
+          ],
+          id: 1,
+          title: "Target",
+        },
+      ],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "missing-support-gems")?.rows).toEqual([
+      expect.objectContaining({
+        currentValue: "Missing",
+        nameDisplay: {
+          skillNames: ["Arc", "Righteous Fire", "Raise Spectre"],
+          supportName: "Empower",
+          type: "support-link-group",
+        },
+        targetValue: "3/23",
+      }),
+    ]);
   });
 
   it("does not report item-granted skills with skill-id-only payloads as missing", () => {
