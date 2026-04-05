@@ -24,6 +24,7 @@ import { GEM_DETAILS, type GemDetails } from "./generated/gem-details";
 import { isWeaponSwapSlot } from "./weapon-swap";
 import {
   augmentPassiveTreeLayoutWithClusters,
+  collectAllocatedClusterJewelNodeSummaries,
   describePassiveTreeNode,
   pickPassiveTreeVariant,
   type PassiveTreeLayout,
@@ -145,6 +146,7 @@ const GEM_DETAILS_BY_EFFECT_ID = new Map<string, GemDetails>(
 );
 const ANOINT_SLOT_NAMES = new Set(["Amulet", "Boots", "Gloves", "Belt"]);
 const FLASK_SLOT_NAME_PATTERN = /^Flask \d+$/i;
+const TINCTURE_SLOT_NAME_PATTERN = /^Tincture \d+$/i;
 const FLASK_BASE_MODIFIER_TYPES = new Set(["hybrid", "life", "mana"]);
 const RARE_VALUE_DIFFERENCE_THRESHOLD = 0.2;
 const SUPPORT_LINK_SEPARATOR = " --> ";
@@ -183,6 +185,8 @@ export function buildBuildComparisonReport(
     buildAnointFinding(currentContext, targetContext),
     buildUniqueVariantFinding(currentContext, targetContext),
     buildMagicFlaskModFinding(currentContext, targetContext),
+    buildTinctureModFinding(currentContext, targetContext),
+    buildClusterJewelAggregateFinding(currentContext, targetContext),
     buildRareItemModFinding(currentContext, targetContext),
     buildPassiveTreeFinding(currentContext, targetContext),
   ].filter((finding): finding is BuildCompareFinding => Boolean(finding));
@@ -410,22 +414,26 @@ function buildItemFinding(
       continue;
     }
 
+    if (isAggregatedClusterJewelItem(currentItem) || isAggregatedClusterJewelItem(targetItem)) {
+      continue;
+    }
+
     if (sameComparedItemIdentity(currentItem, targetItem)) {
       continue;
     }
 
     const comparedFieldName = pair.target?.displayLabel ?? pair.current?.displayLabel ?? "Item";
     const comparedItem = targetItem ?? currentItem;
-    const magicFlaskBaseRow = comparedItem ? isMagicFlaskItem(comparedItem) : false;
+    const magicFlaskBaseRow = comparedItem ? isPooledFlaskSectionItem(comparedItem) : false;
 
     rows.push({
-      currentValue: magicFlaskBaseRow ? describeComparedMagicFlaskBase(currentItem) : describeComparedItem(currentItem, comparedFieldName),
+      currentValue: magicFlaskBaseRow ? describeComparedPooledFlaskSectionBase(currentItem) : describeComparedItem(currentItem, comparedFieldName),
       direction: !currentItem ? "target-only" : !targetItem ? "source-only" : "both",
       highlight: true,
       itemCategory: resolveComparedItemCategory(currentItem, targetItem),
       key: `item:${pair.key}`,
       name: comparedFieldName,
-      targetValue: magicFlaskBaseRow ? describeComparedMagicFlaskBase(targetItem) : describeComparedItem(targetItem, comparedFieldName),
+      targetValue: magicFlaskBaseRow ? describeComparedPooledFlaskSectionBase(targetItem) : describeComparedItem(targetItem, comparedFieldName),
     });
   }
 
@@ -515,6 +523,98 @@ function buildMagicFlaskModFinding(
   };
 }
 
+function buildTinctureModFinding(
+  currentContext: BuildCompareSelectionContext,
+  targetContext: BuildCompareSelectionContext,
+): BuildCompareFinding | undefined {
+  const currentTinctures = collectTinctureEntries(currentContext).map((entry) => entry.item).filter(isTinctureItem);
+  const targetTinctures = collectTinctureEntries(targetContext).map((entry) => entry.item).filter(isTinctureItem);
+  const diff = buildExplicitModPoolDiffDisplay(currentTinctures, targetTinctures);
+
+  if (!diff) {
+    return undefined;
+  }
+
+  return {
+    kind: "item",
+    key: "tincture-mods",
+    rows: [
+      {
+        currentValue: diff.currentValue,
+        direction: diff.direction,
+        highlight: true,
+        itemCategory: "flask",
+        key: "tincture-mod-pool",
+        name: "Tincture Modifier Pool",
+        targetValue: diff.targetValue,
+      },
+    ],
+    severity: "notable",
+    title: "Tincture Modifiers",
+  };
+}
+
+function buildClusterJewelAggregateFinding(
+  currentContext: BuildCompareSelectionContext,
+  targetContext: BuildCompareSelectionContext,
+): BuildCompareFinding | undefined {
+  const currentSummaries = collectAllocatedClusterJewelSummaries(currentContext);
+  const targetSummaries = collectAllocatedClusterJewelSummaries(targetContext);
+  const rows: BuildCompareRow[] = [];
+
+  const smallPassiveDiff = buildComparedClusterAggregateDiff(
+    aggregateClusterSmallPassiveTotals(currentSummaries),
+    aggregateClusterSmallPassiveTotals(targetSummaries),
+    {
+      pairTitle: "Significant total differences",
+    },
+    RARE_VALUE_DIFFERENCE_THRESHOLD,
+  );
+  if (smallPassiveDiff) {
+    rows.push({
+      currentValue: smallPassiveDiff.currentValue,
+      direction: smallPassiveDiff.direction,
+      highlight: true,
+      itemCategory: "cluster-jewel",
+      key: "cluster-jewel:small-passives",
+      name: "Allocated Small Passive Totals",
+      targetValue: smallPassiveDiff.targetValue,
+    });
+  }
+
+  const notableDiff = buildComparedClusterAggregateDiff(
+    aggregateClusterNotableTotals(currentSummaries),
+    aggregateClusterNotableTotals(targetSummaries),
+    {
+      pairTitle: "Different counts",
+    },
+    0,
+  );
+  if (notableDiff) {
+    rows.push({
+      currentValue: notableDiff.currentValue,
+      direction: notableDiff.direction,
+      highlight: true,
+      itemCategory: "cluster-jewel",
+      key: "cluster-jewel:notables",
+      name: "Allocated Notables",
+      targetValue: notableDiff.targetValue,
+    });
+  }
+
+  if (rows.length === 0) {
+    return undefined;
+  }
+
+  return {
+    kind: "item",
+    key: "cluster-jewel-aggregates",
+    rows,
+    severity: "notable",
+    title: "Cluster Jewel Effects",
+  };
+}
+
 function buildRareItemModFinding(
   currentContext: BuildCompareSelectionContext,
   targetContext: BuildCompareSelectionContext,
@@ -526,6 +626,10 @@ function buildRareItemModFinding(
     const currentItem = pair.current?.item;
     const targetItem = pair.target?.item;
     if (!currentItem || !targetItem || !isComparableRareItemPair(currentItem, targetItem)) {
+      continue;
+    }
+
+    if (isAggregatedClusterJewelItem(currentItem) || isAggregatedClusterJewelItem(targetItem)) {
       continue;
     }
 
@@ -1254,6 +1358,7 @@ function collectComparedItemPairs(
   return [
     ...collectEquipmentPairs(currentContext, targetContext),
     ...collectUnorderedPoolPairs(collectFlaskEntries(currentContext), collectFlaskEntries(targetContext)),
+    ...collectUnorderedPoolPairs(collectTinctureEntries(currentContext), collectTinctureEntries(targetContext)),
     ...collectUnorderedPoolPairs(collectSocketedJewelEntries(currentContext), collectSocketedJewelEntries(targetContext)),
   ];
 }
@@ -1266,7 +1371,7 @@ function collectEquipmentPairs(
   const targetEntries = new Map<string, ComparedItemEntry>();
 
   for (const slot of currentContext.itemSet?.slots ?? []) {
-    if (!slot.active || slot.itemId <= 0 || FLASK_SLOT_NAME_PATTERN.test(slot.name)) {
+    if (!slot.active || slot.itemId <= 0 || isFlaskSectionSlotName(slot.name)) {
       continue;
     }
 
@@ -1285,7 +1390,7 @@ function collectEquipmentPairs(
   }
 
   for (const slot of targetContext.itemSet?.slots ?? []) {
-    if (!slot.active || slot.itemId <= 0 || FLASK_SLOT_NAME_PATTERN.test(slot.name)) {
+    if (!slot.active || slot.itemId <= 0 || isFlaskSectionSlotName(slot.name)) {
       continue;
     }
 
@@ -1340,6 +1445,31 @@ function collectFlaskEntries(context: BuildCompareSelectionContext): ComparedIte
   return assignPoolDisplayLabels(entries);
 }
 
+function collectTinctureEntries(context: BuildCompareSelectionContext): ComparedItemEntry[] {
+  const entries: ComparedItemEntry[] = [];
+
+  for (const slot of context.itemSet?.slots ?? []) {
+    if (!slot.active || slot.itemId <= 0 || !TINCTURE_SLOT_NAME_PATTERN.test(slot.name)) {
+      continue;
+    }
+
+    const item = context.itemsById.get(slot.itemId);
+    if (!item) {
+      continue;
+    }
+
+    entries.push({
+      displayLabel: slot.name,
+      item,
+      key: `tincture:${slot.name}:${slot.itemId}`,
+      pool: "flask",
+      slotName: slot.name,
+    });
+  }
+
+  return assignPoolDisplayLabels(entries);
+}
+
 function collectSocketedJewelEntries(context: BuildCompareSelectionContext): ComparedItemEntry[] {
   const entries: ComparedItemEntry[] = [];
 
@@ -1385,6 +1515,10 @@ function assignPoolDisplayLabels(entries: ComparedItemEntry[]): ComparedItemEntr
 function buildPoolItemDisplayName(item: ItemPayload, pool: ComparedItemEntry["pool"]) {
   if (pool === "flask" && isMagicFlaskItem(item)) {
     return resolveComparedFlaskBaseName(item);
+  }
+
+  if (pool === "flask" && isTinctureItem(item)) {
+    return resolveComparedTinctureBaseName(item);
   }
 
   const name = item.name?.trim();
@@ -1481,6 +1615,10 @@ function pairComparedItemEntries(
 }
 
 function buildComparedPoolMatchKey(item: ItemPayload) {
+  if (isTinctureItem(item)) {
+    return `tincture:${normalizeComparedText(resolveComparedTinctureBaseName(item))}`;
+  }
+
   if (isFlaskItem(item)) {
     return `flask:${normalizeComparedText(resolveComparedFlaskBaseName(item))}`;
   }
@@ -1624,7 +1762,15 @@ function buildRareItemModDiff(currentItem: ItemPayload, targetItem: ItemPayload)
 }
 
 function buildMagicFlaskPoolModDiff(currentFlasks: ItemPayload[], targetFlasks: ItemPayload[]) {
-  const diff = buildComparedMagicFlaskModDiff(currentFlasks, targetFlasks);
+  return buildExplicitModPoolDiffDisplay(currentFlasks, targetFlasks);
+}
+
+function buildExplicitModPoolDiffDisplay(currentItems: ItemPayload[], targetItems: ItemPayload[]) {
+  const diff = buildComparedExplicitModPoolDiff(currentItems, targetItems);
+  if (!diff) {
+    return undefined;
+  }
+
   if (diff.currentOnly.length === 0 && diff.targetOnly.length === 0 && diff.significantPairs.length === 0) {
     return undefined;
   }
@@ -1641,10 +1787,14 @@ function buildThresholdedItemModDiff(currentItem: ItemPayload, targetItem: ItemP
   return formatComparedItemModDiff(diff);
 }
 
-function buildComparedMagicFlaskModDiff(currentFlasks: ItemPayload[], targetFlasks: ItemPayload[]): ComparedItemModDiff {
-  const currentMods = collectMagicFlaskPoolMods(currentFlasks);
-  const targetMods = collectMagicFlaskPoolMods(targetFlasks);
-  return buildComparedModPoolDiff(currentMods, targetMods, true);
+function buildComparedExplicitModPoolDiff(currentItems: ItemPayload[], targetItems: ItemPayload[]): ComparedItemModDiff | undefined {
+  const currentMods = collectExplicitModifierPoolMods(currentItems);
+  const targetMods = collectExplicitModifierPoolMods(targetItems);
+  if (currentMods.length === 0 && targetMods.length === 0) {
+    return undefined;
+  }
+
+  return buildComparedModPoolDiffWithThreshold(currentMods, targetMods, RARE_VALUE_DIFFERENCE_THRESHOLD);
 }
 
 function buildComparedItemModDiff(
@@ -1654,13 +1804,17 @@ function buildComparedItemModDiff(
 ): ComparedItemModDiff {
   const currentMods = collectComparableMods(currentItem);
   const targetMods = collectComparableMods(targetItem);
-  return buildComparedModPoolDiff(currentMods, targetMods, includeSignificantValueDiffs);
+  return buildComparedModPoolDiffWithThreshold(
+    currentMods,
+    targetMods,
+    includeSignificantValueDiffs ? RARE_VALUE_DIFFERENCE_THRESHOLD : undefined,
+  );
 }
 
-function buildComparedModPoolDiff(
+function buildComparedModPoolDiffWithThreshold(
   currentMods: ComparedItemMod[],
   targetMods: ComparedItemMod[],
-  includeSignificantValueDiffs: boolean,
+  valueDifferenceThreshold?: number,
 ): ComparedItemModDiff {
   const templateOrder = [
     ...targetMods.map((mod) => mod.template),
@@ -1681,12 +1835,12 @@ function buildComparedModPoolDiff(
     diff.currentOnly.push(...remainingCurrent);
     diff.targetOnly.push(...remainingTarget);
 
-    if (!includeSignificantValueDiffs) {
+    if (valueDifferenceThreshold === undefined) {
       continue;
     }
 
     for (const pair of pairs) {
-      if (hasSignificantValueDifference(pair.current, pair.target)) {
+      if (hasValueDifferenceAboveThreshold(pair.current, pair.target, valueDifferenceThreshold)) {
         diff.significantPairs.push(pair);
       }
     }
@@ -1721,9 +1875,9 @@ function collectComparableMods(item: ItemPayload): ComparedItemMod[] {
   return mods;
 }
 
-function collectMagicFlaskPoolMods(flasks: ItemPayload[]) {
-  return flasks.flatMap((flask) =>
-    collectComparableExplicitMods(flask).map((mod) => toComparedItemMod(capitalize(mod.kind), mod.text)),
+function collectExplicitModifierPoolMods(items: ItemPayload[]) {
+  return items.flatMap((item) =>
+    collectComparableExplicitMods(item).map((mod) => toComparedItemMod(capitalize(mod.kind), mod.text)),
   );
 }
 
@@ -1808,9 +1962,9 @@ function calculateComparedModPairScore(currentMod: ComparedItemMod, targetMod: C
   return 100 - maxRelativeDifference * 100;
 }
 
-function hasSignificantValueDifference(currentMod: ComparedItemMod, targetMod: ComparedItemMod) {
+function hasValueDifferenceAboveThreshold(currentMod: ComparedItemMod, targetMod: ComparedItemMod, threshold: number) {
   const maxRelativeDifference = calculateMaxRelativeDifference(currentMod.values, targetMod.values);
-  return maxRelativeDifference !== undefined && maxRelativeDifference > RARE_VALUE_DIFFERENCE_THRESHOLD;
+  return maxRelativeDifference !== undefined && maxRelativeDifference > threshold;
 }
 
 function calculateMaxRelativeDifference(currentValues: number[], targetValues: number[]) {
@@ -1830,28 +1984,38 @@ function calculateMaxRelativeDifference(currentValues: number[], targetValues: n
   return maxDifference;
 }
 
-function formatComparedItemModDiff(diff: ComparedItemModDiff): ComparedItemModDiffDisplay {
+function formatComparedItemModDiff(
+  diff: ComparedItemModDiff,
+  labels?: {
+    currentOnlyTitle?: string;
+    pairTitle?: string;
+    targetOnlyTitle?: string;
+  },
+): ComparedItemModDiffDisplay {
+  const currentOnlyTitle = labels?.currentOnlyTitle ?? "Only in current";
+  const targetOnlyTitle = labels?.targetOnlyTitle ?? "Only in target";
+  const pairTitle = labels?.pairTitle ?? "Significant roll differences";
   const currentLines: string[] = [];
   const targetLines: string[] = [];
 
   appendCompareSummarySection(
     currentLines,
-    "Only in current",
+    currentOnlyTitle,
     diff.currentOnly.map((mod) => formatComparedModLine(mod)),
   );
   appendCompareSummarySection(
     targetLines,
-    "Only in target",
+    targetOnlyTitle,
     diff.targetOnly.map((mod) => formatComparedModLine(mod)),
   );
   appendCompareSummarySection(
     currentLines,
-    "Significant roll differences",
+    pairTitle,
     diff.significantPairs.map((pair) => formatComparedModLine(pair.current)),
   );
   appendCompareSummarySection(
     targetLines,
-    "Significant roll differences",
+    pairTitle,
     diff.significantPairs.map((pair) => formatComparedModLine(pair.target)),
   );
 
@@ -1881,6 +2045,127 @@ function appendCompareSummarySection(lines: string[], title: string, values: rea
 
 function formatComparedModLine(mod: ComparedItemMod) {
   return `${mod.category}: ${mod.text}`;
+}
+
+function collectAllocatedClusterJewelSummaries(context: BuildCompareSelectionContext) {
+  if (!context.treeSpec) {
+    return [];
+  }
+
+  return collectAllocatedClusterJewelNodeSummaries(
+    context.treeSpec,
+    context.itemsById,
+    pickPassiveTreeVariant(context.treeSpec, TREE_MANIFEST),
+  ).filter((summary) => isAggregatedClusterJewelItem(summary.item));
+}
+
+function aggregateClusterSmallPassiveTotals(
+  summaries: ReturnType<typeof collectAllocatedClusterJewelSummaries>,
+): ComparedItemMod[] {
+  return aggregateComparedMods(
+    summaries
+      .filter((summary) => summary.kind === "small-passive")
+      .flatMap((summary) => summary.stats.map((line) => ({ category: "Small Passive", text: line.trim() })).filter((entry) => entry.text)),
+  );
+}
+
+function aggregateClusterNotableTotals(summaries: ReturnType<typeof collectAllocatedClusterJewelSummaries>): ComparedItemMod[] {
+  const counts = new Map<string, number>();
+  const orderedNames: string[] = [];
+
+  for (const summary of summaries) {
+    if (summary.kind !== "notable") {
+      continue;
+    }
+
+    const name = summary.name.trim();
+    if (!name) {
+      continue;
+    }
+
+    if (!counts.has(name)) {
+      orderedNames.push(name);
+    }
+    counts.set(name, (counts.get(name) ?? 0) + 1);
+  }
+
+  return orderedNames.map((name) => toComparedItemMod("Notable", `${name} x${counts.get(name) ?? 0}`));
+}
+
+function aggregateComparedMods(entries: Array<{ category: string; text: string }>): ComparedItemMod[] {
+  const aggregated = new Map<
+    string,
+    {
+      category: string;
+      displayTemplate: string;
+      order: number;
+      values: number[];
+    }
+  >();
+  let order = 0;
+
+  for (const entry of entries) {
+    const mod = toComparedItemMod(entry.category, entry.text);
+    const existing = aggregated.get(mod.template);
+    if (!existing) {
+      aggregated.set(mod.template, {
+        category: mod.category,
+        displayTemplate: buildComparedDisplayTemplate(mod.text),
+        order,
+        values: [...mod.values],
+      });
+      order += 1;
+      continue;
+    }
+
+    for (let index = 0; index < mod.values.length; index += 1) {
+      existing.values[index] = (existing.values[index] ?? 0) + mod.values[index];
+    }
+  }
+
+  return [...aggregated.entries()]
+    .sort((left, right) => left[1].order - right[1].order)
+    .map(([template, entry]) => ({
+      category: entry.category,
+      template,
+      text: renderComparedDisplayTemplate(entry.displayTemplate, entry.values),
+      values: entry.values,
+    }));
+}
+
+function buildComparedClusterAggregateDiff(
+  currentMods: ComparedItemMod[],
+  targetMods: ComparedItemMod[],
+  labels: Parameters<typeof formatComparedItemModDiff>[1],
+  valueDifferenceThreshold: number,
+) {
+  if (currentMods.length === 0 && targetMods.length === 0) {
+    return undefined;
+  }
+
+  const diff = buildComparedModPoolDiffWithThreshold(currentMods, targetMods, valueDifferenceThreshold);
+  if (diff.currentOnly.length === 0 && diff.targetOnly.length === 0 && diff.significantPairs.length === 0) {
+    return undefined;
+  }
+
+  return formatComparedItemModDiff(diff, labels);
+}
+
+function buildComparedDisplayTemplate(text: string) {
+  return text.trim().replace(/-?\d+(?:\.\d+)?/g, "#");
+}
+
+function renderComparedDisplayTemplate(template: string, values: number[]) {
+  let valueIndex = 0;
+  return template.replace(/#/g, () => formatComparedDisplayValue(values[valueIndex++] ?? 0));
+}
+
+function formatComparedDisplayValue(value: number) {
+  if (Number.isInteger(value)) {
+    return `${value}`;
+  }
+
+  return value.toFixed(2).replace(/\.?0+$/, "");
 }
 
 function normalizeComparedModTemplate(line: string) {
@@ -1929,7 +2214,7 @@ function resolveComparedItemCategory(currentItem: ItemPayload | undefined, targe
     return "other";
   }
 
-  if (isFlaskItem(item)) {
+  if (isFlaskItem(item) || isTinctureItem(item)) {
     return "flask";
   }
 
@@ -1958,6 +2243,18 @@ function isFlaskItem(item: ItemPayload) {
 
 function isMagicFlaskItem(item: ItemPayload) {
   return isFlaskItem(item) && item.rarity === "Magic";
+}
+
+function isTinctureItem(item: ItemPayload) {
+  return /\btincture\b/i.test([item.base, item.name].filter((value): value is string => Boolean(value)).join("\n"));
+}
+
+function isPooledFlaskSectionItem(item: ItemPayload) {
+  return isMagicFlaskItem(item) || isTinctureItem(item);
+}
+
+function isAggregatedClusterJewelItem(item: ItemPayload | undefined) {
+  return Boolean(item && isClusterJewelItem(item) && (item.rarity === "Rare" || item.rarity === "Magic"));
 }
 
 function isClusterJewelItem(item: ItemPayload) {
@@ -1992,6 +2289,10 @@ function resolveComparedFlaskBaseName(item: ItemPayload) {
   }
 
   return item.base?.trim() || item.name?.trim() || "Flask";
+}
+
+function resolveComparedTinctureBaseName(item: ItemPayload) {
+  return item.base?.trim() || item.name?.trim() || "Tincture";
 }
 
 function extractComparedFlaskBaseName(value: string) {
@@ -2088,7 +2389,7 @@ function describeComparedItem(item: ItemPayload | undefined, comparedFieldName?:
   return [includeLabel ? label : undefined, variantDescription].filter(Boolean).join("\n");
 }
 
-function describeComparedMagicFlaskBase(item: ItemPayload | undefined) {
+function describeComparedPooledFlaskSectionBase(item: ItemPayload | undefined) {
   return item ? "Present" : "Missing";
 }
 
@@ -2111,6 +2412,10 @@ function sameComparedItemIdentity(currentItem: ItemPayload | undefined, targetIt
 }
 
 function buildComparedItemIdentityKey(item: ItemPayload) {
+  if (isTinctureItem(item)) {
+    return `tincture:${normalizeComparedText(resolveComparedTinctureBaseName(item))}`;
+  }
+
   if (isFlaskItem(item)) {
     return `flask:${normalizeComparedText(resolveComparedFlaskBaseName(item))}`;
   }
@@ -2136,6 +2441,10 @@ function appendLabeledCompareSection(lines: string[], title: string, values: rea
   }
 
   lines.push(title, ...values);
+}
+
+function isFlaskSectionSlotName(slotName: string) {
+  return FLASK_SLOT_NAME_PATTERN.test(slotName) || TINCTURE_SLOT_NAME_PATTERN.test(slotName);
 }
 
 function dedupePreserveOrder(values: string[]) {
