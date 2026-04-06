@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import type { BuildPayload, ItemPayload, TreeSocketPayload } from "@pobcodes/shared-types";
+import type { TimelessResolveResponse } from "./timeless-resolver/types";
 
 import { buildViewerPayloadFixture } from "../test/fixtures/build-viewer-fixture";
 import { getInitialBuildViewerSelection } from "./build-viewer-selection";
 import { buildBuildComparisonReport } from "./build-compare-v2";
-import { collectAllocatedClusterJewelNodeSummaries } from "./passive-tree";
+import { collectAllocatedClusterJewelNodeSummaries, type PassiveTreeLayoutNode } from "./passive-tree";
 
 function makeItem(overrides: Partial<ItemPayload> & Pick<ItemPayload, "id" | "raw">): ItemPayload {
   return {
@@ -33,6 +34,7 @@ function makeItem(overrides: Partial<ItemPayload> & Pick<ItemPayload, "id" | "ra
 function makePayload(args: {
   items: ItemPayload[];
   nodes?: number[];
+  overrides?: BuildPayload["treeSpecs"][number]["overrides"];
   sockets?: TreeSocketPayload[];
   slots: Array<{ itemId: number; name: string }>;
 }): BuildPayload {
@@ -52,10 +54,56 @@ function makePayload(args: {
         ...buildViewerPayloadFixture.treeSpecs[0],
         active: true,
         nodes: args.nodes ?? buildViewerPayloadFixture.treeSpecs[0].nodes,
-        overrides: [],
+        overrides: args.overrides ?? [],
         sockets: args.sockets ?? [],
       },
     ],
+  };
+}
+
+function makeTreeNode(
+  overrides: Partial<PassiveTreeLayoutNode> &
+    Pick<PassiveTreeLayoutNode, "id" | "name" | "x" | "y">,
+): PassiveTreeLayoutNode {
+  const {
+    groupCenterX,
+    groupCenterY,
+    groupId,
+    id,
+    masteryEffects,
+    name,
+    orbit,
+    orbitIndex,
+    orbitRadius,
+    out,
+    stats,
+    x,
+    y,
+    ...rest
+  } = overrides;
+
+  return {
+    flavourText: [],
+    groupCenterX: groupCenterX ?? x,
+    groupCenterY: groupCenterY ?? y,
+    groupId: groupId ?? 1,
+    id,
+    isAscendancyStart: false,
+    isJewelSocket: false,
+    isKeystone: false,
+    isMastery: false,
+    isNotable: false,
+    masteryEffects: masteryEffects ?? [],
+    name,
+    orbit: orbit ?? 0,
+    orbitIndex: orbitIndex ?? 0,
+    orbitRadius: orbitRadius ?? 0,
+    out: out ?? [],
+    reminderText: [],
+    stats: stats ?? [],
+    x,
+    y,
+    ...rest,
   };
 }
 
@@ -1092,6 +1140,710 @@ describe("buildBuildComparisonReport v2", () => {
           itemCategory: "flask",
           name: "Tincture Modifier Pool",
           targetValue: "None",
+        }),
+      ]),
+    );
+  });
+
+  it("compares transformed timeless keystones by final result instead of seed", () => {
+    const treeNodes = [
+      makeTreeNode({
+        id: 99,
+        isJewelSocket: true,
+        name: "Basic Jewel Socket",
+        out: [200],
+        x: 0,
+        y: 0,
+      }),
+      makeTreeNode({
+        id: 200,
+        isKeystone: true,
+        name: "Chaos Inoculation",
+        out: [99],
+        x: 0,
+        y: 1000,
+      }),
+    ];
+    const currentMilitantFaith = makeItem({
+      id: 5301,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 5432 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const targetMilitantFaith = makeItem({
+      id: 5302,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 9999 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const currentPayload = makePayload({
+      items: [currentMilitantFaith],
+      nodes: [200],
+      slots: [],
+      sockets: [{ itemId: 5301, nodeId: 99 }],
+    });
+    const targetPayload = makePayload({
+      items: [targetMilitantFaith],
+      nodes: [200],
+      slots: [],
+      sockets: [{ itemId: 5302, nodeId: 99 }],
+    });
+    const currentTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "tree")).toBeUndefined();
+  });
+
+  it("compares timeless override effects by final resolved outcome instead of node name or seed", () => {
+    const treeNodes = [
+      makeTreeNode({
+        id: 99,
+        isJewelSocket: true,
+        name: "Basic Jewel Socket",
+        out: [11, 12],
+        x: 0,
+        y: 0,
+      }),
+      makeTreeNode({
+        id: 11,
+        name: "Passive A",
+        out: [99],
+        x: 250,
+        y: 200,
+      }),
+      makeTreeNode({
+        id: 12,
+        isNotable: true,
+        name: "Notable A",
+        out: [99],
+        x: 500,
+        y: 300,
+      }),
+    ];
+    const currentMilitantFaith = makeItem({
+      id: 5303,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 1111 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const targetMilitantFaith = makeItem({
+      id: 5304,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 2222 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const currentPayload = makePayload({
+      items: [currentMilitantFaith],
+      nodes: [11, 12],
+      overrides: [
+        { effect: "+10 Devotion", name: "Faithful Soldier", nodeId: 11 },
+        { effect: "5% increased Area Damage per 10 Devotion", name: "Cult of Zeal", nodeId: 12 },
+      ],
+      slots: [],
+      sockets: [{ itemId: 5303, nodeId: 99 }],
+    });
+    const targetPayload = makePayload({
+      items: [targetMilitantFaith],
+      nodes: [11, 12],
+      overrides: [
+        { effect: "+20 Devotion", name: "Faithful Sage", nodeId: 11 },
+        { effect: "2.5% increased Area Damage per 10 Devotion", name: "Cult of Wisdom", nodeId: 12 },
+      ],
+      slots: [],
+      sockets: [{ itemId: 5304, nodeId: 99 }],
+    });
+    const currentTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "tree")).toBeUndefined();
+  });
+
+  it("treats Militant Faith threshold modifiers as active only when devotion is met", () => {
+    const treeNodes = [
+      makeTreeNode({
+        id: 99,
+        isJewelSocket: true,
+        name: "Basic Jewel Socket",
+        out: [11, 12],
+        x: 0,
+        y: 0,
+      }),
+      makeTreeNode({
+        id: 11,
+        name: "Passive A",
+        out: [99],
+        x: 250,
+        y: 200,
+      }),
+      makeTreeNode({
+        id: 12,
+        isNotable: true,
+        name: "Notable A",
+        out: [99],
+        x: 500,
+        y: 300,
+      }),
+    ];
+    const currentMilitantFaith = makeItem({
+      id: 5305,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 3333 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const targetMilitantFaith = makeItem({
+      id: 5306,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 4444 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const currentPayload = makePayload({
+      items: [currentMilitantFaith],
+      nodes: [11, 12],
+      overrides: [
+        { effect: "+150 Devotion", name: "Faithful Soldier", nodeId: 11 },
+        { effect: "Gain Arcane Surge on Hit with Spells if you have at least 150 Devotion", name: "Cult of Zeal", nodeId: 12 },
+      ],
+      slots: [],
+      sockets: [{ itemId: 5305, nodeId: 99 }],
+    });
+    const targetPayload = makePayload({
+      items: [targetMilitantFaith],
+      nodes: [11, 12],
+      overrides: [
+        { effect: "+140 Devotion", name: "Faithful Sage", nodeId: 11 },
+        { effect: "Gain Arcane Surge on Hit with Spells if you have at least 150 Devotion", name: "Cult of Wisdom", nodeId: 12 },
+      ],
+      slots: [],
+      sockets: [{ itemId: 5306, nodeId: 99 }],
+    });
+    const currentTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "tree")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: "Allocated",
+          name: "Timeless Notable: Gain Arcane Surge on Hit with Spells",
+          targetValue: "Missing",
+        }),
+      ]),
+    );
+  });
+
+  it("highlights allocated Elegant Hubris notable differences", () => {
+    const treeNodes = [
+      makeTreeNode({
+        id: 99,
+        isJewelSocket: true,
+        name: "Basic Jewel Socket",
+        out: [21, 22],
+        x: 0,
+        y: 0,
+      }),
+      makeTreeNode({
+        id: 21,
+        isNotable: true,
+        name: "Notable One",
+        out: [99],
+        x: 250,
+        y: 200,
+      }),
+      makeTreeNode({
+        id: 22,
+        isNotable: true,
+        name: "Notable Two",
+        out: [99],
+        x: 500,
+        y: 300,
+      }),
+    ];
+    const currentElegantHubris = makeItem({
+      id: 5307,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Elegant Hubris",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Elegant Hubris",
+        "Timeless Jewel",
+        "Commissioned 1111 coins to commemorate Cadiro",
+        "Passives in radius are Conquered by the Eternal Empire",
+      ].join("\n"),
+    });
+    const targetElegantHubris = makeItem({
+      id: 5308,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Elegant Hubris",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Elegant Hubris",
+        "Timeless Jewel",
+        "Commissioned 2222 coins to commemorate Cadiro",
+        "Passives in radius are Conquered by the Eternal Empire",
+      ].join("\n"),
+    });
+    const currentPayload = makePayload({
+      items: [currentElegantHubris],
+      nodes: [21, 22],
+      overrides: [
+        { effect: "80% increased Minion Damage", name: "Gemling Training", nodeId: 21 },
+        { effect: "24% increased Attack Damage while holding a Shield", name: "Eternal Fervour", nodeId: 22 },
+      ],
+      slots: [],
+      sockets: [{ itemId: 5307, nodeId: 99 }],
+    });
+    const targetPayload = makePayload({
+      items: [targetElegantHubris],
+      nodes: [21, 22],
+      overrides: [
+        { effect: "+3 to Dexterity", name: "Imperial Reach", nodeId: 21 },
+        { effect: "20% increased Cold Damage", name: "Winter March", nodeId: 22 },
+      ],
+      slots: [],
+      sockets: [{ itemId: 5308, nodeId: 99 }],
+    });
+    const currentTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "elegant-hubris-notables")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: expect.stringContaining("80% increased Minion Damage"),
+          name: "Allocated notable bonuses",
+          targetValue: expect.stringContaining("+3 to Dexterity"),
+        }),
+      ]),
+    );
+    expect(report.findings.find((finding) => finding.key === "items")?.rows?.some((row) => row.name.includes("Elegant Hubris")) ?? false).toBe(
+      false,
+    );
+    expect(report.findings.find((finding) => finding.key === "tree")?.rows?.some((row) => row.name.includes("Minion Damage")) ?? false).toBe(false);
+  });
+
+  it("uses resolved Elegant Hubris effects when exported overrides are absent", () => {
+    const treeNodes = [
+      makeTreeNode({
+        id: 99,
+        isJewelSocket: true,
+        name: "Basic Jewel Socket",
+        out: [21, 22],
+        x: 0,
+        y: 0,
+      }),
+      makeTreeNode({
+        id: 21,
+        isNotable: true,
+        name: "Notable One",
+        out: [99],
+        x: 250,
+        y: 200,
+      }),
+      makeTreeNode({
+        id: 22,
+        isNotable: true,
+        name: "Notable Two",
+        out: [99],
+        x: 500,
+        y: 300,
+      }),
+    ];
+    const currentElegantHubris = makeItem({
+      id: 5311,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Elegant Hubris",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Elegant Hubris",
+        "Timeless Jewel",
+        "Commissioned 158920 coins to commemorate Victario",
+        "Passives in radius are Conquered by the Eternal Empire",
+      ].join("\n"),
+    });
+    const targetElegantHubris = makeItem({
+      id: 5312,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Elegant Hubris",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Elegant Hubris",
+        "Timeless Jewel",
+        "Commissioned 93980 coins to commemorate Victario",
+        "Passives in radius are Conquered by the Eternal Empire",
+      ].join("\n"),
+    });
+    const currentPayload = makePayload({
+      items: [currentElegantHubris],
+      nodes: [21, 22],
+      overrides: [],
+      slots: [],
+      sockets: [{ itemId: 5311, nodeId: 99 }],
+    });
+    const targetPayload = makePayload({
+      items: [targetElegantHubris],
+      nodes: [21, 22],
+      overrides: [],
+      slots: [],
+      sockets: [{ itemId: 5312, nodeId: 99 }],
+    });
+    const currentTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+    const timelessResolvedBuilds: TimelessResolveResponse["builds"] = {
+      current: {
+        jewels: [
+          {
+            conqueror: "Victario",
+            itemId: 5311,
+            jewelType: "Elegant Hubris",
+            nodeEffects: [
+              {
+                isKeystone: false,
+                isNotable: true,
+                lines: ["10% increased Damage per Frenzy Charge"],
+                nodeId: 21,
+                originalName: "Notable One",
+                replacedName: "Historic Might",
+              },
+              {
+                isKeystone: false,
+                isNotable: true,
+                lines: ["24% increased Attack Damage while holding a Shield"],
+                nodeId: 22,
+                originalName: "Notable Two",
+                replacedName: "Historic Guard",
+              },
+            ],
+            seed: 158920,
+            socketNodeId: 99,
+          },
+        ],
+      },
+      target: {
+        jewels: [
+          {
+            conqueror: "Victario",
+            itemId: 5312,
+            jewelType: "Elegant Hubris",
+            nodeEffects: [
+              {
+                isKeystone: false,
+                isNotable: true,
+                lines: ["10% increased Damage per Power Charge"],
+                nodeId: 21,
+                originalName: "Notable One",
+                replacedName: "Historic Focus",
+              },
+              {
+                isKeystone: false,
+                isNotable: true,
+                lines: ["20% increased Cold Damage"],
+                nodeId: 22,
+                originalName: "Notable Two",
+                replacedName: "Historic Frost",
+              },
+            ],
+            seed: 93980,
+            socketNodeId: 99,
+          },
+        ],
+      },
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+      timelessResolvedBuilds,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "elegant-hubris-notables")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: expect.stringContaining("10% increased Damage per Frenzy Charge"),
+          name: "Allocated notable bonuses",
+          targetValue: expect.stringContaining("10% increased Damage per Power Charge"),
+        }),
+      ]),
+    );
+  });
+
+  it("scales resolved Militant Faith effects before comparing them", () => {
+    const treeNodes = [
+      makeTreeNode({
+        id: 99,
+        isJewelSocket: true,
+        name: "Basic Jewel Socket",
+        out: [11, 12],
+        x: 0,
+        y: 0,
+      }),
+      makeTreeNode({
+        id: 11,
+        name: "Passive A",
+        out: [99],
+        x: 250,
+        y: 200,
+      }),
+      makeTreeNode({
+        id: 12,
+        isNotable: true,
+        name: "Notable A",
+        out: [99],
+        x: 500,
+        y: 300,
+      }),
+    ];
+    const currentMilitantFaith = makeItem({
+      id: 5313,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 5432 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const targetMilitantFaith = makeItem({
+      id: 5314,
+      base: "Timeless Jewel",
+      explicits: ["Historic"],
+      name: "Militant Faith",
+      rarity: "Unique",
+      raw: [
+        "Rarity: Unique",
+        "Militant Faith",
+        "Timeless Jewel",
+        "Carved to glorify 9999 new faithful converted by High Templar Dominus",
+        "Passives in radius are Conquered by the Templars",
+      ].join("\n"),
+    });
+    const currentPayload = makePayload({
+      items: [currentMilitantFaith],
+      nodes: [11, 12],
+      overrides: [],
+      slots: [],
+      sockets: [{ itemId: 5313, nodeId: 99 }],
+    });
+    const targetPayload = makePayload({
+      items: [targetMilitantFaith],
+      nodes: [11, 12],
+      overrides: [],
+      slots: [],
+      sockets: [{ itemId: 5314, nodeId: 99 }],
+    });
+    const currentTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: currentPayload.treeSpecs[0],
+    };
+    const targetTree = {
+      nodeIndex: new Map(treeNodes.map((node) => [node.id, node])),
+      spec: targetPayload.treeSpecs[0],
+    };
+    const timelessResolvedBuilds: TimelessResolveResponse["builds"] = {
+      current: {
+        jewels: [
+          {
+            conqueror: "Dominus",
+            itemId: 5313,
+            jewelType: "Militant Faith",
+            nodeEffects: [
+              {
+                isKeystone: false,
+                isNotable: false,
+                lines: ["+30 Devotion"],
+                nodeId: 11,
+                originalName: "Passive A",
+              },
+              {
+                isKeystone: false,
+                isNotable: true,
+                lines: ["5% increased Area Damage per 10 Devotion"],
+                nodeId: 12,
+                originalName: "Notable A",
+              },
+            ],
+            seed: 5432,
+            socketNodeId: 99,
+          },
+        ],
+      },
+      target: {
+        jewels: [
+          {
+            conqueror: "Dominus",
+            itemId: 5314,
+            jewelType: "Militant Faith",
+            nodeEffects: [
+              {
+                isKeystone: false,
+                isNotable: false,
+                lines: ["+20 Devotion"],
+                nodeId: 11,
+                originalName: "Passive A",
+              },
+              {
+                isKeystone: false,
+                isNotable: true,
+                lines: ["5% increased Area Damage per 10 Devotion"],
+                nodeId: 12,
+                originalName: "Notable A",
+              },
+            ],
+            seed: 9999,
+            socketNodeId: 99,
+          },
+        ],
+      },
+    };
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+      currentTree,
+      targetTree,
+      timelessResolvedBuilds,
+    );
+
+    expect(report.findings.find((finding) => finding.key === "tree")?.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          currentValue: "Allocated",
+          name: "Timeless Notable: 15% increased Area Damage",
+          targetValue: "Missing",
+        }),
+        expect.objectContaining({
+          currentValue: "Missing",
+          name: "Timeless Notable: 10% increased Area Damage",
+          targetValue: "Allocated",
         }),
       ]),
     );

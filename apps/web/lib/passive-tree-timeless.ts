@@ -112,7 +112,7 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function resolveTimelessJewelLargeRadius(version?: string) {
+export function resolveTimelessJewelLargeRadius(version?: string) {
   const match = version?.match(/^(\d+)\.(\d+)$/);
   if (!match) {
     return MODERN_LARGE_JEWEL_RADIUS;

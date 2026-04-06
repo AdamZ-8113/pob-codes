@@ -27,12 +27,14 @@ Monorepo implementation for a read-only Path of Building viewer for Path of Exil
 - npm run deploy (requires Cloudflare auth plus worker KV env vars)
 
 ## Repo Files
-- `LICENSE`: MIT license for this repository
-- `NOTICE.md`: trademark and upstream attribution notice
+- `LICENSE`: GPL-3.0-or-later license for this repository
+- `NOTICE.md`: trademark and high-level attribution notice
+- `THIRD_PARTY_NOTICES.md`: upstream software and data notices relevant to redistributed or planned integrated components
 - `data_pipeline.md`: source-of-truth description for synced data and asset inputs
 - `docs/deployment-runbook.md`: deployment and production operations
 - `docs/league-update-runbook.md`: league refresh and regeneration workflow
 - `docs/foulborn-upscaling.md`: Foulborn art workflow details
+- `docs/timeless-jewel-integration-plan.md`: low-risk lazy integration plan for deterministic timeless jewel compare support
 
 ## Legal
-PoB Codes is an unofficial fan-made Path of Exile tool. Path of Exile, Path of Exile 2, and related names and assets are owned by Grinding Gear Games. See `NOTICE.md` for attribution and disclaimer details, and `LICENSE` for the repository license.
+PoB Codes is an unofficial fan-made Path of Exile tool. Path of Exile, Path of Exile 2, and related names and assets are owned by Grinding Gear Games. See `NOTICE.md` for attribution and disclaimer details, `THIRD_PARTY_NOTICES.md` for upstream software/data notices, and `LICENSE` for the repository license.

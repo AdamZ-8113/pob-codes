@@ -316,12 +316,15 @@ function renderCompareFindingTable(finding: BuildCompareReport["findings"][numbe
     );
   }
 
+  const currentHeader = finding.key === "elegant-hubris-notables" ? "Only in Source Build" : "Source Build";
+  const targetHeader = finding.key === "elegant-hubris-notables" ? "Only in Your Build" : "Your Build";
+
   return (
     <div className="compare-finding-table" id={`compare-finding-panel:${finding.key}`}>
       <div className="compare-finding-table-row compare-finding-table-row--header">
         <div className="compare-finding-cell compare-finding-cell--name">Compared field</div>
-        <div className="compare-finding-cell compare-finding-cell--current">Source Build</div>
-        <div className="compare-finding-cell compare-finding-cell--target">Your Build</div>
+        <div className="compare-finding-cell compare-finding-cell--current">{currentHeader}</div>
+        <div className="compare-finding-cell compare-finding-cell--target">{targetHeader}</div>
       </div>
       {finding.rows.map((row) => (
         <div
@@ -331,10 +334,10 @@ function renderCompareFindingTable(finding: BuildCompareReport["findings"][numbe
           <div className="compare-finding-cell compare-finding-cell--name" data-mobile-label="Compared field">
             {row.name}
           </div>
-          <div className="compare-finding-cell compare-finding-cell--current" data-mobile-label="Source Build">
+          <div className="compare-finding-cell compare-finding-cell--current" data-mobile-label={currentHeader}>
             {row.currentValue}
           </div>
-          <div className="compare-finding-cell compare-finding-cell--target" data-mobile-label="Your Build">
+          <div className="compare-finding-cell compare-finding-cell--target" data-mobile-label={targetHeader}>
             {row.targetValue}
           </div>
         </div>
