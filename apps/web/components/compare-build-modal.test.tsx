@@ -268,4 +268,46 @@ describe("CompareBuildModal", () => {
       screen.getByText((_, element) => element?.textContent === "Righteous Fire\nRaise Spectre"),
     ).toBeTruthy();
   });
+
+  it("renders elegant hubris bonus differences with exclusive column headers", async () => {
+    vi.mocked(compareBuildAgainstInput).mockResolvedValue({
+      findings: [
+        {
+          key: "elegant-hubris-notables",
+          rows: [
+            {
+              currentValue: "10% increased Damage per Frenzy Charge",
+              key: "elegant-hubris-notables:allocated-bonuses",
+              name: "Allocated notable bonuses",
+              targetValue: "10% increased Damage per Power Charge",
+            },
+          ],
+          severity: "major",
+          title: "Elegant Hubris Notable Differences",
+        },
+      ],
+      targetSummary: "Templar / Hierophant (Level 95)",
+    });
+
+    render(
+      <CompareBuildModal
+        payload={buildViewerPayloadFixture}
+        selection={getInitialBuildViewerSelection(buildViewerPayloadFixture)}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: {
+        value: "https://pob.codes/b/example123",
+      },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Compare Builds" }));
+
+    expect(await screen.findByText("Elegant Hubris Notable Differences")).toBeTruthy();
+    expect(screen.getByText("Only in Source Build")).toBeTruthy();
+    expect(screen.getByText("Only in Your Build")).toBeTruthy();
+    expect(screen.getByText("10% increased Damage per Frenzy Charge")).toBeTruthy();
+    expect(screen.getByText("10% increased Damage per Power Charge")).toBeTruthy();
+  });
 });

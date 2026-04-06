@@ -31,7 +31,23 @@ import {
   type PassiveTreeLayoutNode,
   type PassiveTreeManifest,
 } from "./passive-tree";
+import {
+  resolveTimelessJewelLargeRadius,
+  resolveTimelessKeystoneTransformations,
+} from "./passive-tree-timeless";
 import { buildConfigDisplaySections } from "./pob-config-display";
+import {
+  isElegantHubrisItem,
+  isMilitantFaithItem,
+  isTimelessJewelItem,
+  parseTimelessJewelDescriptor,
+} from "./timeless-jewel-descriptor";
+import type {
+  TimelessResolveBuildInput,
+  TimelessResolveRequest,
+  TimelessResolveResponse,
+  TimelessResolvedBuild,
+} from "./timeless-resolver/types";
 
 export interface BuildCompareRow {
   currentValue: string;
@@ -91,12 +107,22 @@ interface ComparedCountedTreeValue {
   label: string;
 }
 
+interface ComparedTimelessJewelContext {
+  isElegantHubris: boolean;
+  isMilitantFaith: boolean;
+  item: ItemPayload;
+  radiusSquared: number;
+  socketNode: PassiveTreeLayoutNode;
+  socketNodeId: number;
+}
+
 interface BuildCompareSelectionContext {
   configSet?: ConfigSetPayload;
   itemSet?: ItemSetPayload;
   itemsById: Map<number, ItemPayload>;
   payload: BuildPayload;
   skillSet?: SkillSetPayload;
+  timelessResolvedBuild?: TimelessResolvedBuild;
   tree?: BuildCompareTreeContext;
   treeSpec?: TreeSpecPayload;
 }
@@ -162,8 +188,19 @@ export async function compareBuildAgainstInput(
     loadCompareTreeContext(currentPayload, currentSelection),
     loadCompareTreeContext(targetPayload, targetSelection),
   ]);
+  const currentContext = buildSelectionContext(currentPayload, currentSelection, currentTree);
+  const targetContext = buildSelectionContext(targetPayload, targetSelection, targetTree);
+  const timelessResolvedBuilds = await resolveComparedTimelessBuilds(currentContext, targetContext);
 
-  return buildBuildComparisonReport(currentPayload, currentSelection, targetPayload, targetSelection, currentTree, targetTree);
+  return buildBuildComparisonReport(
+    currentPayload,
+    currentSelection,
+    targetPayload,
+    targetSelection,
+    currentTree,
+    targetTree,
+    timelessResolvedBuilds,
+  );
 }
 
 export function buildBuildComparisonReport(
@@ -173,9 +210,10 @@ export function buildBuildComparisonReport(
   targetSelection: BuildViewerSelection,
   currentTree?: BuildCompareTreeContext,
   targetTree?: BuildCompareTreeContext,
+  timelessResolvedBuilds?: TimelessResolveResponse["builds"],
 ): BuildCompareReport {
-  const currentContext = buildSelectionContext(currentPayload, currentSelection, currentTree);
-  const targetContext = buildSelectionContext(targetPayload, targetSelection, targetTree);
+  const currentContext = buildSelectionContext(currentPayload, currentSelection, currentTree, timelessResolvedBuilds?.current);
+  const targetContext = buildSelectionContext(targetPayload, targetSelection, targetTree, timelessResolvedBuilds?.target);
   const findings = [
     buildConfigFinding(currentContext, targetContext),
     buildMissingSkillGemsFinding(currentContext, targetContext),
@@ -188,6 +226,7 @@ export function buildBuildComparisonReport(
     buildTinctureModFinding(currentContext, targetContext),
     buildClusterJewelAggregateFinding(currentContext, targetContext),
     buildRareItemModFinding(currentContext, targetContext),
+    buildElegantHubrisNotableFinding(currentContext, targetContext),
     buildPassiveTreeFinding(currentContext, targetContext),
   ].filter((finding): finding is BuildCompareFinding => Boolean(finding));
 
@@ -244,6 +283,7 @@ function buildSelectionContext(
   payload: BuildPayload,
   selection: BuildViewerSelection,
   tree?: BuildCompareTreeContext,
+  timelessResolvedBuild?: TimelessResolvedBuild,
 ): BuildCompareSelectionContext {
   return {
     configSet: getSelectedConfigSet(payload, selection.configSetId),
@@ -251,9 +291,90 @@ function buildSelectionContext(
     itemsById: new Map(payload.items.map((item) => [item.id, item])),
     payload,
     skillSet: getSelectedSkillSet(payload, selection.skillSetId),
+    timelessResolvedBuild,
     tree,
     treeSpec: getSelectedTreeSpec(payload, selection.treeIndex),
   };
+}
+
+async function resolveComparedTimelessBuilds(
+  currentContext: BuildCompareSelectionContext,
+  targetContext: BuildCompareSelectionContext,
+): Promise<TimelessResolveResponse["builds"] | undefined> {
+  const request: TimelessResolveRequest = {
+    builds: {
+      current: buildTimelessResolveBuildInput(currentContext),
+      target: buildTimelessResolveBuildInput(targetContext),
+    },
+  };
+
+  if (request.builds.current.jewels.length === 0 && request.builds.target.jewels.length === 0) {
+    return undefined;
+  }
+
+  try {
+    const response = await fetch("/api/timeless-resolve", {
+      body: JSON.stringify(request),
+      headers: {
+        "content-type": "application/json",
+      },
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      console.error("Timeless resolve request failed", response.status);
+      return undefined;
+    }
+
+    return ((await response.json()) as TimelessResolveResponse).builds;
+  } catch (error) {
+    console.error("Timeless resolve request failed", error);
+    return undefined;
+  }
+}
+
+function buildTimelessResolveBuildInput(context: BuildCompareSelectionContext): TimelessResolveBuildInput {
+  if (!context.tree?.spec) {
+    return { jewels: [] };
+  }
+
+  const radius = resolveTimelessJewelLargeRadius(context.tree.spec.version);
+  const radiusSquared = radius * radius;
+  const allocatedNodes = (context.tree.spec.nodes ?? [])
+    .map((nodeId) => context.tree?.nodeIndex.get(nodeId))
+    .filter((node): node is PassiveTreeLayoutNode => Boolean(node));
+
+  const jewels = context.tree.spec.sockets
+    .map((socket) => {
+      const item = context.itemsById.get(socket.itemId);
+      const descriptor = item ? parseTimelessJewelDescriptor(item) : undefined;
+      const socketNode = context.tree?.nodeIndex.get(socket.nodeId);
+      if (!descriptor || !socketNode) {
+        return undefined;
+      }
+
+      const nodeIds = allocatedNodes
+        .filter((node) => node.id !== socket.nodeId)
+        .filter((node) => {
+          const deltaX = node.x - socketNode.x;
+          const deltaY = node.y - socketNode.y;
+          return deltaX * deltaX + deltaY * deltaY <= radiusSquared;
+        })
+        .map((node) => node.id)
+        .sort((left, right) => left - right);
+
+      return {
+        conqueror: descriptor.conqueror,
+        itemId: socket.itemId,
+        jewelType: descriptor.jewelType,
+        nodeIds,
+        seed: descriptor.seed,
+        socketNodeId: socket.nodeId,
+      };
+    })
+    .filter((entry): entry is TimelessResolveBuildInput["jewels"][number] => Boolean(entry));
+
+  return { jewels };
 }
 
 function buildConfigFinding(
@@ -414,6 +535,11 @@ function buildItemFinding(
       continue;
     }
 
+    const timelessItem = currentItem ?? targetItem;
+    if (timelessItem && isTimelessJewelItem(timelessItem)) {
+      continue;
+    }
+
     if (isAggregatedClusterJewelItem(currentItem) || isAggregatedClusterJewelItem(targetItem)) {
       continue;
     }
@@ -460,6 +586,10 @@ function buildUniqueVariantFinding(
     const currentItem = pair.current?.item;
     const targetItem = pair.target?.item;
     if (!currentItem || !targetItem || !isComparableUniqueItemPair(currentItem, targetItem)) {
+      continue;
+    }
+
+    if (isTimelessJewelItem(currentItem) || isTimelessJewelItem(targetItem)) {
       continue;
     }
 
@@ -662,6 +792,45 @@ function buildRareItemModFinding(
   };
 }
 
+function buildElegantHubrisNotableFinding(
+  currentContext: BuildCompareSelectionContext,
+  targetContext: BuildCompareSelectionContext,
+): BuildCompareFinding | undefined {
+  if (!currentContext.tree?.spec || !targetContext.tree?.spec) {
+    return undefined;
+  }
+
+  const currentBonuses = collectElegantHubrisNotableCounts(
+    currentContext.tree,
+    currentContext.itemsById,
+    currentContext.timelessResolvedBuild,
+  );
+  const targetBonuses = collectElegantHubrisNotableCounts(
+    targetContext.tree,
+    targetContext.itemsById,
+    targetContext.timelessResolvedBuild,
+  );
+  const diff = buildExclusiveCountedTreeDiffDisplay(currentBonuses, targetBonuses);
+  if (!diff) {
+    return undefined;
+  }
+
+  return {
+    key: "elegant-hubris-notables",
+    rows: [
+      {
+        currentValue: diff.currentValue,
+        highlight: true,
+        key: "elegant-hubris-notables:allocated-bonuses",
+        name: "Allocated notable bonuses",
+        targetValue: diff.targetValue,
+      },
+    ],
+    severity: "major",
+    title: "Elegant Hubris Notable Differences",
+  };
+}
+
 function buildPassiveTreeFinding(
   currentContext: BuildCompareSelectionContext,
   targetContext: BuildCompareSelectionContext,
@@ -670,16 +839,38 @@ function buildPassiveTreeFinding(
     return undefined;
   }
 
-  const currentKeystones = collectKeystoneNames(currentContext.tree);
-  const targetKeystones = collectKeystoneNames(targetContext.tree);
+  const currentKeystones = collectKeystoneNames(currentContext.tree, currentContext.itemsById);
+  const targetKeystones = collectKeystoneNames(targetContext.tree, targetContext.itemsById);
   const currentMasteries = collectMasterySelections(currentContext.tree);
   const targetMasteries = collectMasterySelections(targetContext.tree);
+  const currentTimelessNotables = collectTimelessNotableCounts(
+    currentContext.tree,
+    currentContext.itemsById,
+    currentContext.timelessResolvedBuild,
+  );
+  const targetTimelessNotables = collectTimelessNotableCounts(
+    targetContext.tree,
+    targetContext.itemsById,
+    targetContext.timelessResolvedBuild,
+  );
+  const currentTimelessEffects = collectTimelessEffectCounts(
+    currentContext.tree,
+    currentContext.itemsById,
+    currentContext.timelessResolvedBuild,
+  );
+  const targetTimelessEffects = collectTimelessEffectCounts(
+    targetContext.tree,
+    targetContext.itemsById,
+    targetContext.timelessResolvedBuild,
+  );
   const currentRunegrafts = collectTreeOverrideCounts(currentContext.tree, /\bRunegraft\b/i);
   const targetRunegrafts = collectTreeOverrideCounts(targetContext.tree, /\bRunegraft\b/i);
   const currentTattoos = collectTreeOverrideCounts(currentContext.tree, /\bTattoo\b/i);
   const targetTattoos = collectTreeOverrideCounts(targetContext.tree, /\bTattoo\b/i);
   const rows = [
     ...buildTreeCompareRows("Keystone", currentKeystones, targetKeystones, "keystone"),
+    ...buildCountedTreeCompareRows("Timeless Notable", currentTimelessNotables, targetTimelessNotables, "timeless-notable"),
+    ...buildCountedTreeCompareRows("Timeless Effect", currentTimelessEffects, targetTimelessEffects, "timeless-effect"),
     ...buildTreeCompareRows("Mastery", currentMasteries, targetMasteries, "mastery"),
     ...buildCountedTreeCompareRows("Runegraft", currentRunegrafts, targetRunegrafts, "runegraft"),
     ...buildCountedTreeCompareRows("Tattoo", currentTattoos, targetTattoos, "tattoo"),
@@ -974,6 +1165,44 @@ function buildCountedTreeCompareRows(
   }
 
   return rows;
+}
+
+function buildExclusiveCountedTreeDiffDisplay(
+  currentValues: ReadonlyMap<string, ComparedCountedTreeValue>,
+  targetValues: ReadonlyMap<string, ComparedCountedTreeValue>,
+) {
+  const currentOnly = collectExclusiveCountedTreeValues(currentValues, targetValues);
+  const targetOnly = collectExclusiveCountedTreeValues(targetValues, currentValues);
+  if (currentOnly.length === 0 && targetOnly.length === 0) {
+    return undefined;
+  }
+
+  return {
+    currentValue: currentOnly.length > 0 ? currentOnly.join("\n") : "None",
+    targetValue: targetOnly.length > 0 ? targetOnly.join("\n") : "None",
+  };
+}
+
+function collectExclusiveCountedTreeValues(
+  values: ReadonlyMap<string, ComparedCountedTreeValue>,
+  counterpartValues: ReadonlyMap<string, ComparedCountedTreeValue>,
+) {
+  const lines: string[] = [];
+
+  for (const [key, value] of values) {
+    const difference = value.count - (counterpartValues.get(key)?.count ?? 0);
+    if (difference <= 0) {
+      continue;
+    }
+
+    lines.push(formatComparedCountedTreeLabel(value.label, difference));
+  }
+
+  return lines;
+}
+
+function formatComparedCountedTreeLabel(label: string, count: number) {
+  return count > 1 ? `${label} x${count}` : label;
 }
 
 function formatTreeAllocationCount(count: number) {
@@ -1683,15 +1912,417 @@ function countByKey(values: string[]) {
   return counts;
 }
 
-function collectKeystoneNames(tree: BuildCompareTreeContext) {
+function collectKeystoneNames(tree: BuildCompareTreeContext, itemsById: ReadonlyMap<number, ItemPayload>) {
   const names = new Set<string>();
+  const transformations = tree.spec
+    ? resolveTimelessKeystoneTransformations(tree.spec, tree.nodeIndex, itemsById)
+    : new Map<number, { name: string }>();
   for (const nodeId of tree.spec?.nodes ?? []) {
     const node = tree.nodeIndex.get(nodeId);
     if (node?.isKeystone) {
-      names.add(node.name);
+      names.add(transformations.get(nodeId)?.name ?? node.name);
     }
   }
   return names;
+}
+
+function collectTimelessNotableCounts(
+  tree: BuildCompareTreeContext,
+  itemsById: ReadonlyMap<number, ItemPayload>,
+  resolvedBuild?: TimelessResolvedBuild,
+) {
+  const counts = new Map<string, ComparedCountedTreeValue>();
+  if (!tree.spec) {
+    return counts;
+  }
+
+  if (resolvedBuild?.jewels.length) {
+    for (const jewel of resolvedBuild.jewels) {
+      if (jewel.jewelType === "Elegant Hubris") {
+        continue;
+      }
+
+      const devotion = jewel.jewelType === "Militant Faith" ? sumMilitantFaithDevotionFromEffects(jewel.nodeEffects) : 0;
+      for (const nodeEffect of jewel.nodeEffects) {
+        if (!nodeEffect.isNotable) {
+          continue;
+        }
+
+        const resolvedLines = resolveTimelessEffectLines(nodeEffect.lines, jewel.jewelType === "Militant Faith", devotion);
+        const key = buildTimelessNotableKey(nodeEffect.replacedName ?? nodeEffect.originalName, resolvedLines);
+        const label = buildTimelessNotableLabel(nodeEffect.replacedName ?? nodeEffect.originalName, resolvedLines);
+        if (!key || !label) {
+          continue;
+        }
+
+        incrementComparedCountedTreeValue(counts, key, label);
+      }
+    }
+
+    return counts;
+  }
+
+  const timelessContexts = collectTimelessJewelContexts(tree, itemsById);
+  if (timelessContexts.length === 0) {
+    return counts;
+  }
+
+  const overridesBySocketNodeId = collectTimelessOverridesBySocketNodeId(tree, timelessContexts);
+
+  for (const context of timelessContexts) {
+    if (context.isElegantHubris) {
+      continue;
+    }
+
+    const allOverrides = overridesBySocketNodeId.get(context.socketNodeId) ?? [];
+    const overrides = allOverrides.filter((override) =>
+      tree.nodeIndex.get(override.nodeId)?.isNotable,
+    );
+    const devotion = context.isMilitantFaith ? sumMilitantFaithDevotionFromEffects(allOverrides) : 0;
+
+    for (const override of overrides) {
+      const resolvedLines = resolveTimelessEffectLines(override.effect, context.isMilitantFaith, devotion);
+      const key = buildTimelessNotableKey(override.name, resolvedLines);
+      const label = buildTimelessNotableLabel(override.name, resolvedLines);
+      if (!key || !label) {
+        continue;
+      }
+
+      incrementComparedCountedTreeValue(counts, key, label);
+    }
+  }
+
+  return counts;
+}
+
+function collectElegantHubrisNotableCounts(
+  tree: BuildCompareTreeContext,
+  itemsById: ReadonlyMap<number, ItemPayload>,
+  resolvedBuild?: TimelessResolvedBuild,
+) {
+  const counts = new Map<string, ComparedCountedTreeValue>();
+  if (!tree.spec) {
+    return counts;
+  }
+
+  if (resolvedBuild?.jewels.length) {
+    for (const jewel of resolvedBuild.jewels) {
+      if (jewel.jewelType !== "Elegant Hubris") {
+        continue;
+      }
+
+      for (const nodeEffect of jewel.nodeEffects) {
+        if (!nodeEffect.isNotable) {
+          continue;
+        }
+
+        const key = buildElegantHubrisNotableKey(nodeEffect.lines);
+        const label = buildElegantHubrisNotableLabel(nodeEffect.lines);
+        if (!key || !label) {
+          continue;
+        }
+
+        incrementComparedCountedTreeValue(counts, key, label);
+      }
+    }
+
+    return counts;
+  }
+
+  const timelessContexts = collectTimelessJewelContexts(tree, itemsById).filter((context) => context.isElegantHubris);
+  if (timelessContexts.length === 0) {
+    return counts;
+  }
+
+  const overridesBySocketNodeId = collectTimelessOverridesBySocketNodeId(tree, timelessContexts);
+  for (const context of timelessContexts) {
+    const overrides = (overridesBySocketNodeId.get(context.socketNodeId) ?? []).filter((override) =>
+      tree.nodeIndex.get(override.nodeId)?.isNotable,
+    );
+
+    for (const override of overrides) {
+      const key = buildElegantHubrisNotableKey(override.effect);
+      const label = buildElegantHubrisNotableLabel(override.effect);
+      if (!key || !label) {
+        continue;
+      }
+
+      incrementComparedCountedTreeValue(counts, key, label);
+    }
+  }
+
+  return counts;
+}
+
+function collectTimelessEffectCounts(
+  tree: BuildCompareTreeContext,
+  itemsById: ReadonlyMap<number, ItemPayload>,
+  resolvedBuild?: TimelessResolvedBuild,
+) {
+  const counts = new Map<string, ComparedCountedTreeValue>();
+  if (!tree.spec) {
+    return counts;
+  }
+
+  if (resolvedBuild?.jewels.length) {
+    for (const jewel of resolvedBuild.jewels) {
+      const devotion = jewel.jewelType === "Militant Faith" ? sumMilitantFaithDevotionFromEffects(jewel.nodeEffects) : 0;
+      for (const nodeEffect of jewel.nodeEffects) {
+        if (nodeEffect.isNotable) {
+          continue;
+        }
+
+        for (const effectLine of resolveTimelessEffectLines(nodeEffect.lines, jewel.jewelType === "Militant Faith", devotion)) {
+          incrementComparedCountedTreeValue(counts, buildTimelessEffectKey(effectLine), effectLine);
+        }
+      }
+    }
+
+    return counts;
+  }
+
+  const timelessContexts = collectTimelessJewelContexts(tree, itemsById);
+  if (timelessContexts.length === 0) {
+    return counts;
+  }
+
+  const overridesBySocketNodeId = collectTimelessOverridesBySocketNodeId(tree, timelessContexts);
+
+  for (const context of timelessContexts) {
+    const allOverrides = overridesBySocketNodeId.get(context.socketNodeId) ?? [];
+    const overrides = allOverrides.filter(
+      (override) => !tree.nodeIndex.get(override.nodeId)?.isNotable,
+    );
+    const devotion = context.isMilitantFaith ? sumMilitantFaithDevotionFromEffects(allOverrides) : 0;
+
+    for (const override of overrides) {
+      for (const effectLine of resolveTimelessEffectLines(override.effect, context.isMilitantFaith, devotion)) {
+        incrementComparedCountedTreeValue(counts, buildTimelessEffectKey(effectLine), effectLine);
+      }
+    }
+  }
+
+  return counts;
+}
+
+function collectTimelessOverridesBySocketNodeId(
+  tree: BuildCompareTreeContext,
+  timelessContexts: ComparedTimelessJewelContext[],
+) {
+  const overridesBySocketNodeId = new Map<number, TreeSpecPayload["overrides"]>();
+  const allocatedNodeIds = new Set(tree.spec?.nodes ?? []);
+
+  for (const override of tree.spec?.overrides ?? []) {
+    if (!allocatedNodeIds.has(override.nodeId) || isCompareUtilityOverride(override)) {
+      continue;
+    }
+
+    const node = tree.nodeIndex.get(override.nodeId);
+    if (!node || node.isKeystone) {
+      continue;
+    }
+
+    const context = resolveTimelessJewelContextForNode(node, timelessContexts);
+    if (!context) {
+      continue;
+    }
+
+    const existing = overridesBySocketNodeId.get(context.socketNodeId) ?? [];
+    existing.push(override);
+    overridesBySocketNodeId.set(context.socketNodeId, existing);
+  }
+
+  return overridesBySocketNodeId;
+}
+
+function collectTimelessJewelContexts(
+  tree: BuildCompareTreeContext,
+  itemsById: ReadonlyMap<number, ItemPayload>,
+): ComparedTimelessJewelContext[] {
+  if (!tree.spec) {
+    return [];
+  }
+
+  const radius = resolveTimelessJewelLargeRadius(tree.spec.version);
+  const radiusSquared = radius * radius;
+  const contexts: ComparedTimelessJewelContext[] = [];
+
+  for (const socket of tree.spec.sockets) {
+    const item = itemsById.get(socket.itemId);
+    const socketNode = tree.nodeIndex.get(socket.nodeId);
+    if (!item || !socketNode || !isTimelessJewelItem(item)) {
+      continue;
+    }
+
+    contexts.push({
+      isElegantHubris: isElegantHubrisItem(item),
+      isMilitantFaith: isMilitantFaithItem(item),
+      item,
+      radiusSquared,
+      socketNode,
+      socketNodeId: socket.nodeId,
+    });
+  }
+
+  return contexts;
+}
+
+function resolveTimelessJewelContextForNode(
+  node: PassiveTreeLayoutNode,
+  contexts: ComparedTimelessJewelContext[],
+) {
+  let bestContext: ComparedTimelessJewelContext | undefined;
+  let bestDistanceSquared = Number.POSITIVE_INFINITY;
+
+  for (const context of contexts) {
+    const deltaX = node.x - context.socketNode.x;
+    const deltaY = node.y - context.socketNode.y;
+    const distanceSquared = deltaX * deltaX + deltaY * deltaY;
+    if (distanceSquared > context.radiusSquared || distanceSquared >= bestDistanceSquared) {
+      continue;
+    }
+
+    bestContext = context;
+    bestDistanceSquared = distanceSquared;
+  }
+
+  return bestContext;
+}
+
+function resolveTimelessEffectLines(effect: string | string[], isMilitantFaith: boolean, devotion: number) {
+  const lines = normalizeTimelessEffectLines(effect);
+
+  if (!isMilitantFaith) {
+    return dedupePreserveOrder(lines);
+  }
+
+  const resolvedLines: string[] = [];
+  for (const line of lines) {
+    const resolvedLine = resolveMilitantFaithEffectLine(line, devotion);
+    if (!resolvedLine) {
+      continue;
+    }
+    resolvedLines.push(resolvedLine);
+  }
+
+  return dedupePreserveOrder(resolvedLines);
+}
+
+function buildTimelessNotableKey(name: string, resolvedLines: string[]) {
+  if (resolvedLines.length > 0) {
+    return normalizeComparedText(resolvedLines.join(" / "));
+  }
+
+  return normalizeComparedText(name);
+}
+
+function buildTimelessNotableLabel(name: string, resolvedLines: string[]) {
+  const trimmedName = name.trim();
+  if (resolvedLines.length === 0) {
+    return trimmedName;
+  }
+
+  return resolvedLines.join(" / ");
+}
+
+function buildElegantHubrisNotableKey(effect: string | string[]) {
+  return normalizeComparedText(buildElegantHubrisNotableLabel(effect));
+}
+
+function buildElegantHubrisNotableLabel(effect: string | string[]) {
+  const lines = normalizeTimelessEffectLines(effect);
+
+  if (lines.length === 0) {
+    return "";
+  }
+
+  return dedupePreserveOrder(lines).join(" / ");
+}
+
+function resolveMilitantFaithEffectLine(line: string, devotion: number) {
+  const trimmedLine = line.trim();
+  if (!trimmedLine || isMilitantFaithDevotionGrantLine(trimmedLine)) {
+    return undefined;
+  }
+
+  const thresholdMatch = trimmedLine.match(/\s+if you have at least (\d+) devotion\b/i);
+  if (thresholdMatch) {
+    const threshold = Number(thresholdMatch[1]);
+    if (Number.isFinite(threshold) && devotion < threshold) {
+      return undefined;
+    }
+
+    return trimmedLine.replace(/\s+if you have at least \d+ devotion\b/i, "").trim();
+  }
+
+  if (/\bper 10 devotion\b/i.test(trimmedLine)) {
+    const multiplier = Math.floor(devotion / 10);
+    if (multiplier <= 0) {
+      return undefined;
+    }
+
+    const baseLine = trimmedLine.replace(/\s+per 10 devotion\b/i, "").trim();
+    return scaleComparedNumericLine(baseLine, multiplier);
+  }
+
+  return trimmedLine;
+}
+
+function sumMilitantFaithDevotionFromEffects(
+  effects: ReadonlyArray<{ effect: string } | { lines: string[] }>,
+) {
+  let devotion = 0;
+
+  for (const effect of effects) {
+    for (const line of normalizeTimelessEffectLines("effect" in effect ? effect.effect : effect.lines)) {
+      if (!isMilitantFaithDevotionGrantLine(line)) {
+        continue;
+      }
+
+      devotion += extractComparedNumericValues(line).find((value) => value > 0) ?? 0;
+    }
+  }
+
+  return devotion;
+}
+
+function normalizeTimelessEffectLines(effect: string | string[]) {
+  return (Array.isArray(effect) ? effect : effect.split(/\r?\n/))
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function isMilitantFaithDevotionGrantLine(line: string) {
+  return /\bdevotion\b/i.test(line) && !/\bper 10 devotion\b/i.test(line) && !/\bat least \d+ devotion\b/i.test(line);
+}
+
+function scaleComparedNumericLine(line: string, multiplier: number) {
+  return line.replace(/-?\d+(?:\.\d+)?/g, (match) => formatComparedDisplayValue(Number(match) * multiplier));
+}
+
+function buildTimelessEffectKey(line: string) {
+  return normalizeComparedText(line);
+}
+
+function incrementComparedCountedTreeValue(
+  counts: Map<string, ComparedCountedTreeValue>,
+  key: string,
+  label: string,
+) {
+  const existing = counts.get(key);
+  if (existing) {
+    existing.count += 1;
+    return;
+  }
+
+  counts.set(key, {
+    count: 1,
+    label,
+  });
+}
+
+function isCompareUtilityOverride(override: TreeSpecPayload["overrides"][number]) {
+  return /\bRunegraft\b/i.test(override.name) || /\bTattoo\b/i.test(override.name);
 }
 
 function collectMasterySelections(tree: BuildCompareTreeContext) {
