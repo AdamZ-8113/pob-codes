@@ -1097,12 +1097,46 @@ async function postJson(url, payload) {
   return data;
 }
 
-async function fetchManifest() {
-  const response = await fetch("/api/browser-pob/manifest");
-  if (!response.ok) {
-    throw new Error(`Manifest request failed: ${response.status}`);
+async function fetchJsonWithFallback(primaryUrl, fallbackUrl, label) {
+  const primaryResponse = await fetch(primaryUrl, { cache: "no-store" });
+  if (primaryResponse.ok) {
+    return primaryResponse.json();
   }
-  const catalog = await response.json();
+
+  const fallbackResponse = await fetch(fallbackUrl, { cache: "no-store" });
+  if (!fallbackResponse.ok) {
+    throw new Error(`${label} request failed: ${primaryResponse.status}, fallback ${fallbackResponse.status}`);
+  }
+
+  return fallbackResponse.json();
+}
+
+async function fetchBinaryAsset(url, label) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${label}: ${response.status}`);
+  }
+
+  return new Uint8Array(await response.arrayBuffer());
+}
+
+function concatUint8Arrays(parts) {
+  const totalLength = parts.reduce((sum, part) => sum + part.length, 0);
+  const out = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const part of parts) {
+    out.set(part, offset);
+    offset += part.length;
+  }
+  return out;
+}
+
+async function fetchManifest() {
+  const catalog = await fetchJsonWithFallback(
+    "/browser-pob/manifests/catalog.json",
+    "/api/browser-pob/manifest",
+    "Manifest",
+  );
   state.catalog = catalog;
   emitManifest(catalog);
 
@@ -1116,18 +1150,18 @@ async function fetchManifest() {
 }
 
 async function fetchTargetedManifest(requirements) {
-  const url = new URL("/api/browser-pob/manifest", self.location.origin);
-  url.searchParams.set("treeVersion", requirements.treeVersion);
+  const manifestName = `${requirements.treeVersion}${requirements.includeTimeless ? "-timeless" : ""}.json`;
+  const fallbackUrl = new URL("/api/browser-pob/manifest", self.location.origin);
+  fallbackUrl.searchParams.set("treeVersion", requirements.treeVersion);
   if (requirements.includeTimeless) {
-    url.searchParams.set("timeless", "1");
+    fallbackUrl.searchParams.set("timeless", "1");
   }
 
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Targeted manifest request failed: ${response.status}`);
-  }
-
-  return response.json();
+  return fetchJsonWithFallback(
+    `/browser-pob/manifests/${encodeURIComponent(manifestName)}`,
+    fallbackUrl,
+    "Targeted manifest",
+  );
 }
 
 async function fetchProfileCharacters({ realm, accountName, sessionId } = {}) {
@@ -1163,6 +1197,29 @@ function ensureDirectory(fsApi, targetPath) {
 }
 
 async function fetchMountFile(file) {
+  if (file.compression === "zlib" && Array.isArray(file.urls)) {
+    const compressedParts = await Promise.all(file.urls.map((url) => fetchBinaryAsset(url, file.sourcePath)));
+    const compressed = concatUint8Arrays(compressedParts);
+    try {
+      return inflate(compressed);
+    } catch {
+      return inflateRaw(compressed);
+    }
+  }
+
+  if (file.url) {
+    const response = await fetch(file.url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${file.sourcePath}: ${response.status}`);
+    }
+
+    if (file.binary) {
+      return new Uint8Array(await response.arrayBuffer());
+    }
+
+    return response.text();
+  }
+
   const url = new URL("/api/browser-pob/file", self.location.origin);
   url.searchParams.set("kind", file.kind);
   url.searchParams.set("path", file.sourcePath);

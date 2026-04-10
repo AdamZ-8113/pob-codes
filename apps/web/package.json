@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "preview": "opennextjs-cloudflare build && node scripts/prune-browser-pob-open-next.mjs && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && node scripts/prune-browser-pob-open-next.mjs && opennextjs-cloudflare deploy",
+    "prepare:browser-pob-assets": "node scripts/prepare-browser-pob-assets.mjs",
+    "preview": "node scripts/prepare-browser-pob-assets.mjs && opennextjs-cloudflare build && node scripts/prune-browser-pob-open-next.mjs && opennextjs-cloudflare preview",
+    "deploy": "node scripts/prepare-browser-pob-assets.mjs && opennextjs-cloudflare build && node scripts/prune-browser-pob-open-next.mjs && opennextjs-cloudflare deploy",
     "start": "next start",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests"

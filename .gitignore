@@ -11,6 +11,8 @@ coverage/
 .env.local
 local-pob-mirror/
 pob-upstream-legacy/
+apps/web/public/browser-pob/manifests/
+apps/web/public/browser-pob/mirror/
 tmp/
 .tmp-*
 .venv*/
