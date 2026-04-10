@@ -65,6 +65,40 @@ math.pow = math.pow or function(left, right)
 end
 
 do
+  if math.__spike_numeric_string_compat ~= true then
+    math.__spike_numeric_string_compat = true
+    local original_math_min = math.min
+    local original_math_max = math.max
+
+    local function normalize_numeric_arg(value)
+      if type(value) == "string" then
+        local numericValue = tonumber(value)
+        if numericValue ~= nil then
+          return numericValue
+        end
+      end
+      return value
+    end
+
+    local function normalize_numeric_args(...)
+      local values = { ... }
+      for index = 1, #values do
+        values[index] = normalize_numeric_arg(values[index])
+      end
+      return table.unpack(values)
+    end
+
+    math.min = function(...)
+      return original_math_min(normalize_numeric_args(...))
+    end
+
+    math.max = function(...)
+      return original_math_max(normalize_numeric_args(...))
+    end
+  end
+end
+
+do
   local original_string_gsub = string.gsub
   local function normalize_replacement_string(value)
     local output = {}
@@ -613,6 +647,134 @@ local function __spike_export_choices(list)
   return out
 end
 
+local __spike_var_data_by_key = nil
+
+local function __spike_get_var_data(key)
+  if __spike_var_data_by_key == nil then
+    __spike_var_data_by_key = {}
+    for _, varData in ipairs(__spike_var_list) do
+      if varData.var then
+        __spike_var_data_by_key[varData.var] = varData
+      end
+    end
+  end
+  return __spike_var_data_by_key[key]
+end
+
+local function __spike_is_number_config_type(typeName)
+  return typeName == "count" or typeName == "integer" or typeName == "countAllowZero" or typeName == "float"
+end
+
+local function __spike_to_config_number(value)
+  if type(value) == "number" then
+    return value
+  end
+  if type(value) == "string" then
+    return tonumber(value)
+  end
+  return nil
+end
+
+local function __spike_to_config_boolean(value)
+  if type(value) == "boolean" then
+    return value
+  end
+  if type(value) == "number" then
+    return value ~= 0
+  end
+  if type(value) == "string" then
+    local lowered = value:lower()
+    if lowered == "true" or lowered == "1" then
+      return true
+    end
+    if lowered == "false" or lowered == "0" or lowered == "" then
+      return false
+    end
+  end
+  return nil
+end
+
+local function __spike_normalize_list_config_value(varData, value)
+  if type(varData.list) ~= "table" then
+    return value
+  end
+
+  for _, item in ipairs(varData.list) do
+    if item.val == value then
+      return item.val
+    end
+  end
+
+  for _, item in ipairs(varData.list) do
+    if tostring(item.val) == tostring(value) then
+      return item.val
+    end
+  end
+
+  if type(value) == "number" and varData.list[value] then
+    return varData.list[value].val
+  end
+
+  return value
+end
+
+local function __spike_coerce_config_value(varData, value)
+  if not varData then
+    return value
+  end
+
+  if varData.type == "check" then
+    local booleanValue = __spike_to_config_boolean(value)
+    if booleanValue ~= nil then
+      return booleanValue
+    end
+    return value
+  end
+
+  if __spike_is_number_config_type(varData.type) then
+    local numberValue = __spike_to_config_number(value)
+    if numberValue ~= nil then
+      return numberValue
+    end
+    return value
+  end
+
+  if varData.type == "list" then
+    return __spike_normalize_list_config_value(varData, value)
+  end
+
+  if varData.type == "text" then
+    return tostring(value or "")
+  end
+
+  return value
+end
+
+local function __spike_normalize_config_tab_state(configTab)
+  if not configTab then
+    return
+  end
+
+  for _, configSet in pairs(configTab.configSets or {}) do
+    for key, value in pairs(configSet.input or {}) do
+      configSet.input[key] = __spike_coerce_config_value(__spike_get_var_data(key), value)
+    end
+    for key, value in pairs(configSet.placeholder or {}) do
+      configSet.placeholder[key] = __spike_coerce_config_value(__spike_get_var_data(key), value)
+    end
+  end
+
+  for key, control in pairs(configTab.varControls or {}) do
+    local varData = __spike_get_var_data(key)
+    if control.state ~= nil then
+      control.state = __spike_coerce_config_value(varData, control.state)
+    end
+    if control.placeholder ~= nil then
+      control.placeholder = __spike_coerce_config_value(varData, control.placeholder)
+    end
+  end
+end
+
 local function __spike_get_socket_group_label(socketGroup, index)
   if not socketGroup then
     return "Socket Group " .. tostring(index or "?")
@@ -955,12 +1117,23 @@ function __spike_apply_build_adjustments_json(configEntriesJson, skillStateJson)
     for _, entry in ipairs(decoded or {}) do
       if entry and entry.key then
         if entry.kind == "boolean" or entry.kind == "number" or entry.kind == "string" then
-          nextInput[entry.key] = entry.value
+          nextInput[entry.key] = __spike_coerce_config_value(__spike_get_var_data(entry.key), entry.value)
         end
       end
     end
 
-    build.configTab:RestoreUndoState(nextInput)
+    local activeConfigSet = build.configTab.configSets[build.configTab.activeConfigSetId]
+    if activeConfigSet and activeConfigSet.input then
+      for key in pairs(activeConfigSet.input) do
+        activeConfigSet.input[key] = nil
+      end
+      for key, value in pairs(nextInput) do
+        activeConfigSet.input[key] = value
+      end
+    end
+    __spike_normalize_config_tab_state(build.configTab)
+    build.configTab:UpdateControls()
+    __spike_normalize_config_tab_state(build.configTab)
     build.configTab:BuildModList()
   end
 
