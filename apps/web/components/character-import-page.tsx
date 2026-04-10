@@ -8,6 +8,7 @@ import { BrowserPobClient, type BrowserPobWorkerMessage } from "../lib/browser-p
 import { copyTextToClipboard } from "../lib/clipboard";
 
 type StepId = "account" | "league" | "character" | "preset" | "configure" | "review";
+type PoeRealmId = "PC" | "XBOX" | "SONY";
 
 interface PoeCharacterSummary {
   name?: string;
@@ -464,10 +465,12 @@ function formatSummaryValue(value: number | string | null | undefined) {
 
 function buildWizardSelectionSummaryParts({
   accountName,
+  realmLabel,
   league,
   character,
 }: {
   accountName?: string;
+  realmLabel?: string;
   league?: string;
   character?: string;
 }) {
@@ -479,6 +482,15 @@ function buildWizardSelectionSummaryParts({
       kind: "text",
       label: "Account:",
       value: accountName,
+    });
+  }
+
+  if (realmLabel) {
+    parts.push({
+      key: "platform",
+      kind: "text",
+      label: "Platform:",
+      value: realmLabel,
     });
   }
 
@@ -593,6 +605,11 @@ const STEP_LABELS: Record<StepId, string> = {
   configure: "Skills And Configs",
   review: "Review",
 };
+const POE_REALM_OPTIONS: Array<{ id: PoeRealmId; label: string; helpText: string }> = [
+  { id: "PC", label: "PC", helpText: "Use for standard Path of Exile website accounts." },
+  { id: "XBOX", label: "Xbox", helpText: "Use for Xbox gamertags, including names with spaces." },
+  { id: "SONY", label: "PlayStation", helpText: "Use for PlayStation accounts." },
+];
 const SHOW_DEBUG_IMPORT_ACTIONS =
   process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEBUG_UI === "true";
 
@@ -607,6 +624,7 @@ export function GuidedImportPage() {
   const [pending, setPending] = useState(false);
   const [viewerPending, setViewerPending] = useState(false);
   const [accountInput, setAccountInput] = useState("");
+  const [selectedRealm, setSelectedRealm] = useState<PoeRealmId>("PC");
   const [profileResult, setProfileResult] = useState<ProfileCharactersResponse | null>(null);
   const [selectedLeague, setSelectedLeague] = useState("");
   const [selectedCharacter, setSelectedCharacter] = useState("");
@@ -703,10 +721,11 @@ export function GuidedImportPage() {
     () =>
       buildWizardSelectionSummaryParts({
         accountName: profileResult?.accountName || accountInput.trim() || undefined,
+        realmLabel: profileResult?.realm.label ?? POE_REALM_OPTIONS.find((realm) => realm.id === selectedRealm)?.label,
         league: selectedLeague || undefined,
         character: selectedCharacter || undefined,
       }),
-    [accountInput, profileResult?.accountName, selectedCharacter, selectedLeague],
+    [accountInput, profileResult?.accountName, profileResult?.realm.label, selectedCharacter, selectedLeague, selectedRealm],
   );
 
   const buildSummaryParts = useMemo(
@@ -747,6 +766,34 @@ export function GuidedImportPage() {
     setConfigureSummary("Manually update calculations at the bottom. Some configs may not be visible unless their dependent configs are enabled and an update is run (e.g. Wither Stacks won't be available if PoB doesn't see a source of Wither, such as Unholy Might or a skill gem)");
     setReviewSummary("Export the final code or open the build in a new viewer tab.");
     setFurthestStep((current) => (getStepIndex(current) > getStepIndex("character") ? "character" : current));
+  }
+
+  function clearLoadedProfileState() {
+    setProfileResult(null);
+    setSelectedLeague("");
+    setSelectedCharacter("");
+    setCurrentStep("account");
+    setFurthestStep("account");
+    clearLoadedBuildState();
+  }
+
+  function handleAccountInputChange(value: string) {
+    setAccountInput(value);
+    setStepError(null);
+    if (profileResult || selectedLeague || selectedCharacter || loadedBuild) {
+      clearLoadedProfileState();
+      setStepNote("Account changed. Load the public profile again.");
+    }
+  }
+
+  function handleRealmChange(value: string) {
+    const nextRealm = POE_REALM_OPTIONS.some((realm) => realm.id === value) ? (value as PoeRealmId) : "PC";
+    setSelectedRealm(nextRealm);
+    if (profileResult || selectedLeague || selectedCharacter || loadedBuild) {
+      clearLoadedProfileState();
+    }
+    setStepError(null);
+    setStepNote("Platform changed. Load the public profile again.");
   }
 
   function hydrateFromRunResult(result: WorkerRunResult) {
@@ -860,7 +907,7 @@ export function GuidedImportPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          realm: "PC",
+          realm: selectedRealm,
           accountName,
         }),
       });
@@ -1341,19 +1388,39 @@ export function GuidedImportPage() {
 
         {currentStep === "account" ? (
           <div className="wizard-field-grid">
-            <label className="wizard-field">
-              <span>Path of Exile Account Name</span>
-              <input
-                className="panel-input"
-                type="text"
-                value={accountInput}
-                onChange={(event) => setAccountInput(event.target.value)}
-                placeholder="ExampleAccount#1234"
-                autoComplete="off"
-              />
-            </label>
+            <div className="wizard-account-fields">
+              <label className="wizard-field">
+                <span>Path of Exile Account Name</span>
+                <input
+                  className="panel-input"
+                  type="text"
+                  value={accountInput}
+                  onChange={(event) => handleAccountInputChange(event.target.value)}
+                  placeholder="ExampleAccount#1234"
+                  autoComplete="off"
+                />
+              </label>
+              <label className="wizard-field">
+                <span>Platform</span>
+                <select
+                  className="panel-select wizard-select"
+                  value={selectedRealm}
+                  onChange={(event) => handleRealmChange(event.target.value)}
+                >
+                  {POE_REALM_OPTIONS.map((realm) => (
+                    <option key={realm.id} value={realm.id}>
+                      {realm.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
             <div className="meta wizard-note">
-              Your profile must be public. Include the 4 digit discriminator, i.e. AccountName#9876
+              Your profile must be public. Include the 4 digit discriminator, i.e. AccountName#9876. Xbox and
+              PlayStation account names may include spaces.
+            </div>
+            <div className="meta wizard-note">
+              {POE_REALM_OPTIONS.find((realm) => realm.id === selectedRealm)?.helpText}
             </div>
             <div className="wizard-actions">
               <button className="btn" type="button" disabled={pending} onClick={() => void handleLoadAccount()}>
@@ -1772,7 +1839,9 @@ export function GuidedImportPage() {
     workerReady,
     workerPending,
     accountInput,
+    selectedRealm,
     loadedAccount: profileResult?.accountName ?? null,
+    loadedRealm: profileResult?.realm ?? null,
     selectedLeague,
     selectedCharacter,
     hasConfigChanges,

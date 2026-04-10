@@ -42,7 +42,7 @@ const xmlParser = new XMLParser({
 const poeRealmList = [
   { label: "PC", id: "PC", realmCode: "pc", hostName: "https://www.pathofexile.com/", profileURL: "account/view-profile/" },
   { label: "Xbox", id: "XBOX", realmCode: "xbox", hostName: "https://www.pathofexile.com/", profileURL: "account/view-profile/" },
-  { label: "PS4", id: "SONY", realmCode: "sony", hostName: "https://www.pathofexile.com/", profileURL: "account/view-profile/" },
+  { label: "PlayStation", id: "SONY", realmCode: "sony", hostName: "https://www.pathofexile.com/", profileURL: "account/view-profile/" },
 ] as const;
 
 export interface BrowserPobRequirements {
@@ -536,6 +536,10 @@ function normalizePoeAccountName(rawAccountName: string, realmCode: string) {
   return accountName.replace(/(.*)[#-]/, "$1#");
 }
 
+function displayPoeAccountName(accountName: string, realmCode: string) {
+  return realmCode === "pc" ? accountName : accountName.replace(/\+/g, " ");
+}
+
 function encodePoeAccountName(accountName: string) {
   return accountName.replace(/#/g, "%23");
 }
@@ -605,7 +609,7 @@ export async function loadPoeCharacters(input: { realm?: string; accountName: st
     throw new Error("Sign-in is required.");
   }
   if (charactersResponse.status === 403) {
-    throw new Error("Account profile is private. Make the profile public and try again.");
+    throw new Error("Account profile is private, or the selected platform is incorrect. Make the profile public, select the correct platform, and try again.");
   }
   if (charactersResponse.status === 404) {
     throw new Error("Account name is incorrect.");
@@ -638,7 +642,7 @@ export async function loadPoeCharacters(input: { realm?: string; accountName: st
       label: realm.label,
       realmCode: realm.realmCode,
     },
-    accountName: realAccountName,
+    accountName: displayPoeAccountName(realAccountName, realm.realmCode),
     characters: sortedCharacters,
   };
 }
@@ -687,7 +691,7 @@ export async function loadPoeCharacterImport(input: {
       label: realm.label,
       realmCode: realm.realmCode,
     },
-    accountName,
+    accountName: displayPoeAccountName(accountName, realm.realmCode),
     characterName,
     itemsJson: itemsResponse.body,
     passiveSkillsJson: passiveResponse.body,
