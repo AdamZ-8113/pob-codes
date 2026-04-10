@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import { createReadStream, createWriteStream } from "node:fs";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
@@ -14,6 +15,7 @@ const dataRoot = path.join(repoRoot, "data");
 const publicRoot = path.join(appRoot, "public", "browser-pob");
 const mirrorOutputRoot = path.join(publicRoot, "mirror");
 const manifestOutputRoot = path.join(publicRoot, "manifests");
+const shouldCopyAssets = process.env.BROWSER_POB_COPY_ASSETS === "1";
 const supportedTreeVersions = new Set(["3_27", "3_28"]);
 const latestSupportedTreeVersion = "3_28";
 const treeVariantSuffixes = ["", "_alternate", "_ruthless", "_ruthless_alternate"];
@@ -33,6 +35,20 @@ const nonTreePobSourceEntries = [
 const requiredTreeAssetFiles = ["TreeData/3_19/Assets.lua", "TreeData/legion/tree-legion.lua"];
 const timelessJewelDir = path.join(pobSrcRoot, "Data", "TimelessJewelData");
 
+function getDefaultAssetBaseUrl() {
+  try {
+    const revision = execFileSync("git", ["-C", pobRoot, "rev-parse", "HEAD"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    return `https://raw.githubusercontent.com/PathOfBuildingCommunity/PathOfBuilding/${revision}`;
+  } catch {
+    return "https://raw.githubusercontent.com/PathOfBuildingCommunity/PathOfBuilding/dev";
+  }
+}
+
+const assetBaseUrl = (process.env.BROWSER_POB_ASSET_BASE_URL ?? getDefaultAssetBaseUrl()).replace(/\/+$/, "");
+
 function toPosix(filePath) {
   return filePath.replace(/\\/g, "/");
 }
@@ -45,7 +61,8 @@ function encodeAssetPath(relativePath) {
 }
 
 function staticMirrorUrl(relativePath) {
-  return `/browser-pob/mirror/${encodeAssetPath(relativePath)}`;
+  const encodedPath = encodeAssetPath(relativePath);
+  return shouldCopyAssets ? `/browser-pob/mirror/${encodedPath}` : `${assetBaseUrl}/${encodedPath}`;
 }
 
 async function pathExists(targetPath) {
@@ -71,9 +88,13 @@ async function walk(dir, out = []) {
 
 async function copyFilePreservingPath(sourceRoot, sourcePath, outputRoot = mirrorOutputRoot) {
   const relativePath = toPosix(path.relative(sourceRoot, sourcePath));
-  const outputPath = path.join(outputRoot, relativePath);
-  await fs.mkdir(path.dirname(outputPath), { recursive: true });
-  await pipeline(createReadStream(sourcePath), createWriteStream(outputPath));
+  let outputPath = null;
+  if (shouldCopyAssets) {
+    outputPath = path.join(outputRoot, relativePath);
+    await fs.mkdir(path.dirname(outputPath), { recursive: true });
+    await pipeline(createReadStream(sourcePath), createWriteStream(outputPath));
+  }
+
   return {
     outputPath,
     relativePath,
@@ -336,7 +357,9 @@ if (!(await pathExists(pobRoot))) {
 
 await fs.rm(mirrorOutputRoot, { force: true, recursive: true });
 await fs.rm(manifestOutputRoot, { force: true, recursive: true });
-await fs.mkdir(mirrorOutputRoot, { recursive: true });
+if (shouldCopyAssets) {
+  await fs.mkdir(mirrorOutputRoot, { recursive: true });
+}
 await fs.mkdir(manifestOutputRoot, { recursive: true });
 
 const timelessSources = await getTimelessJewelSources();
@@ -353,6 +376,8 @@ const catalog = {
   notes: {
     mode: "static-catalog",
     strategy: "load static browser PoB assets generated at deploy time",
+    assetBaseUrl,
+    assetMode: shouldCopyAssets ? "copied" : "remote",
     treeVariantSuffixes,
   },
 };
@@ -369,14 +394,18 @@ for (const treeVersion of supportedTreeVersions) {
   );
 }
 
-const mirrorStats = await walk(mirrorOutputRoot).then(async (files) => {
-  const sizes = await Promise.all(files.map((file) => fs.stat(file).then((stats) => stats.size)));
-  return {
-    files: files.length,
-    bytes: sizes.reduce((sum, size) => sum + size, 0),
-  };
-});
+if (shouldCopyAssets) {
+  const mirrorStats = await walk(mirrorOutputRoot).then(async (files) => {
+    const sizes = await Promise.all(files.map((file) => fs.stat(file).then((stats) => stats.size)));
+    return {
+      files: files.length,
+      bytes: sizes.reduce((sum, size) => sum + size, 0),
+    };
+  });
 
-console.log(
-  `Prepared browser PoB static assets: ${mirrorStats.files} files, ${(mirrorStats.bytes / 1024 / 1024).toFixed(2)} MiB.`,
-);
+  console.log(
+    `Prepared browser PoB copied assets: ${mirrorStats.files} files, ${(mirrorStats.bytes / 1024 / 1024).toFixed(2)} MiB.`,
+  );
+} else {
+  console.log(`Prepared browser PoB manifests with remote asset base: ${assetBaseUrl}`);
+}
