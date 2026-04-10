@@ -1,4 +1,4 @@
-import { GuidedImportPage } from "../../components/guided-import-page";
+import { GuidedImportPage } from "../../components/character-import-page";
 
 export default function ImportPage() {
   return (
