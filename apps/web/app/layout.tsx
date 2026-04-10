@@ -22,8 +22,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="site-shell-content">{children}</div>
           <footer className="site-footer">
             <span>
-              PoB Codes is an unofficial fan-made Path of Exile tool. Path of Exile and related assets are (c)
-              Grinding Gear Games. Not affiliated with or endorsed by Grinding Gear Games.
+              PoB Codes is not affiliated with or endorsed by Grinding Gear Games. Path of Exile and related assets are (c)
+              Grinding Gear Games.
             </span>
           </footer>
         </div>

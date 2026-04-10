@@ -7,17 +7,20 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare build && node scripts/prune-browser-pob-open-next.mjs && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && node scripts/prune-browser-pob-open-next.mjs && opennextjs-cloudflare deploy",
     "start": "next start",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@pobcodes/shared-types": "0.1.0",
+    "fast-xml-parser": "^5.2.5",
     "next": "^15.5.14",
+    "pako": "^2.1.0",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "wasmoon": "^1.16.0"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.18.0",
