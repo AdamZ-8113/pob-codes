@@ -74,7 +74,7 @@ describe("/b/[id] page", () => {
     expect(screen.getByText("Configs")).toBeTruthy();
     expect(screen.getByText("Passive Tree")).toBeTruthy();
     expect(screen.getByText("Notes")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Compare my POB" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Compare my PoB" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Copy Link" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Copy Full PoB Code" })).toBeTruthy();
     expect(screen.queryByText("Notes & Config")).toBeNull();

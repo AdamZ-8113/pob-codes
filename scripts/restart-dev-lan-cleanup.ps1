@@ -13,6 +13,10 @@ $targets = @(
     CommandHint = "npm.cmd run dev"
   },
   @{
+    PathHint = "\tmp\pob-browser-calcs-spike\browser-worker"
+    CommandHint = "npm.cmd run dev"
+  },
+  @{
     PathHint = $null
     CommandHint = "npm.cmd run dev:worker"
   },

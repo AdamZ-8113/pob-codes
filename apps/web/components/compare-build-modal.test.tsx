@@ -53,7 +53,7 @@ describe("CompareBuildModal", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
+    fireEvent.click(screen.getByRole("button", { name: "Compare my PoB" }));
     fireEvent.change(screen.getByRole("textbox"), {
       target: {
         value: "https://pob.codes/b/example123",
@@ -123,7 +123,7 @@ describe("CompareBuildModal", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
+    fireEvent.click(screen.getByRole("button", { name: "Compare my PoB" }));
     fireEvent.change(screen.getByRole("textbox"), {
       target: {
         value: "https://pob.codes/b/example123",
@@ -205,7 +205,7 @@ describe("CompareBuildModal", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
+    fireEvent.click(screen.getByRole("button", { name: "Compare my PoB" }));
     fireEvent.change(screen.getByRole("textbox"), {
       target: {
         value: "https://pob.codes/b/example123",
@@ -250,7 +250,7 @@ describe("CompareBuildModal", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
+    fireEvent.click(screen.getByRole("button", { name: "Compare my PoB" }));
     fireEvent.change(screen.getByRole("textbox"), {
       target: {
         value: "https://pob.codes/b/example123",
@@ -296,7 +296,7 @@ describe("CompareBuildModal", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
+    fireEvent.click(screen.getByRole("button", { name: "Compare my PoB" }));
     fireEvent.change(screen.getByRole("textbox"), {
       target: {
         value: "https://pob.codes/b/example123",

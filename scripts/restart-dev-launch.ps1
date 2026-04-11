@@ -9,9 +9,15 @@ param(
   [string]$PidFile,
 
   [Parameter(Mandatory = $true)]
-  [string]$RunCommand
+  [string]$RunCommand,
+
+  [string]$StartDirectory
 )
 
-$command = "title $WindowTitle && cd /d `"$Root`" && $RunCommand"
-$process = Start-Process -FilePath "cmd.exe" -ArgumentList @("/k", $command) -WorkingDirectory $Root -PassThru
+if (-not $StartDirectory) {
+  $StartDirectory = $Root
+}
+
+$command = "title $WindowTitle && $RunCommand"
+$process = Start-Process -FilePath "cmd.exe" -ArgumentList @("/k", $command) -WorkingDirectory $StartDirectory -PassThru
 Set-Content -Path $PidFile -Value $process.Id -NoNewline

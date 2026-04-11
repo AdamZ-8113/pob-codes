@@ -96,7 +96,7 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
           setOpen(true);
         }}
       >
-        Compare my POB
+        <b>Compare A Build</b>
       </button>
       {open && (
         <div
@@ -115,7 +115,7 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
             }}
           >
             <div className="panel-toolbar compare-modal-toolbar">
-              <h2>Compare my POB</h2>
+              <h2>Compare my PoB</h2>
               <button className="btn btn-secondary compare-modal-close" type="button" onClick={() => setOpen(false)}>
                 Close
               </button>
