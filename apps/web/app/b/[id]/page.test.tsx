@@ -6,18 +6,23 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildViewerLayoutFixture, buildViewerPayloadFixture } from "../../../test/fixtures/build-viewer-fixture";
-import { fetchBuildPayload } from "../../../lib/fetch-build";
+import { fetchBuildPayloadClient, fetchBuildPayload } from "../../../lib/fetch-build";
 import BuildPage from "./page";
 
 vi.mock("../../../lib/fetch-build", () => ({
   fetchBuildPayload: vi.fn(),
+  fetchBuildPayloadClient: vi.fn(),
 }));
 
 const mockedFetchBuildPayload = vi.mocked(fetchBuildPayload);
+const mockedFetchBuildPayloadClient = vi.mocked(fetchBuildPayloadClient);
+const originalBuildPageClientFetchEnabled = process.env.BUILD_PAGE_CLIENT_FETCH_ENABLED;
 
 describe("/b/[id] page", () => {
   beforeEach(() => {
+    process.env.BUILD_PAGE_CLIENT_FETCH_ENABLED = "false";
     mockedFetchBuildPayload.mockReset();
+    mockedFetchBuildPayloadClient.mockReset();
 
     vi.stubGlobal(
       "fetch",
@@ -57,6 +62,11 @@ describe("/b/[id] page", () => {
     cleanup();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+    if (originalBuildPageClientFetchEnabled === undefined) {
+      delete process.env.BUILD_PAGE_CLIENT_FETCH_ENABLED;
+    } else {
+      process.env.BUILD_PAGE_CLIENT_FETCH_ENABLED = originalBuildPageClientFetchEnabled;
+    }
   });
 
   it("renders the build viewer panels and simplified tree", async () => {
@@ -393,5 +403,54 @@ describe("/b/[id] page", () => {
     });
 
     expect(await screen.findByText("Full PoB code copied to clipboard")).toBeTruthy();
+  });
+
+  it("loads the build client-side when the runtime flag is enabled", async () => {
+    process.env.BUILD_PAGE_CLIENT_FETCH_ENABLED = "true";
+    mockedFetchBuildPayloadClient.mockResolvedValue(buildViewerPayloadFixture);
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: string | URL | Request) => {
+        const url = String(input);
+        if (url.includes("/assets/passive-tree/default/layout-default.json")) {
+          return new Response(JSON.stringify(buildViewerLayoutFixture), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            status: 200,
+          });
+        }
+
+        if (url.includes("/assets/passive-tree/default/sprite-manifest.json")) {
+          return new Response(JSON.stringify({ atlases: [], spriteMap: {} }), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            status: 200,
+          });
+        }
+
+        if (url.includes("/demo-build/raw")) {
+          return new Response("RAW_POB_CODE", {
+            headers: {
+              "Content-Type": "text/plain",
+            },
+            status: 200,
+          });
+        }
+
+        return new Response("Not found", { status: 404 });
+      }),
+    );
+
+    const { container } = render(await BuildPage({ params: Promise.resolve({ id: "demo-build" }) }));
+
+    expect(mockedFetchBuildPayload).not.toHaveBeenCalled();
+    expect(mockedFetchBuildPayloadClient).toHaveBeenCalledTimes(1);
+
+    await screen.findByText(/Level 95/);
+
+    expect(container.querySelector(".build-loadout-title")?.textContent).toContain("Arc / Hierophant (Templar)");
   });
 });

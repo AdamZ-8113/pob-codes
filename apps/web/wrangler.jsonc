@@ -9,6 +9,7 @@
   ],
   "workers_dev": true,
   "vars": {
+    "BUILD_PAGE_CLIENT_FETCH_ENABLED": "true",
     "NEXT_PUBLIC_API_BASE": "https://api.pob.codes",
     "POB_CODES_API_BASE": "https://api.pob.codes"
   },
