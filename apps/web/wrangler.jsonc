@@ -8,6 +8,15 @@
     "global_fetch_strictly_public"
   ],
   "workers_dev": true,
+  "observability": {
+    "logs": {
+      "enabled": false,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false
+    }
+  },
   "vars": {
     "BUILD_PAGE_CLIENT_FETCH_ENABLED": "true",
     "NEXT_PUBLIC_API_BASE": "https://api.pob.codes",
