@@ -103,4 +103,28 @@ describe("pob-parser", () => {
     const xml = `<?xml version="1.0"?><UnsupportedBuild><Build level="12" className="Mercenary" mainSocketGroup="1" /></UnsupportedBuild>`;
     expect(() => parseBuildXmlToPayload(xml)).toThrowError("Only Path of Exile 1 Path of Building exports are supported");
   });
+
+  it("defaults item set slots without an explicit active flag to active", () => {
+    const xml = `<PathOfBuilding>
+      <Build level="95" className="Ranger" ascendClassName="Deadeye" mainSocketGroup="1" />
+      <Items activeItemSet="1">
+        <Item id="1">Rarity: Magic\nQuicksilver Flask\nQuicksilver Flask</Item>
+        <Item id="2">Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture</Item>
+        <ItemSet id="1" title="Default">
+          <Slot name="Flask 1" itemId="1" />
+          <Slot name="Tincture 1" itemId="2" />
+        </ItemSet>
+      </Items>
+      <Skills />
+      <Tree />
+      <Config />
+    </PathOfBuilding>`;
+
+    const payload = parseBuildXmlToPayload(xml);
+
+    expect(payload.itemSets[0]?.slots).toEqual([
+      { active: true, itemId: 1, name: "Flask 1" },
+      { active: true, itemId: 2, name: "Tincture 1" },
+    ]);
+  });
 });

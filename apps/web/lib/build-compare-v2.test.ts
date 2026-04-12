@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { BuildPayload, ItemPayload, TreeSocketPayload } from "@pobcodes/shared-types";
+import { parseBuildXmlToPayload } from "@pobcodes/pob-parser";
 import type { TimelessResolveResponse } from "./timeless-resolver/types";
 
 import { buildViewerPayloadFixture } from "../test/fixtures/build-viewer-fixture";
@@ -105,6 +106,31 @@ function makeTreeNode(
     y,
     ...rest,
   };
+}
+
+function makeParsedComparePayload(args: {
+  flaskSlotActive?: boolean;
+  flaskRaw: string;
+  tinctureSlotActive?: boolean;
+  tinctureRaw: string;
+}) {
+  const flaskActiveAttr = args.flaskSlotActive === undefined ? "" : ` active="${args.flaskSlotActive ? "true" : "false"}"`;
+  const tinctureActiveAttr = args.tinctureSlotActive === undefined ? "" : ` active="${args.tinctureSlotActive ? "true" : "false"}"`;
+
+  return parseBuildXmlToPayload(`<PathOfBuilding>
+    <Build level="95" className="Ranger" ascendClassName="Deadeye" mainSocketGroup="1" />
+    <Items activeItemSet="1">
+      <Item id="6001">${args.flaskRaw}</Item>
+      <Item id="6002">${args.tinctureRaw}</Item>
+      <ItemSet id="1" title="Compare">
+        <Slot name="Flask 1" itemId="6001"${flaskActiveAttr} />
+        <Slot name="Tincture 1" itemId="6002"${tinctureActiveAttr} />
+      </ItemSet>
+    </Items>
+    <Skills />
+    <Tree />
+    <Config />
+  </PathOfBuilding>`);
 }
 
 function resolveAllocatedClusterNodeIds(args: {
@@ -1143,6 +1169,32 @@ describe("buildBuildComparisonReport v2", () => {
         }),
       ]),
     );
+  });
+
+  it("does not mark matching flasks and tinctures as missing when slot active flags are omitted in the parsed XML", () => {
+    const currentPayload = makeParsedComparePayload({
+      flaskRaw:
+        "Rarity: Magic\nMasochist's Quicksilver Flask of the Kakapo\nMasochist's Quicksilver Flask of the Kakapo\nGain 2 Charges when you are Hit by an Enemy\n56% reduced Effect of Curses on you during Effect",
+      flaskSlotActive: true,
+      tinctureRaw: "Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture\n12% increased Attack Speed",
+      tinctureSlotActive: true,
+    });
+    const targetPayload = makeParsedComparePayload({
+      flaskRaw:
+        "Rarity: Magic\nMasochist's Quicksilver Flask of the Kakapo\nMasochist's Quicksilver Flask of the Kakapo\nGain 2 Charges when you are Hit by an Enemy\n56% reduced Effect of Curses on you during Effect",
+      tinctureRaw: "Rarity: Magic\nOakbranch Tincture\nOakbranch Tincture\n12% increased Attack Speed",
+    });
+
+    const report = buildBuildComparisonReport(
+      currentPayload,
+      getInitialBuildViewerSelection(currentPayload),
+      targetPayload,
+      getInitialBuildViewerSelection(targetPayload),
+    );
+
+    expect(report.findings.find((finding) => finding.key === "items")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "magic-flask-mods")).toBeUndefined();
+    expect(report.findings.find((finding) => finding.key === "tincture-mods")).toBeUndefined();
   });
 
   it("compares transformed timeless keystones by final result instead of seed", () => {

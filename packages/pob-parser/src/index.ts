@@ -211,7 +211,7 @@ function parseItemSets(node: Record<string, unknown>): ItemSetPayload[] {
       .map((slot) => ({
         name: toStr(slot.name) ?? "",
         itemId: toNum(slot.itemId) ?? 0,
-        active: toBool(slot.active),
+        active: slot.active == null ? true : toBool(slot.active),
       }))
       .filter((slot) => slot.name.length > 0);
 
