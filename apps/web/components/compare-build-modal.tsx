@@ -1,15 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { BuildPayload } from "@pobcodes/shared-types";
 
-import {
-  compareBuildAgainstInput,
-  DEFAULT_COMPARE_ENGINE,
-  type BuildCompareEngine,
-  type BuildCompareReport,
-} from "../lib/build-compare";
+import { compareBuildAgainstInput, type BuildCompareReport } from "../lib/build-compare";
 import type { BuildViewerSelection } from "../lib/build-viewer-selection";
 
 interface CompareBuildModalProps {
@@ -17,7 +12,6 @@ interface CompareBuildModalProps {
   selection: BuildViewerSelection;
 }
 
-const COMPARE_ENGINE_STORAGE_KEY = "pobcodes.compare.engine.v2";
 const ITEM_CATEGORY_ORDER = ["unique", "rare", "flask", "cluster-jewel", "regular-jewel", "other"] as const;
 const ITEM_CATEGORY_TITLES: Record<(typeof ITEM_CATEGORY_ORDER)[number], string> = {
   "cluster-jewel": "Cluster Jewel Differences",
@@ -35,29 +29,8 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<BuildCompareReport | null>(null);
   const [inputCollapsed, setInputCollapsed] = useState(false);
-  const [engine, setEngine] = useState<BuildCompareEngine>(() => readPreferredCompareEngine());
   const [showComparedBuildExtras, setShowComparedBuildExtras] = useState(false);
-  const [showEngineSelector, setShowEngineSelector] = useState(false);
   const [collapsedFindingKeys, setCollapsedFindingKeys] = useState<Set<string>>(() => new Set());
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    const hasEngineOverride = isBuildCompareEngine(params.get("compareEngine"));
-    const storedEngine = readStoredCompareEngine();
-    setShowEngineSelector(process.env.NODE_ENV === "development" || hasEngineOverride || storedEngine !== undefined);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    window.localStorage.setItem(COMPARE_ENGINE_STORAGE_KEY, engine);
-  }, [engine]);
 
   async function handleCompare() {
     const trimmed = input.trim();
@@ -70,7 +43,7 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
     setError(null);
 
     try {
-      const nextReport = await compareBuildAgainstInput(payload, selection, trimmed, { engine });
+      const nextReport = await compareBuildAgainstInput(payload, selection, trimmed);
       setReport(nextReport);
       setCollapsedFindingKeys(new Set());
       setInputCollapsed(true);
@@ -124,23 +97,6 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
               Paste a Path of Building code or supported build URL. The comparison looks for major build gaps instead of
               diffing every exported stat.
             </p>
-            {showEngineSelector ? (
-              <label className="compare-modal-actions" htmlFor="compare-engine-select">
-                <span className="meta">Compare engine</span>
-                <select
-                  className="compare-modal-source-field"
-                  id="compare-engine-select"
-                  value={engine}
-                  onChange={(event) => {
-                    const nextEngine = parseCompareEngine(event.target.value);
-                    setEngine(nextEngine);
-                  }}
-                >
-                  <option value="stable">Stable</option>
-                  <option value="v2">Experimental v2</option>
-                </select>
-              </label>
-            ) : null}
             {inputCollapsed && report ? (
               <div className="compare-modal-source-row">
                 <input className="compare-modal-source-field" readOnly type="text" value={input.trim()} />
@@ -225,40 +181,6 @@ export function CompareBuildModal({ payload, selection }: CompareBuildModalProps
       )}
     </>
   );
-}
-
-function readPreferredCompareEngine(): BuildCompareEngine {
-  if (typeof window === "undefined") {
-    return DEFAULT_COMPARE_ENGINE;
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  const queryEngine = params.get("compareEngine");
-  if (isBuildCompareEngine(queryEngine)) {
-    return queryEngine;
-  }
-
-  return readStoredCompareEngine() ?? DEFAULT_COMPARE_ENGINE;
-}
-
-function readStoredCompareEngine(): BuildCompareEngine | undefined {
-  if (typeof window === "undefined") {
-    return undefined;
-  }
-
-  return parseStoredCompareEngine(window.localStorage.getItem(COMPARE_ENGINE_STORAGE_KEY));
-}
-
-function parseStoredCompareEngine(value: string | null): BuildCompareEngine | undefined {
-  return isBuildCompareEngine(value) ? value : undefined;
-}
-
-function parseCompareEngine(value: string): BuildCompareEngine {
-  return isBuildCompareEngine(value) ? value : DEFAULT_COMPARE_ENGINE;
-}
-
-function isBuildCompareEngine(value: string | null | undefined): value is BuildCompareEngine {
-  return value === "stable" || value === "v2";
 }
 
 function filterVisibleCompareFindings(report: BuildCompareReport, showComparedBuildExtras: boolean): BuildCompareReport["findings"] {

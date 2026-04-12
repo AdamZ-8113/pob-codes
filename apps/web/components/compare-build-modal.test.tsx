@@ -12,7 +12,6 @@ import { CompareBuildModal } from "./compare-build-modal";
 
 vi.mock("../lib/build-compare", () => ({
   compareBuildAgainstInput: vi.fn(),
-  DEFAULT_COMPARE_ENGINE: "v2",
 }));
 
 describe("CompareBuildModal", () => {
@@ -54,6 +53,8 @@ describe("CompareBuildModal", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Compare my POB" }));
+    expect(screen.queryByText("Compare engine")).toBeNull();
+
     fireEvent.change(screen.getByRole("textbox"), {
       target: {
         value: "https://pob.codes/b/example123",
@@ -66,7 +67,6 @@ describe("CompareBuildModal", () => {
         buildViewerPayloadFixture,
         getInitialBuildViewerSelection(buildViewerPayloadFixture),
         "https://pob.codes/b/example123",
-        { engine: "v2" },
       );
     });
 
